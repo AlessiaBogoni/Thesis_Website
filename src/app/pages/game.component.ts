@@ -12,9 +12,11 @@ import { PostSurvey } from "../data/post.survey";
 import { Model, SurveyModel } from "survey-core";
 import { PreSurvey } from "../data/pre.survey";
 import { GameService } from "./game.service";
-import { Router } from '@angular/router';
+import { Router } from "@angular/router";
+import { ConsentService } from "./consent.service";
 declare var $, bootstrap: any;
 declare var SurveyTheme: any;
+declare var Swal: any;
 
 /**
  * Componente di gioco per la gestione delle donazioni e del punteggio.
@@ -29,7 +31,6 @@ declare var SurveyTheme: any;
   styleUrls: ["./game.component.scss"],
 })
 export class GameComponent implements OnInit, AfterViewInit {
-
   /**
    * Flag per confermare la propria tirchieria
    */
@@ -145,13 +146,13 @@ export class GameComponent implements OnInit, AfterViewInit {
   lifevesMax = "";
   lifevesKeep = "";
 
-
   correctAnswers = {
-    q1: 'A',
-    q2: 'B',
-    q3: 'C',
+    q1: "A",
+    q2: "B",
+    q3: "C",
   };
 
+  consent = localStorage.getItem("consent");
   tutorialStep = 1;
 
   referral: string | null = null;
@@ -185,48 +186,123 @@ export class GameComponent implements OnInit, AfterViewInit {
     return new Array(Math.max(0, this.donation.lives - 1)).fill(0);
   }
 
-  constructor(public http: HttpClient, private gameService: GameService, private surveyService: SurveyService, private router: Router) {}
+  constructor(
+    public http: HttpClient,
+    private gameService: GameService,
+    private surveyService: SurveyService,
+    private router: Router
+  ) {}
 
   /**
    * Metodo di inizializzazione del componente.
    * @returns {void}
    */
-  ngOnInit(): void {
+  async ngOnInit() {
+    async function askForConsent() {
+      const tracking = [
+        "Approximate location (country or city only)",
+        "Language settings",
+        "Browser and device type",
+      ];
+
+      const { isConfirmed, isDenied } = await Swal.fire({
+        title: "Consent Required",
+        html: `
+      <p>To take part in this study, we need your consent to use cookies and collect limited technical data.</p>
+      <p>This data is anonymized, used only for research, and only while you're on this page. It cannot identify you or track you elsewhere.</p>
+      <p><strong>What we collect:</strong><br>${tracking.join(" · ")}</p>
+      <p><strong>If you do not agree, you will be redirected.</strong></p>
+    `,
+        icon: "info",
+        iconColor: "#506da3",
+        showCancelButton: false,
+        showDenyButton: true,
+        confirmButtonColor: "#506da3",
+        denyButtonColor: "#aaa",
+        confirmButtonText: "I Accept",
+        denyButtonText: "I Do Not Accept",
+      });
+
+      if (isConfirmed) {
+        localStorage.setItem("consent", "true");
+        return "true";
+      }
+
+      if (isDenied) {
+        const { isConfirmed: confirmExit } = await Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to participate in the study.",
+          icon: "warning",
+          iconColor: "#bf191f",
+          showCancelButton: true,
+          confirmButtonText: "Yes, I'm sure",
+          cancelButtonText: "Go back",
+          confirmButtonColor: "#bf191f",
+          cancelButtonColor: "#506da3",
+        });
+
+        if (confirmExit) {
+          localStorage.setItem("consent", "false");
+          return "false";
+        } else {
+          return await askForConsent(); // Loop again
+        }
+      }
+
+      return null;
+    }
+
+    // Usage:
+    if (!this.consent) {
+      this.consent = await askForConsent();
+    }
+
+    if (this.consent === "false") {
+      history.back();
+      return;
+    }
+
     if (!this.machineCode || location.href.includes("force")) {
       this.machineCode = SurveyService.generateMachineCode();
       localStorage.setItem("machineCode", this.machineCode);
       this.state = State.PRE;
     }
 
-/*    const ref = new URLSearchParams(location.href).get("referal");
+    /*    const ref = new URLSearchParams(location.href).get("referal");
 console.log(ref); */
 
-const url = this.router.url;
-    const fragment = url.split('?')[1]; // Get everything after `?`
+    const url = this.router.url;
+    const fragment = url.split("?")[1]; // Get everything after `?`
     const params = new URLSearchParams(fragment);
-    this.referral = params.get('referral');
-    console.log('Referral source:', this.referral);
+    this.referral = params.get("referral");
+    console.log("Referral source:", this.referral);
 
     this.preSurvey = new Model(PreSurvey);
     // Ottiene il dispositivo e il browser dell'utente.
     const device = this.surveyService.getDeviceAndBrowser();
-    this.preSurvey.setValue('refer', this.referral);
-    this.preSurvey.setValue('experiment_group', this.machineCode[0] === '0' ? 'anonimo' : 'non_anonimo');
-    this.preSurvey.setValue('device', device.device);
-    this.preSurvey.setValue('browser', device.browser);
-    this.preSurvey.setValue('start_time', new Date().toISOString());
+    this.preSurvey.setValue("refer", this.referral);
+    this.preSurvey.setValue(
+      "experiment_group",
+      this.machineCode[0] === "0" ? "anonimo" : "non_anonimo"
+    );
+    this.preSurvey.setValue("device", device.device);
+    this.preSurvey.setValue("browser", device.browser);
+    this.preSurvey.setValue("start_time", new Date().toISOString());
 
     // Ottiene il paese dell'utente.
     try {
-      this.surveyService.getCountry().then((country) => {
-        this.preSurvey.setValue('country', country.country);
-        this.preSurvey.setValue('city', country.city);
-        this.preSurvey.setValue('region', country.region);
-      }).catch(() => {
-        this.preSurvey.setValue('country', 'unknown');
-      });
+      this.surveyService
+        .getCountry()
+        .then((country) => {
+          this.preSurvey.setValue("country", country.country);
+          this.preSurvey.setValue("city", country.city);
+          this.preSurvey.setValue("region", country.region);
+        })
+        .catch(() => {
+          this.preSurvey.setValue("country", "unknown");
+        });
     } catch (e) {
-      this.preSurvey.setValue('country', 'unknown');
+      this.preSurvey.setValue("country", "unknown");
     }
     this.preSurvey.showPrevButton = false;
     this.preSurvey.applyTheme(SurveyTheme.ContrastDark);
@@ -285,7 +361,9 @@ const url = this.router.url;
           this.leaderboard.push(data[key]);
         }
       }
-      const me = this.leaderboard.find((e) => e.machineCode === this.machineCode);
+      const me = this.leaderboard.find(
+        (e) => e.machineCode === this.machineCode
+      );
       if (me) {
         me.name = "You";
         me.me = true;
@@ -295,7 +373,7 @@ const url = this.router.url;
           name: this.donation?.name,
           donation1: {
             amount: this.donation?.amount,
-            message: this.donation?.message
+            message: this.donation?.message,
           },
           me: true,
         });
@@ -386,9 +464,7 @@ const url = this.router.url;
   incrementAfterDonation() {
     this.donation.lives += +this.incomingDonation.amount || 0;
     this.state = State.PAUSED;
-    this.life = new Array(this.donation.lives).fill(
-      0
-    );
+    this.life = new Array(this.donation.lives).fill(0);
   }
 
   /**
@@ -402,7 +478,7 @@ const url = this.router.url;
           this.machineCode + "/donation" + this.currentMatch
         ),
         {
-          ...this.donation
+          ...this.donation,
         }
       ),
     ];
@@ -410,9 +486,13 @@ const url = this.router.url;
       calls.push(
         this.http.put(
           SurveyService.getUrl(`lastDonation${this.machineCode[0]}`),
-          { ...this.donation, amount: this.donation.amount, pre: {
-            experiment_group: 0
-          } }
+          {
+            ...this.donation,
+            amount: this.donation.amount,
+            pre: {
+              experiment_group: 0,
+            },
+          }
         )
       );
     }
@@ -425,7 +505,7 @@ const url = this.router.url;
           0
         );
         this.donation.lives = this.life.length;
-              this.state = State.RECEIVING_DONATION;
+        this.state = State.RECEIVING_DONATION;
         this.setTooltip();
         this.score = 0;
         this.start();
@@ -448,7 +528,18 @@ const url = this.router.url;
 
   isMobile() {
     let check = false;
-    (function(a) {if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) { check = true; }})(navigator.userAgent || navigator.vendor);
+    (function (a) {
+      if (
+        /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
+          a
+        ) ||
+        /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(
+          a.substr(0, 4)
+        )
+      ) {
+        check = true;
+      }
+    })(navigator.userAgent || navigator.vendor);
     return check;
   }
 }

@@ -9,18 +9,22 @@ export class SurveyService {
    * @param {string} obj - Oggetto da aggiungere all'URL.
    * @returns {string} URL costruito.
    */
-  static getUrl(obj: string) {
-    return `https://donationsexperiment-default-rtdb.europe-west1.firebasedatabase.app/${obj}.json`;
-  }
+static getUrl(obj: string) {
+  return `https://leetcodeexp-default-rtdb.firebaseio.com/${obj}.json`;
+}
+
 
   /**
    * Genera un codice macchina casuale.
    * @returns {string} Codice macchina generato.
    */
-  static generateMachineCode() {
-    const rand = Math.random();
-    const append = rand > 0.85 ? "1" : "0";
-    return append + Math.random().toString(36).substring(2, 15);
+  static generateMachineCode(): string {
+    const groups = ["A", "B", "C", "D"];
+    const randomIndex = Math.floor(Math.random() * groups.length);
+    const assignedGroup = groups[randomIndex];
+
+    const machineCode = Math.random().toString(36).substring(2, 15); // alphanumeric
+    return `${assignedGroup}-${machineCode}`;
   }
 
   /**

@@ -1,3 +1,5 @@
+<ng-container *ngIf="consent === 'true'">
+
 <div id="base"
   *ngIf="![status.PRE, status.POST, status.LEADERBOARD].includes(state)"
 >
@@ -744,3 +746,4 @@
   src="https://cdn.pixabay.com/audio/2024/08/30/audio_60cd586a99.mp3"
   id="coin"
 ></audio>
+</ng-container>
