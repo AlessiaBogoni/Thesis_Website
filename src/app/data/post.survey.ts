@@ -2,67 +2,6 @@ export const PostSurvey = {
   logoPosition: "right",
   completedHtml: "<h3>Thank you for participating!</h3>",
   pages: [
-    /* {
-      name: "habits",
-      title: "Habits and Preferences",
-      elements: [
-        {
-          analytics: true,
-
-          type: "boolean",
-          name: "volunteer",
-          title: "Have you ever done any volunteer activities?",
-        },
-        {
-          type: "boolean",
-          analytics: true,
-
-          name: "willing_to_donate",
-          title:
-            "Would you be willing to give up a small part of your salary to help those in need?",
-        },
-        {
-          type: "boolean",
-          analytics: true,
-
-          name: "smoking",
-          title: "Do you smoke?",
-        },
-        {
-          type: "text",
-          analytics: true,
-
-          name: "smoking_expense",
-          title: "If yes, how much do you spend on smoking per month?",
-          visibleIf: "{smoking} = true",
-          inputType: "number",
-          validators: [{ type: "numeric", minValue: 0 }],
-        },
-        {
-          type: "boolean",
-          analytics: true,
-
-          name: "alcohol",
-          title: "Do you consume alcohol?",
-        },
-        {
-          analytics: true,
-
-          type: "text",
-          name: "smoking_expense",
-          title: "If yes, how much do you spend on alcohol per month?",
-          visibleIf: "{alcohol} = true",
-          inputType: "number",
-          validators: [{ type: "numeric", minValue: 0 }],
-        },
-        {
-          type: "boolean",
-          name: "hobby_spending",
-          title:
-            "Do you have a specific spending hobby that accounts for more than 10% of your income?",
-        },
-      ],
-    }, */
     {
       name: "post_survey",
       elements: [
@@ -81,59 +20,37 @@ export const PostSurvey = {
           ],
           rows: [
             {
-              value: "effort_lives",
-              text: "I felt that earning lives in the game required effort.",
+              value: "AI_experience",
+              text: "I am familiar with the use of AI",
             },
             {
-              value: "bad_losing_lives",
-              text: "I felt bad when I lost lives.",
-            },
-            {
-              value: "good_playing",
-              text: "I felt like I was good at the game.",
+              value: "forum_experience",
+              text: "I am familiar with forums and Q&A setups",
             },
             /* {
-              value: "motivated_donate",
-              text: "I felt more motivated to donate because I received lives from others.",
+              value: "self_performance",
+              text: "I think I was quite good at these tasks",
             }, */
             {
-              value: "good_donation_decisions",
-              text: "I felt good about my donation decisions.",
+              value: "understanding",
+              text: "I understood what the aim of this study is",
             },
             {
-              value: "pressure_donate",
-              text: "I felt pressure to donate.",
+              value: "difficulty_guess",
+              text: "Guessing the source of the texts was difficult",
             },
             {
-              value: "understood_donation_impact",
-              text: "I understood how my donation would affect other players in the game.",
+              value: "difficulty_evaluation",
+              text: "Evaluating the texts was difficult",
             },
-            /* {
-              value: "wtp",
-              text: "I would be willing to pay a small sum to play this game.",
+            {
+              value: "reality_behaviour",
+              text: "In the real life I would choose the same way I did here",
+            },
+            /*  {
+              value: "reality_scenario",
+              text: "I think the proposed scenario is credible",
             }, */
-            {
-              value: "choices_myself",
-              text: "The choices I made tell me a lot about myself.",
-            },
-            /*             {
-              value: "choices_inner_values",
-              text: "The choices I made reflect my inner goals and values",
-            }, */
-
-            /* {
-              value: "privacy",
-              text: "I am concerned about my privacy when sharing personal information online.",
-            },
-            {
-              value: "financial_literacy",
-              text: "I feel confident in my financial literacy and knowledge.",
-            },
-            {
-              value: "future",
-              text: "I understood the meaning of the questionnaire.",
-            },
-            { value: "savings", text: "I felt judged for my responses." }, */
           ],
         },
         {
@@ -141,9 +58,113 @@ export const PostSurvey = {
           rateType: "smileys",
           name: "overall_evaluation",
           analytics: true,
-          title:
-            "How would you rate your overall experience?",
+          title: "How would you rate your overall experience in this study?",
         },
+      ],
+    },
+    {
+      name: "demographics",
+      elements: [
+        {
+          type: "dropdown",
+          name: "age_group",
+          analytics: true,
+          title: "Select your age group:",
+          isRequired: true,
+          choices: [
+            { value: "18_25", text: "18-25" },
+            { value: "26_35", text: "26-35" },
+            { value: "36_45", text: "36-45" },
+            { value: "46_60", text: "46-60" },
+            { value: "60_plus", text: "Over 60" },
+          ],
+        },
+        {
+          type: "radiogroup",
+          name: "gender",
+          analytics: true,
+
+          title: "What is your gender?",
+          isRequired: true,
+          choices: [
+            { value: "male", text: "Male" },
+            { value: "female", text: "Female" },
+            { value: "prefer_not_to_say", text: "Prefer not to say/Other" },
+          ],
+        },
+        {
+          type: "dropdown",
+          name: "education",
+          analytics: true,
+          title: "What is your highest level of education?",
+          isRequired: true,
+          choices: [
+            { value: "no_degree", text: "No degree" },
+            { value: "high_school", text: "High School Diploma" },
+            { value: "bachelor", text: "Bachelor's Degree" },
+            { value: "master", text: "Master's Degree" },
+            { value: "doctorate", text: "Doctorate" },
+          ],
+        },
+        /*         {
+          type: "dropdown",
+          name: "employment_status",
+          analytics: true,
+
+          title: "What is your current employment status?",
+          isRequired: true,
+          choices: [
+            { value: "unemployed", text: "Unemployed" },
+            { value: "student", text: "Student" },
+            { value: "working-student", text: "Working student" },
+            { value: "employed", text: "Employed" },
+            { value: "retired", text: "Retired" },
+          ],
+        }, */
+        /*  {
+          type: "dropdown",
+          visibleIf: "{employment_status}='employed'",
+          name: "income",
+          analytics: true,
+          title: "What is your monthly income?",
+          choices: [
+            { value: "0_500", text: "0-500" },
+            { value: "501_1000", text: "501-1000" },
+            { value: "1001_1500", text: "1001-1500" },
+            { value: "1501_2000", text: "1501-2000" },
+            { value: "2001_plus", text: "Over 2000" },
+          ],
+        }, */
+        /* {
+          type: "dropdown",
+          name: "parental_education",
+          analytics: true,
+          title: "What is the highest level of education of your parents?",
+          choices: [
+            { value: "no_degree", text: "No degree" },
+            { value: "high_school", text: "High School Diploma" },
+            { value: "bachelor", text: "Bachelor's Degree" },
+            { value: "master", text: "Master's Degree" },
+            { value: "doctorate", text: "Doctorate" },
+          ],
+        }, */
+        /* {
+          type: "matrix",
+          name: "personal_info",
+          analytics: true,
+          title: "Please answer the following questions",
+          columns: [
+            { value: 1, text: "Definitely not" },
+            { value: 2, text: "Not much" },
+            { value: 3, text: "Neutral" },
+            { value: 4, text: "Yes" },
+            { value: 5, text: "Yes a lot" },
+          ],
+          rows: [
+            { value: "generous", text: "I am generous" },
+            { value: "competitive", text: "I am competitive " },
+          ],
+        }, */
       ],
     },
   ],
