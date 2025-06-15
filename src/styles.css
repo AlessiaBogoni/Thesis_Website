@@ -62,3 +62,22 @@ font {
   background: unset !important;
   box-shadow: unset !important;
 }
+
+/* Optional: Style the main Swal modal content */
+.swal2-html-container {
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.6;
+  padding: 0 1rem;
+}
+
+/* Optional: Make the inline tracking info more stylish */
+.swal2-html-container p:nth-of-type(3) {
+  margin-top: 1rem;
+}
+
+.swal2-html-container p:last-of-type {
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: #494949;
+}

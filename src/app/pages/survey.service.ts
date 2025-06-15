@@ -9,19 +9,31 @@ export class SurveyService {
    * @param {string} obj - Oggetto da aggiungere all'URL.
    * @returns {string} URL costruito.
    */
-  static getUrl(obj: string) {
-    return `https://donationsexperiment-default-rtdb.europe-west1.firebasedatabase.app/${obj}.json`;
-  }
+static getUrl(obj: string) {
+  return `https://leetcodeexp-default-rtdb.firebaseio.com/${obj}.json`;
+}
+
 
   /**
    * Genera un codice macchina casuale.
    * @returns {string} Codice macchina generato.
    */
-  static generateMachineCode() {
-    const rand = Math.random();
-    const append = rand > 0.85 ? "1" : "0";
-    return append + Math.random().toString(36).substring(2, 15);
-  }
+static generateMachineCode(): string {
+  const groups = ["A", "B", "C", "D"];
+  const randomIndex = Math.floor(Math.random() * groups.length);
+  const assignedGroup = groups[randomIndex];
+
+  // Generate either '0' or '1' for the second character
+  const binaryDigit = Math.random() < 0.5 ? "0" : "1";
+
+  // Generate the rest of the alphanumeric string, excluding the first character
+  const restOfCode = Math.random().toString(36).substring(2, 14); // 13 characters
+
+  // Insert binaryDigit as the first character of the code
+  const machineCode = `${binaryDigit}${restOfCode}`;
+
+  return `${assignedGroup}${machineCode}`;
+}
 
   /**
    * Ottiene i dati compressi per la visualizzazione.
@@ -32,6 +44,8 @@ export class SurveyService {
     if (!baseData) {
       return null;
     }
+
+    // ???
     const columns = [
       "donation_motivation",
       "budget_distribution",
