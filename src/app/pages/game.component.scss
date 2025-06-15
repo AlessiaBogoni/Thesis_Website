@@ -32,7 +32,7 @@ body {
 }
 
 .example {
-  position: relative; 
+  position: relative;
   &:after {
     z-index: 9999;
     position: absolute;
@@ -385,4 +385,9 @@ ul.timeline > li:before {
   object-fit: cover;
   /* max-height: 50dvh; */
   height: 100%;
+}
+
+
+.w-33 {
+  width: 33%;
 }

@@ -1,749 +1,82 @@
 <ng-container *ngIf="consent === 'true'">
+  <survey
+    [model]="postSurvey"
+    (submitSurvey)="sendData($event, 'post'); state = status.LEADERBOARD"
+    *ngIf="state === status.POST"
+  ></survey>
+  <survey
+    [model]="preSurvey"
+    (submitSurvey)="sendData($event, 'pre'); state = status.WAITING; start()"
+    *ngIf="state === status.PRE"
+  ></survey>
 
-<div id="base"
-  *ngIf="![status.PRE, status.POST, status.LEADERBOARD].includes(state)"
->
-  <div id="view">
-    <canvas id="bg"></canvas>
-    <canvas id="game"></canvas>
-    <small
-      class="position-absolute bottom-0 w-100 text-center mb-5"
-      *ngIf="state !== status.PLAYING"
-    >
-      Click to play
-    </small>
-    <div
-      *ngIf="isMobile()"
-      class="rounded-pill position-absolute"
-      id="dragArea"
-    >
-      ⮄ Move your finger here ⮆
-    </div>
-    <div class="position-fixed top-0 text-center w-100 row left-50">
-      <small class="col-12 notranslate"
-        >Match
-        {{ currentMatch }} / {{ TOTAL_MATCHES }}</small
+
+  <ng-container *ngFor="let step of textToShow; let idx = index">
+    <div *ngIf="currentText === idx + 1" class="w-75 mx-auto w-md-50 mt-4">
+      <h5 class="text-center">
+        {{ step.text.title }}
+      </h5>
+      <p>
+        <br>
+        <span class="badge bg-warning text-center w-100 text-dark">
+          Read the text below carefully and evaluate it.<br>
+          When you are ready, please click "Next" to continue.
+        </span>
+      </p>
+      <pre class="text-break text-wrap p-3 border rounded">
+    {{ step.text.text }}
+
+    </pre
       >
-      <div class="col-6">
-        <img
-          src="https://cdn-icons-gif.flaticon.com/6455/6455041.gif"
-          width="20"
-          style="filter: hue-rotate(45deg) invert(1); mix-blend-mode: lighten"
-        />
-
-        <h6 id="counter" class="d-inline">{{ score }}</h6>
+      <div class="badge bg-dark text-uppercase" *ngIf="step.text.labeled">
+        {{ step.text.type }} {{ step.text.type === 'ai' ? 'Bot' : step.text.author }}
       </div>
-      <div class="col-6" style="color: #ffd84d">
-        <img
-          *ngFor="let l of life"
-          src="https://cdn-icons-gif.flaticon.com/14118/14118583.gif"
-          width="20"
-          style="filter: hue-rotate(45deg) invert(1); mix-blend-mode: lighten"
-        />
-        <small
-          *ngIf="life.length <= 2"
-          class="text-warning d-block"
-          style="font-size: xx-small"
-          >You are running out of lives!</small
-        >
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row justify-content-center m-0"
-*ngIf="state === status.LEADERBOARD"
->
-
-  <div
-    class="row justify-content-center align-items-center col-12 col-md-9 col-lg-6"
-  >
-    <div class="col-auto text-center">
-      <img
-        src="https://cdn-icons-gif.flaticon.com/17864/17864880.gif"
-        width="50"
-        class="m-auto"
-        style="filter: hue-rotate(45deg) invert(1); mix-blend-mode: lighten"
-      />
-      <h2>Leaderboard</h2>
       <hr />
-    </div>
-    <h5 class="col-12 row">
-      <b class="col-12 col-lg-4">Player</b>
-      <b class="col-12 col-lg-2">Score</b>
-      <b class="col-12 col-lg-2">Donation</b>
-      <b class="col-12 col-lg-4" *ngIf="machineCode[0] === '1'">Message</b>
-    </h5>
-    <div
-      class="col-12 leaderrow"
-      *ngFor="let row of leaderboard; let idx = index"
-    >
-      <div
-        class="row p-2 mb-0 border-bottom"
-        [class.border-warning]="row.me"
-        [class.alert]="row.me"
-      >
-        <div class="col-12 col-lg-4" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
-          #{{ idx + 1 }}&emsp;{{ row.donation1?.name || row?.name || "" }}
-        </div>
-        <div class="col-12 col-lg-2">
-          <img
-            src="https://cdn-icons-gif.flaticon.com/6455/6455041.gif"
-            width="20"
-            style="filter: hue-rotate(45deg) invert(1); mix-blend-mode: lighten"
-          />
-          <span>{{ row.totalScore }}</span>
-        </div>
-        <div class="col-12 col-lg-2">
-          <img
-            src="https://cdn-icons-gif.flaticon.com/14118/14118583.gif"
-            width="20"
-            style="filter: hue-rotate(45deg) invert(1); mix-blend-mode: lighten"
-          />
-          <span>{{ row.donation1?.amount }}</span>
-        </div>
-        <div class="col-12 col-lg-4">
-          <span>{{ row.donation1?.message }}</span>
+      <div class="d-block my-3">
+        <label class="form-label font-weight-bold text-center w-100">How human-like is this text?</label>
+        <input
+          type="range"
+          class="form-range"
+          min="0"
+          max="10"
+          step="1"
+          [(ngModel)]="step.humanSoundness"
+        />
+        <div class="d-flex justify-content-between">
+          <span class="w-33">Not human</span>
+          <span class="w-33 text-center">
+            {{step.humanSoundness}} / 10
+          </span>
+          <span class="w-33 text-end">Human</span>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-
-<survey
-  [model]="postSurvey"
-  (submitSurvey)="sendData($event, 'post'); state = status.LEADERBOARD"
-  *ngIf="state === status.POST"
-></survey>
-<survey
-  [model]="preSurvey"
-  (submitSurvey)="sendData($event, 'pre'); state = status.WAITING; start()"
-  *ngIf="state === status.PRE"
-></survey>
-
-<div
-  class="modal text-dark"
-  tabindex="-1"
-  role="dialog"
-  *ngIf="state === status.GAME_OVER"
->
-  <div class="modal-dialog" (mouseenter)="setTooltip()" role="document">
-    <div class="modal-content text-center">
-      <div class="modal-body">
-        <ng-container *ngIf="currentMatch >= TOTAL_MATCHES">
-          <h3>Game completed</h3>
-          <p>
-            <strong>Congratulations!</strong><br />
-            <!-- You have completed all {{ TOTAL_MATCHES }} matches. -->
-            Your final score is <strong>{{ totalScore }}</strong
-            >.<br />
-          </p>
-        </ng-container>
-        <ng-container *ngIf="currentMatch < TOTAL_MATCHES">
-          <img
-            src="https://cdn-icons-gif.flaticon.com/14118/14118602.gif"
-            width="80"
-            class="m-auto to-yellow"
-          />
-          <h3>Would you like to donate?</h3>
-          <!--           <p>
-            <strong>Ops!</strong> You lost all your lives. Your score is worth
-            new lives that you can use to continue playing or donate to other
-            players.
-          </p> -->
-          <h3>
-            <img
-              src="https://cdn-icons-gif.flaticon.com/6455/6455041.gif"
-              width="30"
-              class="to-yellow"
-              alt="Points Icon"
-            />
-            <span id="xp">{{ score }}</span>
-            <img
-              src="https://cdn-icons-gif.flaticon.com/7740/7740748.gif"
-              width="30"
-              class="to-yellow"
-            />
-            <img
-              src="https://cdn-icons-gif.flaticon.com/14118/14118583.gif"
-              width="30"
-              class="to-yellow"
-            />
-            <span id="xpLife">0</span>
-          </h3>
-          <hr />
-          <ng-container *ngIf="machineCode[0] === '1'">
-            <p></p>
-            <p class="alert alert-warning p-1 mt-2">
-              <b>
-                <!--  <h5>Be recognized as a benefactor</h5> -->
-                Receiver will know your name and message! These will also be
-                shared with everyone in the leaderboard.
-              </b>
-            </p>
-            <input
-              required
-              type="text"
-              class="form-control mb-2"
-              [(ngModel)]="donation.name"
-              placeholder="Your name *"
-            />
-            <textarea
-              required
-              class="form-control"
-              [(ngModel)]="donation.message"
-              placeholder="Your message *"
-            ></textarea>
-            <hr />
-          </ng-container>
-
-          <p>
-            <strong>You can donate up to <strong class="notranslate"> {{donation.lives - 1}} </strong>  <img
-            src="https://cdn-icons-gif.flaticon.com/14118/14118583.gif"
-            width="20"
-            class="to-yellow"
-          /> to other players </strong>
-            <!--Icons show the lives available for donation-->
-            <i class=" hover-overlay fa-solid fa-circle-info m-1" style="filter: invert(0.6);" data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            title="You have too keep at least a life for yourself in order to play the last match"></i>
-          </p>
-
-          <img
-            *ngFor="let l of donationArray; let idx = index"
-            [class.opacity-25]="idx >= donation.amount"
-            class="pop"
-            src="https://cdn-icons-gif.flaticon.com/14118/14118583.gif"
-            width="30"
-            (click)="
-              donation.amount == idx + 1
-                ? (donation.amount = 0)
-                : (donation.amount = min(idx + 1, donation.lives - 1))
-            "
-            class="to-yellow"
-          />
-
-          <div
-            class="numberstyle-qty justify-content-center w-auto m-1 d-flex justify-content-center"
-          >
-            <button
-              class="qty-btn qty-rem bg-warning rounded-2 m-1"
-              [disabled]="!donation.amount"
-              [class.disabled]="!donation.amount"
-              (click)="donation.amount = max(donation.amount - 1, 0)"
-            >
-              -
-            </button>
-            <input
-              class="numberstyle m-1"
-              type="number"
-              min="0"
-              step="1"
-              [(ngModel)]="donation.amount"
-              max="{{ donation.lives - 1 }}"
-              value="1"
-            />
-            <button
-              class="qty-btn qty-add bg-warning rounded-2 m-1"
-              [class.disabled]="donation.amount === donation.lives - 1"
-              (click)="
-                donation.amount = min(donation.amount + 1, donation.lives - 1)
-              "
-            >
-              +
-            </button>
-          </div>
-          <p>
-            <small>
-              I will donate
-              <strong class="notranslate m-1">{{ donation.amount }}</strong>
-              <img
-              src="https://cdn-icons-gif.flaticon.com/14118/14118583.gif"
-              width="20"
-              class="to-yellow"
-            />
-             to other<br />
-              I will keep
-              <strong class="notranslate m-1"
-                >{{ donation.lives - donation.amount }}</strong><img
-                src="https://cdn-icons-gif.flaticon.com/14118/14118583.gif"
-                width="20"
-                class="to-yellow"
-              />
-              for myself
-            </small>
-          </p>
-          <div class="alert alert-secondary">
-          <b>You are donating  <strong class="notranslate"> {{donation.amount}}</strong>
-            <img
-            src="https://cdn-icons-gif.flaticon.com/14118/14118583.gif"
-            width="20"
-            class="to-yellow"
-            style="filter: invert(0.11) hue-rotate(200deg);"
-          />
-          !</b>
-          <div
-            class="form-check d-flex m-auto justify-content-center"
-            style="gap: 1rem"
-          >
-            <input
-              class="form-check-input"
-              type="checkbox"
-              (change)="keep = !keep"
-              id="flexCheckChecked"
-            />
-            <label
-              class="form-check-label font-small ml-2"
-              for="flexCheckChecked"
-              *ngIf="!donation.amount"
-            >
-              &emsp;I confirm I'll keep all lives for myself *
-            </label>
-            <label
-              class="form-check-label font-small ml-2"
-              for="flexCheckChecked"
-              *ngIf="donation.amount"
-            >
-              &emsp;I confirm I'll donate <strong class="notranslate"> {{donation.amount}}</strong><img
-              src="https://cdn-icons-gif.flaticon.com/14118/14118583.gif"
-              width="20"
-              class="to-yellow"
-              style="filter: invert(0.11) hue-rotate(200deg);"
-            /> *
-            </label>
-          </div>
+      <div class="d-block my-3">
+        <label class="form-label font-weight-bold text-center w-100">How good is this text?</label>
+        <input
+          type="range"
+          class="form-range"
+          min="0"
+          max="10"
+          step="1"
+          [(ngModel)]="step.evaluation"
+        />
+        <div class="d-flex justify-content-between">
+          <span class="w-33 ">Bad</span>
+          <span class="w-33 text-center">
+            {{step.evaluation}} / 10
+          </span>
+          <span class="w-33 text-end">Good</span>
         </div>
-          <!-- <div
-            class="numberstyle-qty justify-content-center w-auto m-auto d-flex justify-content-center"
-          >
-            <div
-              class="qty-btn qty-rem"
-              [class.disabled]="donation.amount == 0"
-              (click)="donation.amount = max(donation.amount - 1, 0)"
-            >
-              -
-            </div>
-            <input
-              class="numberstyle"
-              type="number"
-              min="0"
-              step="1"
-              [(ngModel)]="donation.amount"
-              max="{{ donation.lives - 1 }}"
-              value="1"
-            />
-            <div
-              class="qty-btn qty-add"
-              [class.disabled]="donation.amount == donation.lives - 1"
-              (click)="
-                donation.amount = min(donation.amount + 1, donation.lives - 1)
-              "
-            >
-              +
-            </div>
-          </div> -->
-        </ng-container>
       </div>
-      <div class="modal-footer">
+      <div class="d-flex justify-content-end mt-3">
         <button
-          type="button"
-          *ngIf="currentMatch >= TOTAL_MATCHES"
-          class="btn"
-          (click)="next()"
+          class="btn btn-warning text-dark"
+          (click)="nextText()"
+          [disabled]="!step.humanSoundness || !step.evaluation"
         >
-          Go to final survey
-        </button>
-        <button
-          type="button"
-          *ngIf="currentMatch < TOTAL_MATCHES"
-          class="btn"
-          (click)="next()"
-          [disabled]="
-            (donation.amount === 0 && !keep) ||
-            (!(donation.name && donation.message) && machineCode[0] === '1')
-          "
-        >
-          Next match
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- <div
-  class="modal text-dark"
-  tabindex="-1"
-  role="dialog"
-  *ngIf="state === status.WAITING"
->
-  <div class="modal-dialog" role="document">
-    <div class="modal-content text-center">
-      <div class="modal-body mb-2">
-        <p>
-          You are about to start the first of {{ TOTAL_MATCHES }} matches.<br />
-        </p>
-        <h1>
-          <img
-            src="https://cdn-icons-gif.flaticon.com/14118/14118583.gif"
-            width="50"
-            class="to-yellow"
-          />
-          <span>{{ TOTAL_LIVES }} lives</span>
-        </h1>
-        <p>Lives are useful to continue playing and reach higher scores.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn" (click)="state = status.PAUSED">
           Next
         </button>
       </div>
     </div>
-  </div>
-</div> -->
-
-<div
-  class="modal text-dark"
-  tabindex="-1"
-  role="dialog"
-  *ngIf="state === status.RECEIVING_DONATION"
->
-  <div class="modal-dialog" role="document">
-    <div class="modal-content text-center">
-      <div class="modal-body">
-        <p>
-          <!-- You are about to start the first of {{TOTAL_MATCHES}} matches.<br /> -->
-          <b>
-            A benefactor has donated
-            <span class="text-primary">{{ incomingDonation.amount }}</span>
-            lives to you.
-          </b>
-        </p>
-        <h1>
-          <img
-            src="https://cdn-icons-gif.flaticon.com/14118/14118583.gif"
-            width="50"
-            class="to-yellow"
-          />
-          <span
-            ><b class="text-primary"
-              >+{{ incomingDonation.amount }} lives</b
-            ></span
-          >
-        </h1>
-        <p class="text-muted m-1">donated by</p>
-        <h3 class="notranslate">
-          <b>{{ incomingDonation.name || "Anonymous benefactor" }}</b
-          >&emsp;
-
-        </h3>
-        <p *ngIf="incomingDonation.message" class="text-muted m-1">
-          Who also left you a message
-        </p>
-        <quote
-          class="bg-light rounded-2 p-3 border m-2 d-inline-block notranslate"
-          *ngIf="incomingDonation.message"
-        >
-          {{ incomingDonation.message }}
-        </quote>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn" (click)="incrementAfterDonation()">
-          Continue playing
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div
-  class="modal text-dark"
-  tabindex="-1"
-  role="dialog"
-  *ngIf="state === status.TUTORIAL"
->
-  <div class="modal-dialog modal-lg" (mouseenter)="setTooltip()" role="document">
-    <div class="modal-content">
-      <div class="row align-items-center">
-        <h3 class="col-12 text-center p-2"><b>Instructions: read carefully! </b></h3>
-        <div class="col-12 col-md-6">
-          <hr />
-          <p>
-            <b>Pong game</b>: Control the <b>yellow paddle</b> to keep the ball
-            in play.
-          </p>
-
-          <!--  <p><b>Controls:</b></p> -->
-          <!-- <ul>
-          <p *ngIf="!isMobile()">
-            Use <kbd>↑</kbd> <kbd>↓</kbd>, <kbd>W</kbd> <kbd>S</kbd>, or your
-            mouse.
-          </p>
-          <p *ngIf="isMobile()">Drag your finger on the touchscreen.</p>
-          </ul>
-          <h5><b>Icons</b></h5>-->
-          <p>
-            <b>Lives </b
-            ><img
-              src="https://cdn-icons-gif.flaticon.com/14118/14118583.gif"
-              width="30"
-              class="to-yellow"
-            />: If you miss the ball, you lose a life <!--Lose all lives, the
-            match ends.-->
-            <i class=" hover-overlay fa-solid fa-circle-info m-1" style="filter: invert(0.6);" data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            title="Once you lose all your lives, the match ends" ></i>
-
-          </p>
-
-          <p>
-            <b>Points </b>
-            <img
-              src="https://cdn-icons-gif.flaticon.com/6455/6455041.gif"
-              width="30"
-              class="to-yellow"
-              alt="Points Icon"
-            />: Earn points as you play
-            <i class=" hover-overlay fa-solid fa-circle-info m-1" style="filter: invert(0.6);" data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            title="The sum of points earned in first and second match will determine your ranking in the leaderboard"></i>
-
-          </p>
-          <hr />
-          <!--<h5><b>Structure</b></h5>-->
-          <div class="row position-relative">
-            <hr
-              class="position-absolute w-75 m-auto"
-              style="z-index: 0; top: 50%; left: 12.5%"
-            />
-            <div
-              class="col-3 text-center"
-              *ngFor="let idx of [1, 2, 3, 4]"
-              style="z-index: 9999"
-            >
-              <div
-                class="badge rounded-circle cursor-pointer"
-                [class.bg-warning]="tutorialStep >= idx"
-                [class.bg-secondary]="tutorialStep < idx"
-                (click)="tutorialStep = idx"
-              >
-                {{ idx }}
-              </div>
-            </div>
-          </div>
-          <div *ngIf="tutorialStep === 1" class="m-2">
-            <b>Match 1:</b> Play until your lives end and convert gained points into lives <!--(500
-            <img
-              src="https://cdn-icons-gif.flaticon.com/6455/6455041.gif"
-              width="20"
-              class="to-yellow"
-              alt="Points Icon"
-            />
-            = 1
-            <img
-              src="https://cdn-icons-gif.flaticon.com/14118/14118583.gif"
-              width="20"
-              class="to-yellow"
-            />).-->
-          </div>
-          <div *ngIf="tutorialStep === 2" class="m-2">
-            <b>Make a donation: </b>You can donate lives to others, or keep them
-            for your second match.
-
-            <b>Receive a donation: </b>You may receive donations from other
-            players.
-          </div>
-          <div *ngIf="tutorialStep === 3" class="m-2">
-            <b>Match 2:</b> Play with remaining lives.
-          </div>
-          <div *ngIf="tutorialStep === 4" class="m-2">
-            <b>Leaderboard:</b> Here everyone can see how high you ranked and how many lives you donated.
-
-            <hr />
-            <button type="button" class="btn m-1" (click)="state = status.WAITING">
-              I understand
-            </button>
-          </div>
-
-          <div *ngIf="tutorialStep < 4">
-            <hr />
-            <button
-              type="button"
-              class="btn m-1"
-              (click)="tutorialStep = tutorialStep + 1"
-            >
-              Next step
-            </button>
-          </div>
-        </div>
-
-        <div class="col-12 col-md-6 example">
-
-          <img
-
-          src="assets/tutorial_video.gif"
-          alt="Game Preview"
-          class="w-100 rounded-3 preview"
-        />
-
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<div
-  class="modal text-dark"
-  tabindex="-1"
-  role="dialog"
-  *ngIf="state === status.UNDERSTANDING"
->
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="row align-items-center">
-        <div class="col-12">
-          <div>
-            <div>
-              <div class="mb-4">
-                <h4>Are you ready to play?</h4>
-                <small
-                  >Answer all questions correctly to enable the
-                  <b>Play</b> button and start the game.</small
-                >
-              </div>
-              <form>
-                <div class="mb-4">
-                  <p>1. What happens if you miss the ball during the game?</p>
-                  <label>
-                    <input
-                      type="radio"
-                      name="question1"
-                      [value]="'A'"
-                      [(ngModel)]="answers.q1"
-                    />
-                    A. You lose a life. </label
-                  ><br />
-                  <label>
-                    <input
-                      type="radio"
-                      name="question1"
-                      [value]="'B'"
-                      [(ngModel)]="answers.q1"
-                    />
-                    B. You lose the game immediately. </label
-                  ><br />
-                  <label>
-                    <input
-                      type="radio"
-                      name="question1"
-                      [value]="'C'"
-                      [(ngModel)]="answers.q1"
-                    />
-                    C. Nothing happens. </label
-                  ><br />
-                </div>
-                <div class="mb-4">
-                  <p>2. How can you earn lives for the next match?</p>
-                  <label>
-                    <input
-                      type="radio"
-                      name="question2"
-                      [value]="'A'"
-                      [(ngModel)]="answers.q2"
-                    />
-                    A. By donating lives. </label
-                  ><br />
-                  <label>
-                    <input
-                      type="radio"
-                      name="question2"
-                      [value]="'B'"
-                      [(ngModel)]="answers.q2"
-                    />
-                    B. By scoring points. </label
-                  ><br />
-                  <label>
-                    <input
-                      type="radio"
-                      name="question2"
-                      [value]="'C'"
-                      [(ngModel)]="answers.q2"
-                    />
-                    C. By asking another player.
-                  </label>
-                </div>
-                <div class="mb-4">
-                  <p>
-                    3. What are you allowed to do at the end of the
-                    <b>second match</b>?
-                  </p>
-                  <label>
-                    <input
-                      type="radio"
-                      name="question3"
-                      [value]="'A'"
-                      [(ngModel)]="answers.q3"
-                    />
-                    A. Donate lives to other players. </label
-                  ><br />
-                  <label>
-                    <input
-                      type="radio"
-                      name="question3"
-                      [value]="'B'"
-                      [(ngModel)]="answers.q3"
-                    />
-                    B. Play again. </label
-                  ><br />
-                  <label>
-                    <input
-                      type="radio"
-                      name="question3"
-                      [value]="'C'"
-                      [(ngModel)]="answers.q3"
-                    />
-                    C. See the scoreboard.
-                  </label>
-                </div>
-              </form>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn"
-                  (click)="state = status.WAITING"
-                  [disabled]="!areAllAnswersCorrect()"
-                >
-                  Play
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<audio
-  src="https://cdn.pixabay.com/audio/2024/08/30/audio_e72df7660c.mp3"
-  id="click"
-></audio>
-<audio
-  src="https://cdn.pixabay.com/audio/2023/04/04/audio_7f8f3577b0.mp3"
-  id="win"
-></audio>
-<audio
-  src="https://cdn.pixabay.com/audio/2024/12/05/audio_03136d2004.mp3"
-  id="start"
-></audio>
-<audio
-  src="https://cdn.pixabay.com/audio/2023/04/06/audio_e19f629fa3.mp3"
-  id="end"
-></audio>
-<audio
-  src="https://cdn.pixabay.com/audio/2024/08/30/audio_5f54684381.mp3"
-  id="hit"
-></audio>
-<audio
-  src="https://cdn.pixabay.com/audio/2024/08/30/audio_60cd586a99.mp3"
-  id="coin"
-></audio>
+  </ng-container>
 </ng-container>
