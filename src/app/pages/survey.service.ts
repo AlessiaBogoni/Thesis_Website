@@ -18,14 +18,22 @@ static getUrl(obj: string) {
    * Genera un codice macchina casuale.
    * @returns {string} Codice macchina generato.
    */
-  static generateMachineCode(): string {
-    const groups = ["A", "B", "C", "D"];
-    const randomIndex = Math.floor(Math.random() * groups.length);
-    const assignedGroup = groups[randomIndex];
+static generateMachineCode(): string {
+  const groups = ["A", "B", "C", "D"];
+  const randomIndex = Math.floor(Math.random() * groups.length);
+  const assignedGroup = groups[randomIndex];
 
-    const machineCode = Math.random().toString(36).substring(2, 15); // alphanumeric
-    return `${assignedGroup}-${machineCode}`;
-  }
+  // Generate either '0' or '1' for the second character
+  const binaryDigit = Math.random() < 0.5 ? "0" : "1";
+
+  // Generate the rest of the alphanumeric string, excluding the first character
+  const restOfCode = Math.random().toString(36).substring(2, 14); // 13 characters
+
+  // Insert binaryDigit as the first character of the code
+  const machineCode = `${binaryDigit}${restOfCode}`;
+
+  return `${assignedGroup}${machineCode}`;
+}
 
   /**
    * Ottiene i dati compressi per la visualizzazione.
@@ -36,6 +44,8 @@ static getUrl(obj: string) {
     if (!baseData) {
       return null;
     }
+
+    // ???
     const columns = [
       "donation_motivation",
       "budget_distribution",
