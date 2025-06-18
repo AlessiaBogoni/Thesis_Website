@@ -7,7 +7,7 @@ export const PostSurvey = {
       elements: [
         {
           analytics: true,
-          isRequired: true,
+          // isRequired: true,
           type: "matrix",
           name: "post_survey",
           title: "Please answer the following questions",
@@ -57,15 +57,22 @@ export const PostSurvey = {
           type: "text",
           name: "calories",
           title: "How many calories does an average man need per day?",
-          isRequired: true,
+          // isRequired: true,
           analytics: true,
         },
         {
           type: "text",
           name: "other",
           title: "Another check question???????",
-          isRequired: true,
+          // isRequired: true,
           analytics: true,
+        },
+        {
+          type: "rating",
+          rateType: "smileys",
+          name: "overall_evaluation",
+          analytics: true,
+          title: "How would you rate your overall experience in this study?",
         },
       ],
     },

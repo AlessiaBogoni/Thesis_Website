@@ -130,27 +130,27 @@ export const json = {
       type: "radiogroup",
       name: "useproduct",
       title: "Do you currently use our components?",
-      isRequired: true,
+      // isRequired: true,
       choices: ["Yes", "No"],
     }, {
       type: "checkbox",
       name: "usecomponents",
       visibleIf: '{useproduct} = "Yes"',
       title: "Which of our components do you use?",
-      isRequired: true,
+      // isRequired: true,
       choices: ["Survey Library (Runner)", "Survey Creator", "Export to PDF", "SurveyJS Analytics"]
     }, {
       type: "checkbox",
       name: "supported_devices",
       title: "Which device types do you need to support?",
-      isRequired: true,
+      // isRequired: true,
       choices: [ "Desktop", "Tablet", "Mobile" ],
     }, {
       type: "radiogroup",
       name: "native_mobile_support",
       visibleIf: '{supported_devices} contains "Mobile"',
       title: "How important for you is native mobile support?",
-      isRequired: true,
+      // isRequired: true,
       choices: [{
         value: 1,
         text: "I am happy with adaptive HTML rendering"
@@ -186,7 +186,7 @@ export const json = {
         type: "radiogroup",
         name: "product_alternative",
         title: "What would you use as an alternative if our product didn't exist?",
-        isRequired: true,
+        // isRequired: true,
         hasOther: true,
         choices: ["Popular cloud-based platforms", "Self-developed solution"],
         otherText: "Other"
@@ -207,7 +207,7 @@ export const json = {
         type: "rating",
         name: "nps_score",
         title: "How likely are you to recommend our product to a friend or colleague?",
-        isRequired: true,
+        // isRequired: true,
         rateMin: 0,
         rateMax: 10,
         minRateDescription: "Most unlikely",
