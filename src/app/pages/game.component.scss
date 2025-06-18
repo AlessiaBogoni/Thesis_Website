@@ -23,8 +23,7 @@ body {
 }
 
 .form-control:required:invalid {
-  border-bottom: 1px dashed #f00
-
+  border-bottom: 1px dashed #f00;
 }
 
 .font-small {
@@ -387,7 +386,116 @@ ul.timeline > li:before {
   height: 100%;
 }
 
-
 .w-33 {
   width: 33%;
+}
+
+/* Default/active thumb styling */
+input[type="range"].form-range::-webkit-slider-thumb {
+  background-color: rgb(255, 193, 7);
+  z-index: 5 !important;
+}
+input[type="range"].form-range::-moz-range-thumb {
+  background-color: rgb(255, 193, 7);
+  z-index: 5 !important;
+}
+
+/* 'Unconfirmed' (inactive) thumb styling */
+input[type="range"].unconfirmed::-webkit-slider-thumb {
+  background-color: #ccc;
+  z-index: 5 !important;
+}
+input[type="range"].unconfirmed::-moz-range-thumb {
+  background-color: #ccc;
+  z-index: 5 !important;
+}
+
+/* 
+.slider-wrapper {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 5;
+} */
+
+/* .ticks {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  width: 100%;
+  top: 6px; 
+  pointer-events: none;
+  z-index: 0 !important;
+} */
+/* 
+.ticks span {
+  width: 12px;
+  height: 12px;
+  background-color: #000;
+  border-radius: 6px;
+  border-color: #fff;
+  border-style: solid;
+  border-width: 1px;
+} */
+.slider-wrapper {
+  position: relative;
+  width: 100%;
+  
+  margin-bottom: 1.5rem;
+}
+
+.custom-slider {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  margin: 0;
+  width: 100%;
+}
+
+.custom-slider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  background-color: #0d6efd;
+  border-radius: 50%;
+  cursor: pointer;
+  
+  position: relative;
+  z-index: 3;
+}
+
+.custom-slider::-moz-range-thumb {
+  height: 16px;
+  width: 100%;
+  background-color: #0d6efd;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 3;
+}
+
+.slider-ticks {
+  position: absolute;
+  top: 10%; /* aligns with slider track */
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.slider-ticks span {
+  width: 4px;
+  height: 20px;
+  background-color: #ccc;
+  border-color: #ccc;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 10px;
 }

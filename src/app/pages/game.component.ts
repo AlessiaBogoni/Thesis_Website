@@ -77,7 +77,21 @@ export class GameComponent implements OnInit, AfterViewInit {
    * @type {any[]}
    */
   textToShow: TextResult[] = [];
+  isButtonDisabled = true;
 
+
+interacted = {
+  evaluation: false,
+  humanSoundness: false
+};
+
+markInteracted(key: 'evaluation' | 'humanSoundness') {
+  this.interacted[key] = true;
+}
+
+  allInteracted(): boolean {
+    return Object.values(this.interacted).every(val => val === true);
+  }
   get state() {
     return this.internalState;
   }
@@ -294,7 +308,9 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   nextText() {
-    const result = {...this.textToShow[this.currentText - 1]};
+    this.isButtonDisabled = true; 
+    console.log("click + inizio timeout ", this.isButtonDisabled)
+    const result = { ...this.textToShow[this.currentText - 1] };
     delete result.text.text;
     delete result.text.author;
     delete result.text.title;
@@ -312,6 +328,36 @@ export class GameComponent implements OnInit, AfterViewInit {
           this.state = State.POST;
         }
       });
+  }
+
+  markdownToHtml(markdown) {
+    return (
+      markdown
+        // Headers
+        .replace(/^### (.*$)/gim, "<h3>$1</h3>")
+        .replace(/^## (.*$)/gim, "<h2>$1</h2>")
+        .replace(/^# (.*$)/gim, "<h1>$1</h1>")
+        .replace(/---/gm, "<hr>")
+
+        // Bold
+        .replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>")
+
+        // Italic
+        .replace(/\*(.*?)\*/gim, "<em>$1</em>")
+
+        // Inline code
+        .replace(/`(.*?)`/gim, "<code>$1</code>")
+
+        // Line breaks to paragraphs
+        .replace(/\n{2,}/gim, "</p><p>")
+
+        // Single line breaks
+        .replace(/\n/gim, "<br>")
+
+        // Wrap the whole content in <p> (optional)
+        .replace(/^/, "<p>")
+        .replace(/$/, "</p>")
+    );
   }
 }
 

@@ -10,69 +10,76 @@
     *ngIf="state === status.PRE"
   ></survey>
 
-
   <ng-container *ngFor="let step of textToShow; let idx = index">
     <div *ngIf="currentText === idx + 1" class="w-75 mx-auto w-md-50 mt-4">
       <h5 class="text-center">
         {{ step.text.title }}
       </h5>
       <p>
-        <br>
+        <br />
         <span class="badge bg-warning text-center w-100 text-dark">
-          Read the text below carefully and evaluate it.<br>
+          Read the text below carefully and evaluate it.<br />
           When you are ready, please click "Next" to continue.
         </span>
       </p>
-      <pre class="text-break text-wrap p-3 border rounded">
-    {{ step.text.text }}
-
-    </pre
-      >
+      <pre
+        class="text-break text-wrap p-3 border rounded"
+        [innerHTML]="markdownToHtml(step.text.text)"
+      ></pre>
       <div class="badge bg-dark text-uppercase" *ngIf="step.text.labeled">
-        {{ step.text.type }} {{ step.text.type === 'ai' ? 'Bot' : step.text.author }}
+        {{ step.text.type }}
+        {{ step.text.type === "ai" ? "Bot" : step.text.author }}
       </div>
       <hr />
       <div class="d-block my-3">
-        <label class="form-label font-weight-bold text-center w-100">How human-like is this text?</label>
-        <input
-          type="range"
-          class="form-range"
-          min="0"
-          max="10"
-          step="1"
-          [(ngModel)]="step.humanSoundness"
-        />
+        <label class="form-label font-weight-bold text-center w-100"
+          >Who do you think is the author of this text?</label
+        >
+          <input
+            type="range"
+            class="form-range custom-slider"
+            min="0"
+            max="10"
+            step="1"
+            [(ngModel)]="step.humanSoundness"
+            [ngClass]="{ unconfirmed: !interacted.humanSoundness }"
+            (change)="markInteracted('humanSoundness')"
+            (mousedown)="markInteracted('humanSoundness')"
+            (touchstart)="markInteracted('humanSoundness')"
+          />
         <div class="d-flex justify-content-between">
-          <span class="w-33">Not human</span>
-          <span class="w-33 text-center">
-            {{step.humanSoundness}} / 10
-          </span>
+          <span class="w-33">AI</span>
+          <span class="w-33 text-center" *ngIf="interacted.humanSoundness"> {{ step.humanSoundness }} / 10 </span>
           <span class="w-33 text-end">Human</span>
         </div>
       </div>
       <div class="d-block my-3">
-        <label class="form-label font-weight-bold text-center w-100">How good is this text?</label>
+        <label class="form-label font-weight-bold text-center w-100"
+          >How would you rate this text?</label
+        >
         <input
           type="range"
-          class="form-range"
+          class="form-range with-ticks"
           min="0"
           max="10"
           step="1"
           [(ngModel)]="step.evaluation"
+          [ngClass]="{ unconfirmed: !interacted.evaluation }"
+          (change)="markInteracted('evaluation')"
+          (mousedown)="markInteracted('evaluation')"
+          (touchstart)="markInteracted('evaluation')"
         />
         <div class="d-flex justify-content-between">
-          <span class="w-33 ">Bad</span>
-          <span class="w-33 text-center">
-            {{step.evaluation}} / 10
-          </span>
-          <span class="w-33 text-end">Good</span>
+          <span class="w-33">Very bad</span>
+          <span class="w-33 text-center" *ngIf="interacted.evaluation"> {{ step.evaluation }} / 10 </span>
+          <span class="w-33 text-end">Very good</span>
         </div>
       </div>
       <div class="d-flex justify-content-end mt-3">
         <button
           class="btn btn-warning text-dark"
           (click)="nextText()"
-          [disabled]="!step.humanSoundness || !step.evaluation"
+          [disabled]="!allInteracted()"
         >
           Next
         </button>
