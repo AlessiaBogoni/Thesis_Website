@@ -47,6 +47,10 @@ export const PostSurvey = {
               value: "reality_behaviour",
               text: "In the real life I would choose the same way I did here",
             },
+            {
+              value: "effort",
+              text: "I put much effort in reading and understanding the texts",
+            },
             /*  {
               value: "reality_scenario",
               text: "I think the proposed scenario is credible",
@@ -60,6 +64,45 @@ export const PostSurvey = {
           // isRequired: true,
           analytics: true,
         },
+        {
+          type: "radiogroup",
+          name: "qwerty_origin",
+          title: "Why is the QWERTY keyboard called so?",
+          choicesOrder: "random",
+          // isRequired: true,
+          analytics: true,
+          choices: [
+            "Because the first six letters on the top letter row spell 'QWERTY'.",
+            "It is named after the inventor, Quentin Werty.",
+            "I'm not sure.",
+            "QWERTY is an acronym for 'Quick Efficient Writing Equipment Ready To Yield'.",
+            "It was randomly chosen by typewriter manufacturers.",
+          ],
+          correctAnswer:
+            "Because the first six letters on the top letter row spell 'QWERTY'.",
+        },
+        {
+          type: "checkbox",
+          name: "rental_agreements_knowledge",
+          title:
+            "Which of the following statements about rental agreements are generally true? (Select all that apply.)",
+          choicesOrder: "random",
+          // isRequired: true,
+          analytics: true,
+          choices: [
+            "Tenants often need to provide at least 30 days’ notice before moving out.",
+            "Landlords can increase rent without any advance notice.",
+            "Finding new tenants usually takes time, often more than two weeks.",
+            "Tenants can break a lease at any time without penalty.",
+            "Landlords are responsible for maintaining the property in livable condition.",
+          ],
+          correctAnswer: [
+            "Tenants often need to provide at least 30 days’ notice before moving out.",
+            "Finding new tenants usually takes time, often more than two weeks.",
+            "Landlords are responsible for maintaining the property in livable condition.",
+          ],
+        },
+
         {
           type: "text",
           name: "other",

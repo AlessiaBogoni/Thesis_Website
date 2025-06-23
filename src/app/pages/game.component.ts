@@ -12,7 +12,12 @@ import { PostSurvey } from "../data/post.survey";
 import { Model, SurveyModel } from "survey-core";
 import { PreSurvey } from "../data/pre.survey";
 import { Router } from "@angular/router";
-import { textPerGroup, Text } from "../data/texts";
+import {
+  textPerGroup,
+  Text,
+  LastText,
+  textPerSecondGroup,
+} from "../data/texts";
 declare var $, bootstrap: any;
 declare var SurveyTheme: any;
 declare var Swal: any;
@@ -30,7 +35,7 @@ declare var Swal: any;
   styleUrls: ["./game.component.scss"],
 })
 export class GameComponent implements OnInit, AfterViewInit {
-  internalState = +localStorage.getItem("state") || State.PRE;
+  internalState = +localStorage.getItem("0state") || State.PRE;
   /**
    * Stato del gioco.
    * @type {typeof State}
@@ -40,7 +45,7 @@ export class GameComponent implements OnInit, AfterViewInit {
    * Codice macchina.
    * @type {string | null}
    */
-  machineCode = localStorage.getItem("machineCode");
+  machineCode = localStorage.getItem("0machineCode");
   /**
    * Partita corrente.
    * @type {number}
@@ -57,7 +62,7 @@ export class GameComponent implements OnInit, AfterViewInit {
    */
   preSurvey: SurveyModel;
 
-  consent = localStorage.getItem("consent");
+  consent = localStorage.getItem("0consent");
 
   referral: string | null = null;
 
@@ -71,26 +76,27 @@ export class GameComponent implements OnInit, AfterViewInit {
    * @type {string}
    */
   secondGroup: string;
+  numSecondGroup: number;
 
   /**
    * Testo da mostrare al giocatore.
    * @type {any[]}
    */
   textToShow: TextResult[] = [];
+  lastTextToShow: LastTextResult[] = [];
   isButtonDisabled = true;
 
+  interacted = {
+    evaluation: false,
+    humanSoundness: false,
+  };
 
-interacted = {
-  evaluation: false,
-  humanSoundness: false
-};
-
-markInteracted(key: 'evaluation' | 'humanSoundness') {
-  this.interacted[key] = true;
-}
+  markInteracted(key: "evaluation" | "humanSoundness") {
+    this.interacted[key] = true;
+  }
 
   allInteracted(): boolean {
-    return Object.values(this.interacted).every(val => val === true);
+    return Object.values(this.interacted).every((val) => val === true);
   }
   get state() {
     return this.internalState;
@@ -114,7 +120,7 @@ markInteracted(key: 'evaluation' | 'humanSoundness') {
       // Reset the current text to idx
       this.currentText = v - State.TEXT1 + 1; // TEXT1 is 2, so we need to add 1
     }
-    localStorage.setItem("state", v.toString());
+    localStorage.setItem("0state", v.toString());
   }
 
   constructor(
@@ -154,7 +160,7 @@ markInteracted(key: 'evaluation' | 'humanSoundness') {
       });
 
       if (isConfirmed) {
-        localStorage.setItem("consent", "true");
+        localStorage.setItem("0consent", "true");
         return "true";
       }
 
@@ -172,7 +178,7 @@ markInteracted(key: 'evaluation' | 'humanSoundness') {
         });
 
         if (confirmExit) {
-          localStorage.setItem("consent", "false");
+          localStorage.setItem("0consent", "false");
           return "false";
         } else {
           return await askForConsent(); // Loop again
@@ -195,7 +201,7 @@ markInteracted(key: 'evaluation' | 'humanSoundness') {
 
     if (!this.machineCode || location.href.includes("force")) {
       this.machineCode = SurveyService.generateMachineCode();
-      localStorage.setItem("machineCode", this.machineCode);
+      localStorage.setItem("0machineCode", this.machineCode);
       this.state = State.PRE;
     }
     this.group = this.machineCode[0]; // Get the group from the first character
@@ -210,12 +216,42 @@ markInteracted(key: 'evaluation' | 'humanSoundness') {
       textResult.evaluation = 5;
       return textResult;
     });
+
+    this.numSecondGroup = +this.secondGroup;
+    console.log(this.numSecondGroup);
+    console.log(textPerSecondGroup);
+
+    const group = textPerSecondGroup?.[this.numSecondGroup];
+    if (Array.isArray(group)) {
+      const lastTextToShow = group.map(
+        (e) => {
+          const lastTextResult = new LastTextResult();
+          lastTextResult.lastText = e;
+          lastTextResult.humanSoundness = 5;
+          lastTextResult.evaluation = 5;
+          return lastTextResult;
+        }
+      );
+
+      this.lastTextToShow = lastTextToShow;
+    } else {
+      console.warn(
+        `Invalid group key '${this.numSecondGroup}' or group is not an array`,
+        group
+      );
+    }
     // shuffle the textToShow array with seed this.machineCode
     this.textToShow = textToShow.sort((a, b) =>
       this.machineCode[+a.text.id + 3] > this.machineCode[+b.text.id + 3]
         ? 1
         : -1
     );
+
+    if (this.secondGroup === "0") {
+      this.lastTextToShow[0] = this.lastTextToShow[0];
+    } else {
+      this.lastTextToShow[0] = this.lastTextToShow[1];
+    }
 
     const url = this.router.url;
     const fragment = url.split("?")[1]; // Get everything after `?`
@@ -308,8 +344,15 @@ markInteracted(key: 'evaluation' | 'humanSoundness') {
   }
 
   nextText() {
-    this.isButtonDisabled = true; 
-    console.log("click + inizio timeout ", this.isButtonDisabled)
+    setTimeout(function () {
+      window.focus();
+      document.body.scrollTop = 0;
+    }, 200);
+    this.isButtonDisabled = true;
+    this.interacted = {
+      evaluation: false,
+      humanSoundness: false,
+    };
     const result = { ...this.textToShow[this.currentText - 1] };
     delete result.text.text;
     delete result.text.author;
@@ -325,15 +368,42 @@ markInteracted(key: 'evaluation' | 'humanSoundness') {
           this.currentText++;
           this.state = State["TEXT" + this.currentText];
         } else {
-          this.state = State.POST;
+          console.log("passo al 5")
+          this.state = State.TEXT5;
+          console.log(this.state)
         }
       });
   }
 
+  toPostSurvey() {
+    const result = { ...this.lastTextToShow[this.currentText - 5] };
+    delete result.lastText.text;
+    delete result.lastText.author;
+    delete result.lastText.title;
+    this.http
+      .put(
+        SurveyService.getUrl(this.machineCode + "/results/" + this.currentText),
+        this.lastTextToShow[this.currentText - 5]
+      )
+      .subscribe(() => {
+        console.log(
+          "Text result sent:",
+          this.lastTextToShow[this.currentText - 5]
+        );
+        this.state = State.POST;
+      });
+  }
+
   markdownToHtml(markdown) {
+    if (!markdown) {
+      return '';
+    }
     return (
       markdown
         // Headers
+        .replace(/^###### (.*$)/gim, "<h6>$1</h6>")
+        .replace(/^##### (.*$)/gim, "<h5>$1</h5>")
+        .replace(/^#### (.*$)/gim, "<h4>$1</h4>")
         .replace(/^### (.*$)/gim, "<h3>$1</h3>")
         .replace(/^## (.*$)/gim, "<h2>$1</h2>")
         .replace(/^# (.*$)/gim, "<h1>$1</h1>")
@@ -385,5 +455,11 @@ class TextResult {
 
   humanSoundness: number;
 
+  evaluation: number;
+}
+
+class LastTextResult {
+  lastText: LastText;
+  humanSoundness: number;
   evaluation: number;
 }
