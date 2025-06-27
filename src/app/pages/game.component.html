@@ -141,126 +141,202 @@
   </ng-container>
   <ng-container *ngIf="[status.TEXT5].includes(state)">
     <ng-container *ngFor="let step of lastTextToShow; let idx = index">
-    <div class="w-75 mx-auto w-md-50 mt-4">
-      <p>
-        <br />
-        <span
-          class="badge bg-warning text-center w-100 p-3 fs-6 lh-base text-dark text-break text-wrap"
-        >
-          Read the text below carefully and answer the questions.<br />
-          When you are done, please click "Next" to continue.
-        </span>
-      </p>
+      <div class="w-75 mx-auto w-md-50 mt-4">
+        <p>
+          <br />
+          <span
+            class="badge bg-warning text-center w-100 p-3 fs-6 lh-base text-dark text-break text-wrap"
+          >
+            Read the text below carefully and answer the questions.<br />
+            When you are done, please click "Next" to continue.
+          </span>
+        </p>
 
-      <h5 class="text-left text-break text-wrap p-3 border rounded">
-        {{ step.lastText.title }}
-      </h5>
+        <h5 class="text-left text-break text-wrap p-3 border rounded">
+          {{ step.lastText.title }}
+        </h5>
 
-      <div class="border rounded">
-        <div
-          class="badge text-uppercase p-3"
-          style="display: flex; align-items: center; gap: 10px"
-        >
-          <img
-            [src]="
-              step.lastText.labeled
-                ? step.lastText.type === 'ai'
-                  ? 'assets/profiles/Bot.jpg'
-                  : 'assets/profiles/' + step.lastText.author + '.jpg'
-                : 'assets/profiles/QuestionMark.jpg'
-            "
-            [attr.alt]="
-              step.lastText.labeled
-                ? step.lastText.type === 'ai'
-                  ? 'Bot profile image'
-                  : step.lastText.author + '\'s profile image'
-                : 'Unknown profile image'
-            "
-            style="
-              width: 50px;
-              height: 50px;
-              border-radius: 50%;
-              object-fit: cover;
-            "
+        <div class="border rounded">
+          <div
+            class="badge text-uppercase p-3"
+            style="display: flex; align-items: center; gap: 10px"
+          >
+            <img
+              [src]="
+                step.lastText.labeled
+                  ? step.lastText.type === 'ai'
+                    ? 'assets/profiles/Bot.jpg'
+                    : 'assets/profiles/' + step.lastText.author + '.jpg'
+                  : 'assets/profiles/QuestionMark.jpg'
+              "
+              [attr.alt]="
+                step.lastText.labeled
+                  ? step.lastText.type === 'ai'
+                    ? 'Bot profile image'
+                    : step.lastText.author + '\'s profile image'
+                  : 'Unknown profile image'
+              "
+              style="
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                object-fit: cover;
+              "
+            />
+            <div class="p-2">
+              {{
+                step.lastText.labeled
+                  ? step.lastText.type === "ai"
+                    ? "Bot"
+                    : step.lastText.author
+                  : "Unknown"
+              }}
+            </div>
+          </div>
+
+          <div
+            class="text-break text-wrap p-3"
+            [innerHTML]="markdownToHtml(step.lastText.text)"
+          ></div>
+        </div>
+        <hr />
+        <div class="d-block my-3">
+          <label class="form-label font-weight-bold text-center w-100">
+            Who do you think is the author of this text?
+          </label>
+          <input
+            type="range"
+            class="form-range custom-slider"
+            min="0"
+            max="10"
+            step="1"
+            [(ngModel)]="step.humanSoundness"
+            [ngClass]="{ unconfirmed: !interacted.humanSoundness }"
+            (change)="markInteracted('humanSoundness')"
+            (mousedown)="markInteracted('humanSoundness')"
+            (touchstart)="markInteracted('humanSoundness')"
           />
-          <div class="p-2">
-            {{
-              step.lastText.labeled
-                ? step.lastText.type === "ai"
-                  ? "Bot"
-                  : step.lastText.author
-                : "Unknown"
-            }}
+          <div class="d-flex justify-content-between">
+            <span class="w-33">AI</span>
+            <span class="w-33 text-center" *ngIf="interacted.humanSoundness">
+              {{ step.humanSoundness }} / 10
+            </span>
+            <span class="w-33 text-end">Human</span>
           </div>
         </div>
-
-        <div
-          class="text-break text-wrap p-3"
-          [innerHTML]="markdownToHtml(step.lastText.text)"
-        ></div>
-      </div>
-      <hr />
-
-      <div class="d-block my-3">
-        <label class="form-label font-weight-bold text-center w-100">
-          Who do you think is the author of this text?
-        </label>
-        <input
-          type="range"
-          class="form-range custom-slider"
-          min="0"
-          max="10"
-          step="1"
-          [(ngModel)]="step.humanSoundness"
-          [ngClass]="{ unconfirmed: !interacted.humanSoundness }"
-          (change)="markInteracted('humanSoundness')"
-          (mousedown)="markInteracted('humanSoundness')"
-          (touchstart)="markInteracted('humanSoundness')"
-        />
-        <div class="d-flex justify-content-between">
-          <span class="w-33">AI</span>
-          <span class="w-33 text-center" *ngIf="interacted.humanSoundness">
-            {{ step.humanSoundness }} / 10
-          </span>
-          <span class="w-33 text-end">Human</span>
+        <div class="d-block my-3">
+          <label class="form-label font-weight-bold text-center w-100">
+            How would you rate this text?
+          </label>
+          <input
+            type="range"
+            class="form-range with-ticks"
+            min="0"
+            max="10"
+            step="1"
+            [(ngModel)]="step.evaluation"
+            [ngClass]="{ unconfirmed: !interacted.evaluation }"
+            (change)="markInteracted('evaluation')"
+            (mousedown)="markInteracted('evaluation')"
+            (touchstart)="markInteracted('evaluation')"
+          />
+          <div class="d-flex justify-content-between">
+            <span class="w-33">Very bad</span>
+            <span class="w-33 text-center" *ngIf="interacted.evaluation">
+              {{ step.evaluation }} / 10
+            </span>
+            <span class="w-33 text-end">Very good</span>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end mt-3">
+          <button
+            class="btn btn-warning text-dark"
+            (click)="toPostSurvey()"
+            [disabled]="!allInteracted()"
+          >
+            Next
+          </button>
         </div>
       </div>
-
-      <div class="d-block my-3">
-        <label class="form-label font-weight-bold text-center w-100">
-          How would you rate this text?
-        </label>
-        <input
-          type="range"
-          class="form-range with-ticks"
-          min="0"
-          max="10"
-          step="1"
-          [(ngModel)]="step.evaluation"
-          [ngClass]="{ unconfirmed: !interacted.evaluation }"
-          (change)="markInteracted('evaluation')"
-          (mousedown)="markInteracted('evaluation')"
-          (touchstart)="markInteracted('evaluation')"
-        />
-        <div class="d-flex justify-content-between">
-          <span class="w-33">Very bad</span>
-          <span class="w-33 text-center" *ngIf="interacted.evaluation">
-            {{ step.evaluation }} / 10
-          </span>
-          <span class="w-33 text-end">Very good</span>
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-end mt-3">
-        <button
-          class="btn btn-warning text-dark"
-          (click)="toPostSurvey()"
-          [disabled]="!allInteracted()"
-        >
-          Next
-        </button>
-      </div>
-    </div>
     </ng-container>
   </ng-container>
 </ng-container>
+
+
+
+<!-- HTML CODEPEN  -->
+
+<!-- <nav class="navbar fixed-top yellow animate" id="navBar">
+  <div class="container ">
+    <div class="tool-bar">
+      
+      <button class="btn btn-outline-dark ml-auto" id="btnSelect">Select Text to Highlight</button>
+    </div>
+  </div>
+</nav>
+<div class="container">
+  <div class="row">
+    <div class="col-md-7">
+        <div class="text-container">
+          <h2><strong>Text Selecting & Highlighting</strong></h2>
+          <p>
+            Although the morning was young, the hazy mirage was up. The uncertain 
+            air that magnified some things and blotted out others hung over the 
+            whole Gulf so that all sights were unreal and vision could not be 
+            trusted; so that sea and land had the sharp clarities and the vagueness 
+            of a dream. Thus it might be that the people of the Gulf trust things 
+            of the spirit and things of the imagination, but they do not trust 
+            their eyes to show them distance or clear outline or any optical 
+            exactness. Across the estuary from the town one section of mangroves 
+            stood clear and telescopically defined, while another mangrove clump 
+            was a hazy black-green blob. Part of the far shore disappeared into a 
+            shimmer that looked like water. There was no certainty in seeing, no 
+            proof that what you saw was there or was not there. And the people of 
+            the Gulf expected all places were that way, and it was not strange to 
+            them. A copper haze hung over the water, and the hot morning sun beat 
+            on it and made it vibrate blindingly. 
+          </p>
+          <p>
+            The brush houses of the fishing people were back from the beach on the 
+            right-hand side of the town, and the canoes were drawn up in front of 
+            this area. 
+          </p>
+          <p>
+            Kino and Juana came slowly down to the beach and to Kino's canoe, which 
+            was the one thing of value he owned in the world. It was very old. 
+            Kino's grandfather had brought it from Nayarit, and he had given it to 
+            Kino's father, and so it had come to Kino. It was at once property and 
+            source of food, for a man with a boat can guarantee a woman that she 
+            will eat something. It is the bulwark against starvation. And every 
+            year Kino refinished his canoe with the hard shell-like plaster by the 
+            secret method that had also come to him from his father. Now he came to 
+            the canoe and touched the bow tenderly as he always did. He laid his 
+            diving rock and his basket and the two ropes in the sand by the canoe. 
+            And he folded his blanket and laid it in the bow. 
+          </p>
+          <p>
+            Juana laid Coyotito on the blanket, and she placed her shawl over him 
+            so that the hot sun could not shine on him. He was quiet now, but the 
+            swelling on his shoulder had continued up his neck and under his ear 
+            and his face was puffed and feverish. Juana went to the water and waded 
+            in. She gathered some brown seaweed and made a flat damp poultice of 
+            it, and this she applied to the baby's swollen shoulder, which was as 
+            good a remedy as any and probably better than the doctor could have 
+            done. But the remedy lacked his authority because it was simple and 
+            didn't cost anything. The stomach cramps had not come to Coyotito. 
+            Perhaps Juana had sucked out the poison in time, but she had not sucked 
+            out her worry over her first-born. She had not prayed directly for the 
+            recovery of the baby- she had prayed that they might find a pearl with 
+            which to hire the doctor to cure the baby, for the minds of people are 
+            as unsubstantial as the mirage of the Gulf. 
+          </p>  
+        </div>
+    </div>
+    <div class="col-md-5">
+      <div class="highlight-list-heading">Current Highlight Snippets</div>
+      <div class="highlight-list" id="highlightList">
+        <span class="text-muted font-italic">None...</span>
+      </div>
+    </div>
+  </div>
+</div> -->
