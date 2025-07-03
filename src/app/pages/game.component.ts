@@ -90,6 +90,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     evaluation: false,
     humanSoundness: false,
   };
+  highlightSections = [];
 
 
   markInteracted(key: "evaluation" | "humanSoundness") {
@@ -247,12 +248,12 @@ export class GameComponent implements OnInit, AfterViewInit {
         ? 1
         : -1
     );
-
+/*
     if (this.secondGroup === "0") {
       this.lastTextToShow[0] = this.lastTextToShow[0];
     } else {
       this.lastTextToShow[0] = this.lastTextToShow[1];
-    }
+    } */
 
     const url = this.router.url;
     const fragment = url.split("?")[1]; // Get everything after `?`
@@ -470,184 +471,3 @@ class LastTextResult {
 
 
 
-
- // CODEPEN TS 
-
-
-/* 
-let currentSelection;
-let selection;
-let active = true;
-let highlightColor = 'yellow';
-let highlightSections = []; // Questo array ora memorizzerà gli elementi <mark> creati
-const navBar = document.getElementById('navBar');
-const btnSelect = document.getElementById('btnSelect'); // Questo bottone sarà disabilitato e non avrà un click listener attivo
-const highlightList = document.getElementById('highlightList');
-
-const textSelect = () => {
-    // Questa funzione ora serve principalmente a popolare currentSelection
-    // e a gestire lo stato del bottone, anche se non più usato per l'azione diretta.
-    selection = document.getSelection();
-    const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
-    const text = selection.toString();
-
-    if (range && text.length > 0) {
-        const startElmement = (range.startContainer.nodeType === 3 ? range.startContainer.parentNode : range.startContainer);
-        const startComponent = startElmement.closest('.text-container');
-        if (startComponent) {
-            currentSelection = text;
-        } else {
-            currentSelection = null;
-        }
-    } else {
-        currentSelection = null;
-    }
-    // Puoi comunque mantenere il bottone disabilitato per chiarezza,
-    // o rimuoverlo completamente dall'HTML se non vuoi più vederlo.
-    btnSelect.disabled = true; // Il bottone è sempre disabilitato
-    btnSelect.innerText = 'Select Text to Highlight'; // Testo indicativo
-};
-
-const applyHighlighting = (markElement) => {
-    markElement.classList.add('animated');
-    setTimeout(() => {
-        markElement.classList.add('animate');
-    }, 250);
-};
-
-const removeHighlight = (index) => {
-    const markElement = highlightSections[index].element;
-    if (markElement) {
-        markElement.classList.remove('in');
-        markElement.classList.remove('animate');
-        markElement.classList.remove('animated');
-
-        const parent = markElement.parentNode;
-        while (markElement.firstChild) {
-            parent.insertBefore(markElement.firstChild, markElement);
-        }
-        parent.removeChild(markElement);
-    }
-
-    highlightSections.splice(index, 1);
-    buildHighlightList(true);
-};
-
-
-const changeColor = (color) => {
-    navBar.classList.remove('animate');
-    setTimeout(() => {
-        navBar.classList.remove(highlightColor);
-        navBar.classList.add(color);
-        highlightColor = color;
-        setTimeout(() => {
-            navBar.classList.add('animate');
-        }, 250);
-    }, 250);
-}; 
- */
-
-
-
-/* 
-const buildHighlightList = (rebuild) => {
-    highlightList.innerHTML = highlightSections.length ? '' : '<span class="text-muted font-italic">None...</span>';
-    highlightSections.forEach((section, s) => {
-        const item = document.createElement('div');
-        item.classList.add('highlight-list-item');
-        item.innerHTML = `
-            <a role="button" onClick="removeHighlight(${s})">
-                <i class="fa fa-times"></i>
-            </a>
-            <mark class="${section.color}">${section.text}</mark>
-        `;
-        highlightList.appendChild(item);
-        if (!rebuild && s === highlightSections.length - 1) {
-            setTimeout(() => {
-                item.classList.add('in');
-            }, 250);
-        } else {
-            item.classList.add('in');
-        }
-    });
-};
-
-const addHighlightFromSelection = (selectionText, selectionRange, color) => {
-    const markElement = document.createElement('mark');
-    markElement.classList.add(color);
-
-    try {
-        selectionRange.surroundContents(markElement);
-    } catch (e) {
-        console.warn("Could not surround contents, possibly due to partial tag selection or empty range:", e);
-        // È utile sapere quando non si riesce ad evidenziare.
-        // Se non riusciamo ad avvolgere, non aggiungiamo alla lista.
-        return;
-    }
-
-    highlightSections.push({
-        text: selectionText,
-        color: color,
-        element: markElement // Memorizziamo l'elemento <mark> creato
-    });
-
-    console.log('Selected Text Snippets:', highlightSections);
-    // Non è necessario rimuovere tutti i range qui, poiché l'evento mouseup lo gestisce.
-    applyHighlighting(markElement);
-    buildHighlightList();
-};
-
- */
-// Rimuovi il vecchio listener del bottone, non è più necessario
-// btnSelect.onclick = () => { /* ... */ };
-
-
-// Funzione per gestire la selezione automatica al rilascio del mouse
-/* 
-const handleAutomaticHighlight = () => {
-    const selection = document.getSelection();
-    const text = selection.toString().trim(); // Ottieni il testo selezionato e rimuovi spazi bianchi
-
-    // Assicurati che ci sia testo selezionato e che non sia solo uno spazio vuoto.
-    // E che la selezione sia all'interno del tuo '.text-container'.
-    if (text.length > 0) {
-        const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
-        if (range) {
-            const startElement = (range.startContainer.nodeType === 3 ? range.startContainer.parentNode : range.startContainer);
-            const startComponent = startElement.closest('.text-container');
-
-            if (startComponent) {
-                // Se la selezione è valida e nel contenitore giusto
-                // e NON è stata fatta tramite doppio click (già gestito da dblclick listener)
-                // oppure se il doppio click non ha già evidenziato (a causa di un'altra selezione),
-                // allora procedi con l'evidenziazione automatica.
-                // Per evitare doppie evidenziazioni su dblclick, possiamo aggiungere un piccolo ritardo
-                // o un flag, ma per ora, l'ordine degli eventi dovrebbe gestirlo.
-
-                // Verifica che la selezione non sia collassata (ovvero, un punto di inserimento)
-                if (!selection.isCollapsed) {
-                    addHighlightFromSelection(text, range, highlightColor);
-                    // Non chiamiamo selection.removeAllRanges() qui, perché mouseup è già alla fine della selezione.
-                    // Il browser gestirà la deselezione o la manterrà evidenziata a seconda del suo comportamento.
-                }
-            }
-        }
-    }
-}; 
-*/
-
-/*
- document.addEventListener('selectionchange', textSelect); // Manteniamo questo per aggiornare currentSelection
-document.querySelector('.text-container').addEventListener('dblclick', (event) => {
-    // Piccolo hack: al doppio click, la selezione è già "fatta".
-    // Chiamiamo direttamente handleAutomaticHighlight.
-    // L'evento dblclick si verifica prima di mouseup per la stessa azione.
-    handleAutomaticHighlight();
-    event.stopPropagation(); // Evita che l'evento mouseup successivo scateni di nuovo l'highlight
-});
- */
-// Aggiungi un listener per l'evento 'mouseup' sull'intero documento.
-// Questo catturerà il rilascio del mouse dopo una selezione.
-/* 
-document.addEventListener('mouseup', handleAutomaticHighlight); 
-*/

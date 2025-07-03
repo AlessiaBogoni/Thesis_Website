@@ -17,6 +17,7 @@ import { SurveyModule } from "survey-angular-ui";
 import { SurveyCreatorModule } from "survey-creator-angular";
 import { GameComponent } from "./pages/game.component";
 import { AngularD3CloudModule } from "angular-d3-cloud";
+import { TextHighlightComponent } from "./pages/text-higlighter/text-highlight.component";
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { AngularD3CloudModule } from "angular-d3-cloud";
     SurveyAnalyticsTabulatorComponent,
     AnalyticsPage,
     GameComponent,
+    TextHighlightComponent,
     AnalyticsTabulatorPage,
   ],
   imports: [

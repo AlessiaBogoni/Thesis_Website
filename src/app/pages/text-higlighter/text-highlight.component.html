@@ -1,0 +1,24 @@
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-7">
+        <div class="text-container"
+
+          [innerHTML]="textContent">
+
+        </div>
+    </div>
+    <div class="col-md-5">
+      <div class="highlight-list-heading">Current Highlight Snippets</div>
+      <div class="highlight-list" id="highlightList">
+        <div *ngFor="let section of highlightSections; let i = index">
+          <a role="button" (click)="removeHighlight(i)">
+            <i class="fa fa-times text-white"></i>
+          </a>
+          &nbsp;
+          <mark class="bg-warning">{{ section.text}} </mark>
+        <span *ngIf="!highlightSections.length">None...</span>
+      </div>
+    </div>
+  </div>
+</div>
