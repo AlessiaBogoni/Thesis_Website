@@ -22,7 +22,7 @@ export class TextHighlightComponent implements AfterViewInit {
     [];
   @Input() textContent = "";
   @Output() highlightSectionsChange = new EventEmitter<
-    { text: string; color: string; element: HTMLElement }[]
+    string[]
   >();
 
   constructor(
@@ -81,7 +81,7 @@ export class TextHighlightComponent implements AfterViewInit {
     }
 
     this.highlightSections.splice(index, 1);
-    this.highlightSectionsChange.emit(this.highlightSections);
+    this.highlightSectionsChange.emit(this.highlightSections.map(e => e.text));
     this.cdr.detectChanges();
   }
 
@@ -123,8 +123,10 @@ export class TextHighlightComponent implements AfterViewInit {
       color: color,
       element: markElement,
     });
-    this.highlightSectionsChange.emit(this.highlightSections);
+    this.highlightSectionsChange.emit(this.highlightSections.map(e => e.text))
     this.cdr.detectChanges();
+
+          
 
     this.applyHighlighting(markElement);
   }

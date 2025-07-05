@@ -272,28 +272,30 @@ export const textsD: Text[] = [
   },
 ];
 
-export const textsX: Text[] = [
+
+ export const textsX: Text[] = [
+  {
+    text: texts[4].ai,
+    type: "ai",
+    labeled: false,
+    id: "5",
+    title: texts[4].title,
+    author: texts[4].author,
+  },
+ ]
+
+export const textsY: Text[] = [
   {
     text: texts[4].human,
     type: "human",
     labeled: false,
-    id: "1",
+    id: "5",
     title: texts[4].title,
     author: texts[4].author,
   },
   
  ];
 
- export const textsY: Text[] = [
-  {
-    text: texts[4].ai,
-    type: "ai",
-    labeled: false,
-    id: "2",
-    title: texts[4].title,
-    author: texts[4].author,
-  },
- ]
 
 
 export const textPerGroup: {

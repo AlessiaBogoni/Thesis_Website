@@ -9,7 +9,7 @@ export class SurveyComponent implements OnInit {
 
   @Input() json: object;
   result: any;
-  survey: SurveyModel
+  survey: SurveyModel;
 
   ngOnInit() {
     this.survey = new SurveyModel(this.json);

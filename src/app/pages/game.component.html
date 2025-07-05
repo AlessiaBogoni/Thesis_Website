@@ -148,6 +148,7 @@
             class="badge bg-warning text-center w-100 p-3 fs-6 lh-base text-dark text-break text-wrap"
           >
             Read the text below carefully and answer the questions.<br />
+            Highlight in the text anything that seems incorrect to you. <br />
             When you are done, please click "Next" to continue.
           </span>
         </p>
@@ -197,7 +198,7 @@
           </div>
           <app-text-highlight
             [textContent]="markdownToHtml(step.lastText.text)"
-            (highlightSectionsChange)="lastTextToShow.highlightSections = $event"
+            (highlightSectionsChange)="step.highlightSections = $event"
           >
 
           </app-text-highlight>

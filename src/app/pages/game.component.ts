@@ -85,6 +85,7 @@ export class GameComponent implements OnInit, AfterViewInit {
   textToShow: TextResult[] = [];
   lastTextToShow: LastTextResult[] = [];
   isButtonDisabled = true;
+  pastTime = 0;
 
   interacted = {
     evaluation: false,
@@ -231,6 +232,7 @@ export class GameComponent implements OnInit, AfterViewInit {
           lastTextResult.lastText = e;
           lastTextResult.humanSoundness = 5;
           lastTextResult.evaluation = 5;
+          lastTextResult.highlightSections = [];
           return lastTextResult;
         }
       );
@@ -294,6 +296,8 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.preSurvey.onComplete.add(() => {
       this.state = State.TEXT1;
       this.currentText = 1;
+      this.pastTime = (new Date()).getTime();
+      this.preSurvey.setValue("startTexts", new Date());
       this.sendData("pre", this.preSurvey).subscribe(() => {});
     });
     this.postSurvey = new Model(PostSurvey);
@@ -355,10 +359,14 @@ export class GameComponent implements OnInit, AfterViewInit {
       evaluation: false,
       humanSoundness: false,
     };
+
     const result = { ...this.textToShow[this.currentText - 1] };
     delete result.text.text;
     delete result.text.author;
     delete result.text.title;
+    this.textToShow[this.currentText - 1].deltaTime = (new Date()).getTime() - this.pastTime;
+    // result.deltaTime = (new Date()).getTime() - this.pastTime;
+    this.pastTime = (new Date()).getTime();
     this.http
       .put(
         SurveyService.getUrl(this.machineCode + "/results/" + this.currentText),
@@ -377,10 +385,8 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   toPostSurvey() {
-    const result = { ...this.lastTextToShow[this.currentText - 5] };
-    delete result.lastText.text;
-    delete result.lastText.author;
-    delete result.lastText.title;
+    this.lastTextToShow[this.currentText - 5].deltaTime = (new Date()).getTime() - this.pastTime;
+    this.pastTime = (new Date()).getTime();
     this.http
       .put(
         SurveyService.getUrl(this.machineCode + "/results/" + this.currentText),
@@ -454,16 +460,18 @@ export class State {
  */
 class TextResult {
   text: Text;
-
   humanSoundness: number;
-
   evaluation: number;
+  deltaTime: number;
 }
 
 class LastTextResult {
   lastText: LastText;
   humanSoundness: number;
   evaluation: number;
+  highlightSections: string[];
+  deltaTime: number;
+
   // highlights: { start: number; end: number }[] = [];
 
 }
