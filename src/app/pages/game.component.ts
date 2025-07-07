@@ -381,6 +381,13 @@ export class GameComponent implements OnInit, AfterViewInit {
     delete result.lastText.text;
     delete result.lastText.author;
     delete result.lastText.title;
+    this.lastTextToShow[this.currentText - 5].highlightSections.forEach((section) => {
+      delete section.element;
+      delete section.color
+
+    });
+    console.log("Last text result:", this.lastTextToShow[this.currentText - 5]);
+    return;
     this.http
       .put(
         SurveyService.getUrl(this.machineCode + "/results/" + this.currentText),
@@ -418,9 +425,6 @@ export class GameComponent implements OnInit, AfterViewInit {
 
         // Inline code
         .replace(/`(.*?)`/gim, "<code>$1</code>")
-
-        // Line breaks to paragraphs
-        .replace(/\n{2,}/gim, "</p><p>")
 
         // Single line breaks
         .replace(/\n/gim, "<br>")
@@ -464,7 +468,7 @@ class LastTextResult {
   lastText: LastText;
   humanSoundness: number;
   evaluation: number;
-  // highlights: { start: number; end: number }[] = [];
+  highlightSections: any[] = [];
 
 }
 

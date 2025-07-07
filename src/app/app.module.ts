@@ -18,6 +18,7 @@ import { SurveyCreatorModule } from "survey-creator-angular";
 import { GameComponent } from "./pages/game.component";
 import { AngularD3CloudModule } from "angular-d3-cloud";
 import { TextHighlightComponent } from "./pages/text-higlighter/text-highlight.component";
+import { ToastComponent } from "./pages/toast/toast.component";
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { TextHighlightComponent } from "./pages/text-higlighter/text-highlight.c
     GameComponent,
     TextHighlightComponent,
     AnalyticsTabulatorPage,
+    ToastComponent
   ],
   imports: [
     BrowserModule,

@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="col-md-5">
-      <div class="highlight-list-heading">Current Highlight Snippets</div>
+      <h3 class="highlight-list-heading text-white text-center">Errors found</h3>
       <div class="highlight-list" id="highlightList">
         <div *ngFor="let section of highlightSections; let i = index">
           <a role="button" (click)="removeHighlight(i)">
@@ -17,8 +17,12 @@
           </a>
           &nbsp;
           <mark class="bg-warning">{{ section.text}} </mark>
-        <span *ngIf="!highlightSections.length">None...</span>
-      </div>
+        </div>
+          <i class="text-white pb-4 text-center opacity-75" *ngIf="!highlightSections.length">
+            Click or select on words and phrases you think are wrong or need improvement.
+
+
+          </i>
     </div>
   </div>
 </div>
