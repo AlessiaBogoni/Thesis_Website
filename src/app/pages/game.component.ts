@@ -386,8 +386,6 @@ export class GameComponent implements OnInit, AfterViewInit {
       delete section.color
 
     });
-    console.log("Last text result:", this.lastTextToShow[this.currentText - 5]);
-    return;
     this.http
       .put(
         SurveyService.getUrl(this.machineCode + "/results/" + this.currentText),
