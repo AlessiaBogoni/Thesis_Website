@@ -72,6 +72,7 @@
 
           <div
             class="text-break text-wrap p-3"
+            [appCstTracker]="'text-' + idx"
             [innerHTML]="markdownToHtml(step.text.text)"
           ></div>
         </div>
