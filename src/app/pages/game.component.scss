@@ -99,7 +99,12 @@ body {
   background-color: #00d86f !important;
 }
 }
-
+.border {
+  border-color: #fff4 !important;
+}
+.rounded, .badge {
+  border-radius: 0.7rem !important;
+}
 .text-small {
   font-size: small !important
 }

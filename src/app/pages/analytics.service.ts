@@ -1,6 +1,6 @@
 /**
  * @file analytics.service.ts
- * @description Servizio per la generazione di grafici utilizzando ECharts.
+ * @description Servizio per la generazione di grafici utilizzando ECharts per analizzare la percezione dell'autorialità AI vs Human.
  */
 
 import { Injectable } from "@angular/core";
@@ -12,51 +12,45 @@ declare var echarts;
 })
 export class AnalyticsService {
   /**
-   * Genera un grafico a barre con ECharts evidenziando l'evoluzione delle donazioni.
-   * Utilizza i dati compressi per visualizzazione.
+   * Genera un grafico a barre con ECharts evidenziando la percezione dell'autorialità AI vs Human.
    *
    * @param this Riferimento alla pagina di analisi.
-   * @param type Tipo di categoria da visualizzare nel grafico. Default è "donations".
+   * @param type Tipo di categoria da visualizzare nel grafico. Default è "authorship".
    */
-  generateEChart(this: AnalyticsPage, type = "donations") {
+  generateEChart(this: AnalyticsPage, type = "authorship") {
     if (!this.originalData) {
       return;
     }
 
     this.selectedCategory = type;
 
-    const anonimo = this.originalData
-      .filter((e) => e.pre?.experiment_group === "anonimo")
-      .map((e) => (e.donation1?.donation / e.donation1.lives + e.donation2?.donation / e.donation2.lives) / 2)
-      .filter((e) => e);
-    const nominativo = this.originalData
-      .filter((e) => e.pre?.experiment_group === "non_anonimo")
-      .map((e) => (e.donation1?.donation / e.donation1.lives + e.donation2?.donation / e.donation2.lives) / 2)
-      .filter((e) => e);
+    const aiPerception = this.originalData
+      .filter((e) => e.text?.type === "ai")
+      .map((e) => e.evaluation)
+      .filter((e) => e !== undefined);
 
-    const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
-    const meanA = mean(anonimo);
-    const meanN = mean(nominativo);
+    const humanPerception = this.originalData
+      .filter((e) => e.text?.type === "human")
+      .map((e) => e.evaluation)
+      .filter((e) => e !== undefined);
 
-/*     for (let i = 0; i < 50; i++) {
-      anonimo.push(meanA + (Math.random() - 0.5) * 5);
-      nominativo.push(meanN + (Math.random() - 0.5) * 5);
-    } */
+    const mean = (arr: number[]) => arr.reduce((a, b) => a + b, 0) / arr.length;
+    const meanAI = mean(aiPerception);
+    const meanHuman = mean(humanPerception);
 
     const maxXAxis = Math.ceil(
-      Math.max(Math.max(...anonimo), Math.max(...nominativo)) + 5
+      Math.max(Math.max(...aiPerception), Math.max(...humanPerception)) + 1
     );
 
-    const histoA = this.histogram(anonimo, 1);
-    const histoN = this.histogram(nominativo, 1);
+    const histoAI = this.histogram(aiPerception, 1);
+    const histoHuman = this.histogram(humanPerception, 1);
 
-    const formatter = (arr) => (params) => {
+    const formatter = (arr: number[]) => (params: any) => {
       if (!params.value[1]) {
         return "";
       }
       return (
-        // tslint:disable-next-line:radix
-        ((parseInt(params.value[1]) / arr.length) * 100).toFixed(0) + "%"
+        ((params.value[1] / arr.length) * 100).toFixed(0) + "%"
       );
     };
 
@@ -86,7 +80,6 @@ export class AnalyticsService {
         },
         {
           max: maxXAxis,
-
           gridIndex: 1,
           type: "value",
           splitLine: {
@@ -112,7 +105,6 @@ export class AnalyticsService {
       yAxis: [
         {
           gridIndex: 0,
-
           type: "value",
           splitLine: {
             lineStyle: {
@@ -134,13 +126,13 @@ export class AnalyticsService {
       ],
       series: [
         {
-          name: "Anonymous",
+          name: "AI Perception",
           type: "bar",
           markLine: {
             data: [
               [
-                { name: meanA.toFixed(2), xAxis: meanA, yAxis: 0 },
-                { xAxis: meanA, yAxis: 10 },
+                { name: meanAI.toFixed(2), xAxis: meanAI, yAxis: 0 },
+                { xAxis: meanAI, yAxis: 10 },
               ],
             ],
           },
@@ -150,13 +142,13 @@ export class AnalyticsService {
             padding: 5,
             borderRadius: 5,
             color: "black",
-            formatter: formatter(anonimo),
+            formatter: formatter(aiPerception),
           },
           barWidth: "10",
-          data: histoA,
+          data: histoAI,
         },
         {
-          name: "Nominative",
+          name: "Human Perception",
           type: "bar",
           barWidth: "10",
           xAxisIndex: 1,
@@ -164,8 +156,8 @@ export class AnalyticsService {
           markLine: {
             data: [
               [
-                { name: meanN.toFixed(2), xAxis: meanN, yAxis: 0 },
-                { xAxis: meanN, yAxis: 10 },
+                { name: meanHuman.toFixed(2), xAxis: meanHuman, yAxis: 0 },
+                { xAxis: meanHuman, yAxis: 10 },
               ],
             ],
           },
@@ -175,9 +167,9 @@ export class AnalyticsService {
             padding: 5,
             borderRadius: 5,
             color: "black",
-            formatter: formatter(nominativo),
+            formatter: formatter(humanPerception),
           },
-          data: histoN,
+          data: histoHuman,
         },
       ],
     };
@@ -185,5 +177,20 @@ export class AnalyticsService {
     this.histoChart.setOption(option);
   }
 
+  /**
+   * Crea un istogramma dai dati forniti.
+   *
+   * @param data Array di numeri.
+   * @param binSize Dimensione del bin.
+   * @returns Array di dati per l'istogramma.
+   */
+  private histogram(data: number[], binSize: number) {
+    const bins: { [key: number]: number } = {};
+    data.forEach((value) => {
+      const bin = Math.floor(value / binSize) * binSize;
+      bins[bin] = (bins[bin] || 0) + 1;
+    });
 
+    return Object.keys(bins).map((key) => [parseFloat(key), bins[key]]);
+  }
 }
