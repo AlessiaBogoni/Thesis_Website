@@ -146,5 +146,23 @@ mark {
   border-bottom: 1px solid #ccc;
   margin-bottom: .5rem;
 }
+.invert {
+  filter: invert(1);
 
+}
+
+.lighten {
+  mix-blend-mode: lighten;
+}
+
+.bg-black-50 {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.object-fit {
+  object-fit: cover
+}
+.text-success {
+  color: #00d86f !important;
+}
 /* FINE DEL CSS CODEPEN */

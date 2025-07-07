@@ -144,7 +144,7 @@ quote:before {
 }
 
 .text-primary {
-  color: #ffac4d !important;
+  color: #00d86f !important;
 }
 
 small {
@@ -155,7 +155,7 @@ input {
   &::-webkit-slider-thumb,
   &::-moz-range-thumb,
   &::-ms-thumb {
-    background: #ffac4d !important;
+    background: #00d86f !important;
   }
 }
 .to-yellow {
@@ -407,11 +407,11 @@ ul.timeline > li:before {
 
 /* Default/active thumb styling */
 input[type="range"].form-range::-webkit-slider-thumb {
-  background-color: rgb(255, 193, 7);
+  background-color: #00d86f;
   z-index: 5 !important;
 }
 input[type="range"].form-range::-moz-range-thumb {
-  background-color: rgb(255, 193, 7);
+  background-color: #00d86f;
   z-index: 5 !important;
 }
 

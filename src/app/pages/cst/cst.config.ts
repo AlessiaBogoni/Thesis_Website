@@ -62,6 +62,7 @@ export interface CstContainerData {
   element: HTMLElement; // Reference to the main container element
   totalDwellTime: number; // Overall container dwell time (from original code)
   lastVisibilityChange: number;
+  id: string;
   isVisible: boolean;
   scrollEvents: { scrollTop: number; timestamp: number }[];
   maxScrollDepth: number; // Normalized 0-1
