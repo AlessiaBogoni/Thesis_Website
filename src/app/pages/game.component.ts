@@ -387,6 +387,7 @@ export class GameComponent implements OnInit, AfterViewInit {
   toPostSurvey() {
     this.lastTextToShow[this.currentText - 5].deltaTime = (new Date()).getTime() - this.pastTime;
     this.pastTime = (new Date()).getTime();
+    
     const result = { ...this.lastTextToShow[this.currentText - 5] };
     delete result.lastText.text;
     delete result.lastText.author;
@@ -475,7 +476,7 @@ class LastTextResult {
   lastText: LastText;
   humanSoundness: number;
   evaluation: number;
-  highlightSections: string[];
+  // highlightSections: string[];
   deltaTime: number;
 
   // highlights: { start: number; end: number }[] = [];
