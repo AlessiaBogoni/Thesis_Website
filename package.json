@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "set NODE_OPTIONS=--max-old-space-size=8192 && ng serve",
+    "start": "set NODE_OPTIONS=--max-old-space-size=8192 && ng serve --host 0.0.0.0",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
