@@ -89,9 +89,19 @@ body {
   background-color: rgba(0, 0, 0, 0.4);
   animation: pop 0.5s;
 }
-
+::ng-deep {
 .btn {
-  background: #ffd84d !important;
+  background: #00d86f !important;
+  border: none !important;
+}
+
+.bg-warning {
+  background-color: #00d86f !important;
+}
+}
+
+.text-small {
+  font-size: small !important
 }
 
 @keyframes pop {
@@ -410,6 +420,35 @@ input[type="range"].unconfirmed::-moz-range-thumb {
   z-index: 5 !important;
 }
 
+
+
+
+
+/* md breakpoint */
+@media (min-width: 768px) {
+  .w-md-100 {
+    width: 100%;
+  }
+  .w-md-75 {
+    width: 75%;
+  }
+}
+
+/* lg breakpoint */
+@media (min-width: 992px) {
+  .w-lg-100 {
+    width: 100%;
+  }
+  .w-lg-75 {
+    width: 75%;
+  }
+  .w-lg-50 {
+    width: 50%;
+  }
+  .w-lg-25 {
+    width: 25%;
+  }
+}
 
 
 

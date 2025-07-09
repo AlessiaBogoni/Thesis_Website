@@ -1,9 +1,10 @@
 mark {
 	padding: 0;
+  border-radius: 3px;
   &.yellow {
-    background: #ffe07f;
+    background: #00d86f;
     &.animated {
-      background: linear-gradient(to right, #ffe07f 50%, transparent 50%);
+      background: linear-gradient(to right, #00d86f 50%, transparent 50%);
     }
   }
   &.green {
@@ -53,8 +54,8 @@ mark {
       width: 100%;
       .btn-yellow {
         color: #212529;
-        background-color: #ffe07f;
-        border-color: #d8a400;
+        background-color: #00d86f;
+        border-color: #04af5d;
       }
       .btn-green {
         color: #212529;
@@ -80,9 +81,9 @@ mark {
     }
   }
   &.yellow {
-    background-color: #ffe07f;
-    background: linear-gradient(to right, #ffe07f 50%, transparent 50%);
-    border-bottom-color: #d8a400;
+    background-color: #00d86f;
+    background: linear-gradient(to right, #00d86f 50%, transparent 50%);
+    border-bottom-color: #04af5d;
   }
   &.green {
     background-color: #8affa7;
