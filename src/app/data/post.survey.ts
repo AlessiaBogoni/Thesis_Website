@@ -108,14 +108,6 @@ export const PostSurvey = {
             "Landlords are responsible for maintaining the property in livable condition.",
           ],
         },
-
-        {
-          type: "text",
-          name: "other",
-          title: "Another check question???????",
-          // isRequired: true,
-          analytics: true,
-        },
         {
           type: "rating",
           rateType: "smileys",
