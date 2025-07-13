@@ -17,21 +17,25 @@
       "
     >
       <ng-container *ngFor="let step of textToShow; let idx = index">
-        <div *ngIf="currentText === idx + 1" class="w-md-100 mx-auto w-lg-75">
+        <div
+          *ngIf="currentText === idx + 1"
+          class="w-md-100 mx-auto w-lg-75 mt-4"
+        >
           <p>
             <br />
             <span
               class="badge bg-warning text-center w-100 p-3 fs-6 lh-base text-dark text-break text-wrap"
             >
-              Read the text below carefully and answer the questions.<br />
+              Read the text below carefully and answer the questions.<br /><hr />
               When you are done, please click "Next" to continue.
             </span>
           </p>
 
+          <h5 class="text-left text-break text-wrap p-3 border rounded">
+            {{ step.text.title }}
+          </h5>
+
           <div class="border rounded">
-            <h5 class="text-center text-break text-wrap p-3">
-              {{ step?.text?.title }}
-            </h5>
             <div
               class="badge text-uppercase p-3"
               style="display: flex; align-items: center; gap: 10px"
@@ -71,11 +75,10 @@
 
             <div
               class="text-break text-wrap p-3"
-              [appCstTracker]="'text-' + idx"
               [innerHTML]="markdownToHtml(step.text.text)"
             ></div>
           </div>
-          <h3 class="text-center mt-3">Questions</h3>
+          <hr />
 
           <div class="d-block my-3">
             <label class="form-label font-weight-bold text-center w-100">
@@ -104,7 +107,7 @@
 
           <div class="d-block my-3">
             <label class="form-label font-weight-bold text-center w-100">
-              How would you rate this text?
+              How would you rate the accuracy this text?
             </label>
             <input
               type="range"
@@ -112,24 +115,54 @@
               min="0"
               max="10"
               step="1"
-              [(ngModel)]="step.evaluation"
-              [ngClass]="{ unconfirmed: !interacted.evaluation }"
-              (change)="markInteracted('evaluation')"
-              (mousedown)="markInteracted('evaluation')"
-              (touchstart)="markInteracted('evaluation')"
+              [(ngModel)]="step.accuracy"
+              [ngClass]="{ unconfirmed: !interacted.accuracy }"
+              (change)="markInteracted('accuracy')"
+              (mousedown)="markInteracted('accuracy')"
+              (touchstart)="markInteracted('accuracy')"
             />
             <div class="d-flex justify-content-between">
               <span class="w-33">Very bad</span>
-              <span class="w-33 text-center" *ngIf="interacted.evaluation">
-                {{ step.evaluation }} / 10
+              <span class="w-33 text-center" *ngIf="interacted.accuracy">
+                {{ step.accuracy }} / 10
               </span>
               <span class="w-33 text-end">Very good</span>
             </div>
           </div>
 
-          <div class="d-flex justify-content-end mt-3">
+          <div class="d-block my-3">
+            <label class="form-label font-weight-bold text-center w-100">
+              How would you rate the readability of this text?
+            </label>
+            <input
+              type="range"
+              class="form-range with-ticks"
+              min="0"
+              max="10"
+              step="1"
+              [(ngModel)]="step.readability"
+              [ngClass]="{ unconfirmed: !interacted.readability }"
+              (change)="markInteracted('readability')"
+              (mousedown)="markInteracted('readability')"
+              (touchstart)="markInteracted('readability')"
+            />
+            <div class="d-flex justify-content-between">
+              <span class="w-33">Very bad</span>
+              <span class="w-33 text-center" *ngIf="interacted.readability">
+                {{ step.readability }} / 10
+              </span>
+              <span class="w-33 text-end">Very good</span>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end mt-3 gap-3">
+            <div class="text-warning text-small">
+              <span *ngIf="!allInteracted()" class="text-warning d-block">
+                Ops, before proceeding, you need to answer all the questions.
+              </span>
+            </div>
             <button
-              class="btn btn-warning text-dark col-lg-auto col-md-12"
+              class="btn btn-warning text-dark"
               (click)="nextText()"
               [disabled]="!allInteracted()"
             >
@@ -141,36 +174,73 @@
     </ng-container>
     <ng-container *ngIf="[status.TEXT5].includes(state)">
       <ng-container *ngFor="let step of lastTextToShow; let idx = index">
-        <div class="w-md-100 mx-auto w-lg-75">
+        <div class="w-md-100 mx-auto w-lg-75 mt-4">
           <p>
             <br />
             <span
               class="badge bg-warning text-center w-100 p-3 fs-6 lh-base text-dark text-break text-wrap"
             >
               Read the text below carefully and answer the questions.<br />
-              When you are done, please click "Next" to continue.
+              Highlight in the text anything that seems incorrect to you. <br />
               <hr />
               <b>
-                <i class="fa fa-exclamation-triangle"></i>
+                <!-- <i class="fa fa-exclamation-triangle"></i> -->
                 Moreover, in this last step, you will be asked to highlight
-                words or phrases that you think are wrong or need improvement.
-                <i class="fa fa-exclamation-triangle"></i>
+                words or phrases that you think are wrong or need improvement. <br /><hr />
+                When you are done, please click "Next" to continue.
               </b>
             </span>
           </p>
 
-          <div class="border rounded">
-            <h5 class="text-center text-break text-wrap p-3">
-              {{ step.lastText.title }}
-            </h5>
+          <h5 class="text-left text-break text-wrap p-3 border rounded">
+            {{ step?.lastText?.title }}
+          </h5>
 
+          <div class="border rounded">
+            <div
+              class="badge text-uppercase p-3"
+              *ngIf="step?.lastText"
+              style="display: flex; align-items: center; gap: 10px"
+            >
+              <img
+                [src]="
+                  step.lastText.labeled
+                    ? step.lastText.type === 'ai'
+                      ? 'assets/profiles/Bot.jpg'
+                      : 'assets/profiles/' + step.lastText.author + '.jpg'
+                    : 'assets/profiles/QuestionMark.jpg'
+                "
+                [attr.alt]="
+                  step.lastText.labeled
+                    ? step.lastText.type === 'ai'
+                      ? 'Bot profile image'
+                      : step.lastText.author + '\'s profile image'
+                    : 'Unknown profile image'
+                "
+                style="
+                  width: 50px;
+                  height: 50px;
+                  border-radius: 50%;
+                  object-fit: cover;
+                "
+              />
+              <div class="p-2">
+                {{
+                  step?.lastText?.labeled
+                    ? step?.lastText?.type === "ai"
+                      ? "Bot"
+                      : step?.lastText?.author
+                    : "Unknown author"
+                }}
+              </div>
+            </div>
             <app-text-highlight
               [textContent]="markdownToHtml(step.lastText.text)"
               (highlightSectionsChange)="step.highlightSections = $event"
             >
             </app-text-highlight>
           </div>
-          <h3 class="text-center mt-3">Questions</h3>
+          <hr />
           <div class="d-block my-3" *ngIf="step">
             <label class="form-label font-weight-bold text-center w-100">
               Who do you think is the author of this text?
@@ -197,7 +267,7 @@
           </div>
           <div class="d-block my-3" *ngIf="step">
             <label class="form-label font-weight-bold text-center w-100">
-              How would you rate this text?
+              How would you rate the accuracy of this text?
             </label>
             <input
               type="range"
@@ -205,44 +275,66 @@
               min="0"
               max="10"
               step="1"
-              [(ngModel)]="step.evaluation"
-              [ngClass]="{ unconfirmed: !interacted.evaluation }"
-              (change)="markInteracted('evaluation')"
-              (mousedown)="markInteracted('evaluation')"
-              (touchstart)="markInteracted('evaluation')"
+              [(ngModel)]="step.accuracy"
+              [ngClass]="{ unconfirmed: !interacted.accuracy }"
+              (change)="markInteracted('accuracy')"
+              (mousedown)="markInteracted('accuracy')"
+              (touchstart)="markInteracted('accuracy')"
             />
             <div class="d-flex justify-content-between">
               <span class="w-33">Very bad</span>
-              <span class="w-33 text-center" *ngIf="interacted.evaluation">
-                {{ step.evaluation }} / 10
+              <span class="w-33 text-center" *ngIf="interacted.accuracy">
+                {{ step.accuracy }} / 10
               </span>
               <span class="w-33 text-end">Very good</span>
             </div>
           </div>
-          <div class="row justify-content-between mt-3 gap-3">
-            <div class="text-danger text-small col-auto">
+
+          <div class="d-block my-3" *ngIf="step">
+            <label class="form-label font-weight-bold text-center w-100">
+              How would you rate the readability of this text?
+            </label>
+            <input
+              type="range"
+              class="form-range with-ticks"
+              min="0"
+              max="10"
+              step="1"
+              [(ngModel)]="step.readability"
+              [ngClass]="{ unconfirmed: !interacted.readability }"
+              (change)="markInteracted('readability')"
+              (mousedown)="markInteracted('readability')"
+              (touchstart)="markInteracted('readability')"
+            />
+            <div class="d-flex justify-content-between">
+              <span class="w-33">Very bad</span>
+              <span class="w-33 text-center" *ngIf="interacted.readability">
+                {{ step.readability }} / 10
+              </span>
+              <span class="w-33 text-end">Very good</span>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end mt-3 gap-3">
+            <div class="text-warning text-small">
               <span
                 *ngIf="!step?.highlightSections?.length"
-                class="text-danger d-block"
+                class="text-warning d-block"
               >
                 Ops, before proceeding, you need to highlight at least one error
                 in the text.<br />
               </span>
-              <span *ngIf="!allInteracted()" class="text-danger d-block">
+              <span *ngIf="!allInteracted()" class="text-warning d-block">
                 Ops, before proceeding, you need to answer all the questions.
               </span>
             </div>
-            <div class="col-lg-auto col-md-12">
-              <button
-                class="btn btn-warning text-dark w-100"
-                (click)="toPostSurvey()"
-                [disabled]="
-                  !allInteracted() || !step?.highlightSections?.length
-                "
-              >
-                Next
-              </button>
-            </div>
+            <button
+              class="btn btn-warning text-dark"
+              (click)="toPostSurvey()"
+              [disabled]="!allInteracted() || !step?.highlightSections?.length"
+            >
+              Next
+            </button>
           </div>
         </div>
       </ng-container>

@@ -86,6 +86,75 @@ Thank you for supporting academic research! </p>`,
             { value: "doctorate", text: "Doctorate" },
           ],
         },
+        {
+          type: "dropdown",
+          name: "lanuage",
+          analytics: true,
+          title: "What is your English level?",
+          // isRequired: true,
+          choices: [
+            { value: "A1-A2", text: "A1-A2" },
+            { value: "B1-B2", text: "B1-B2" },
+            { value: "C1-C2", text: "C1-C2" },
+            { value: "Native speaker", text: "Native speaker" },
+          ],
+        },
+        {
+          analytics: true,
+          // isRequired: true,
+          type: "matrix",
+          name: "previousKnowlede",
+          title: "Please answer the following questions",
+          columns: [
+            { value: 1, text: "Definitely not" },
+            { value: 2, text: "Not much" },
+            { value: 3, text: "Neutral" },
+            { value: 4, text: "Yes" },
+            { value: 5, text: "Yes a lot" },
+          ],
+          rows: [
+            {
+              value: "AI_experience",
+              text: "I am familiar with the use of AI (LLM)",
+            },
+            {
+              value: "forum_experience",
+              text: "I am familiar with forums and Q&A setups",
+            },
+            {
+              value: "computer_experience",
+              text: "I am familiar with computers and software",
+            },
+            {
+              value: "pet_experience",
+              text: "I am familiar with pet care",
+            },
+            {
+              value: "reading_experience",
+              text: "I am confident in reading texts",
+            },
+            {
+              value: "nutrition_experience",
+              text: "I am confident and familiar with topics related to nutrition and health.",
+            },
+             {
+              value: "NFC_positive",
+              text: "I enjoy figuring things out, even if it takes a while.",
+            }, 
+{
+              value: "NFC_negative",
+              text: "I usually prefer quick summaries over reading full explanations.",
+            },
+            /* {
+              value: "self_performance",
+              text: "I think I was quite good at these tasks",
+            }, */
+            /*  {
+              value: "reality_scenario",
+              text: "I think the proposed scenario is credible",
+            }, */
+          ],
+        },
         /*         {
           type: "dropdown",
           name: "employment_status",
@@ -145,7 +214,6 @@ Thank you for supporting academic research! </p>`,
             { value: "competitive", text: "I am competitive " },
           ],
         }, */
-       
       ],
     },
   ],

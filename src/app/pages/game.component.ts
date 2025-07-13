@@ -88,7 +88,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   isButtonDisabled = true;
 
   interacted = {
-    evaluation: false,
+    accuracy: false,
+    readability: false,
     humanSoundness: false,
   };
   highlightSections = [];
@@ -96,7 +97,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   cstScore = 0;
 
 
-  markInteracted(key: "evaluation" | "humanSoundness") {
+  markInteracted(key: "accuracy" | "humanSoundness" | "readability") {
     this.interacted[key] = true;
   }
 
@@ -223,7 +224,9 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       const textResult = new TextResult();
       textResult.text = e;
       textResult.humanSoundness = 5;
-      textResult.evaluation = 5;
+      textResult.accuracy = 5;
+      textResult.readability = 5;
+
       return textResult;
     });
 
@@ -238,7 +241,9 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
           const lastTextResult = new LastTextResult();
           lastTextResult.lastText = e;
           lastTextResult.humanSoundness = 5;
-          lastTextResult.evaluation = 5;
+          lastTextResult.accuracy = 5;
+          lastTextResult.readability = 5;
+          lastTextResult.highlightSections = [];
           return lastTextResult;
         }
       );
@@ -366,7 +371,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 200);
     this.isButtonDisabled = true;
     this.interacted = {
-      evaluation: false,
+      accuracy: false,
+      readability: false,
       humanSoundness: false,
     };
     const result = { ...this.textToShow[this.currentText - 1] } as TextResult;
@@ -475,16 +481,20 @@ class TextResult {
   attention: number;
 
   humanSoundness: number;
-
-  evaluation: number;
+  accuracy: number;
+  readability: number;
+  deltaTime: number;
 }
 
 class LastTextResult {
   lastText: LastText;
   humanSoundness: number;
-  attention: number;
-  evaluation: number;
-  highlightSections: any[] = [];
+  accuracy: number;
+  readability: number;
+  highlightSections: any[];
+  deltaTime: number;
+
+  // highlights: { start: number; end: number }[] = [];
 
 }
 

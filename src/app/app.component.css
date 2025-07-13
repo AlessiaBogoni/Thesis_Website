@@ -71,9 +71,9 @@
   --sjs-base-unit: 8px;
   --sjs-border-default: rgba(0, 0, 0, 1);
   --sjs-border-inside: rgba(255, 255, 255, 0.08);
-  --sjs-border-light: #00d86f;
+  --sjs-border-light: #6dc199;
   --sjs-corner-radius: 4px;
-  --sjs-general-backcolor: #00d86f;
+  --sjs-general-backcolor: #6dc199;
   --sjs-general-backcolor-dark: rgba(255, 255, 255, 1);
   --sjs-general-backcolor-dim: rgba(0, 0, 0, 1);
   --sjs-general-backcolor-dim-dark: rgba(255, 255, 255, 1);
