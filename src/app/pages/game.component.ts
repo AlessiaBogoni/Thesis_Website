@@ -493,6 +493,7 @@ class LastTextResult {
   readability: number;
   highlightSections: any[];
   deltaTime: number;
+  attention: number
 
   // highlights: { start: number; end: number }[] = [];
 
