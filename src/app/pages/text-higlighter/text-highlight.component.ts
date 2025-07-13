@@ -43,6 +43,7 @@ export class TextHighlightComponent implements AfterViewInit {
   private selectionStartDelay = 150;
   private touchStartTime = 0;
   private maxWordsToSelect = 10; // Max words allowed for selection
+  tutorial = true;
 
   constructor(
     private el: ElementRef,

@@ -1,28 +1,59 @@
-
 <div class="container">
   <div class="row">
-    <div class="col-md-7">
-        <div class="text-container"
-
-          [innerHTML]="textContent">
-
-        </div>
-    </div>
     <div class="col-md-5">
-      <h3 class="highlight-list-heading text-white text-center">Errors found</h3>
+      <h3 class="highlight-list-heading text-white text-center">
+        Errors found
+      </h3>
       <div class="highlight-list" id="highlightList">
         <div *ngFor="let section of highlightSections; let i = index">
           <a role="button" (click)="removeHighlight(i)">
             <i class="fa fa-times text-white"></i>
           </a>
           &nbsp;
-          <mark class="bg-warning">{{ section.text}} </mark>
+          <mark class="bg-warning">{{ section.text }} </mark>
         </div>
-          <i class="text-white pb-4 text-center opacity-75" *ngIf="!highlightSections.length">
-            Click or select on words and phrases you think are wrong or need improvement.
-
-
-          </i>
+        <i
+          class="text-white pb-4 text-center opacity-75"
+          *ngIf="!highlightSections.length"
+        >
+          Click or select on words and phrases you think are wrong or need
+          improvement.
+        </i>
+        <div *ngIf="!highlightSections.length" class="m-2 text-center bg-black">
+          <img
+            src="assets/text.gif"
+            class="m-2 w-100 object-fit"
+            height="155"
+          />
+          <p class="text-success p-2">
+            To highlight text, just drag your finger over the words you want to
+            select.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-7 position-relative">
+      <div
+        class="badge text-uppercase p-3"
+        style="display: flex; align-items: center; gap: 10px"
+      >
+        <img
+          [src]="'assets/profiles/QuestionMark.jpg'"
+          [attr.alt]="'Unknown profile image'"
+          style="
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+          "
+        />
+        <div class="p-2">Unknown author</div>
+      </div>
+      <div
+        class="text-container"
+        [appCstTracker]="'text-5'"
+        [innerHTML]="textContent"
+      ></div>
     </div>
   </div>
 </div>

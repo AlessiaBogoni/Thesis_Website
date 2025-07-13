@@ -3,7 +3,7 @@
  *
  * @module GameComponent
  */
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
 import { CountUp } from "countup.js";
 import { SurveyService } from "./survey.service";
 import { HttpClient } from "@angular/common/http";
@@ -18,6 +18,7 @@ import {
   LastText,
   textPerSecondGroup,
 } from "../data/texts";
+import { CstService } from "./cst/cst.service";
 declare var $, bootstrap: any;
 declare var SurveyTheme: any;
 declare var Swal: any;
@@ -34,7 +35,7 @@ declare var Swal: any;
   templateUrl: "./game.component.html",
   styleUrls: ["./game.component.scss"],
 })
-export class GameComponent implements OnInit, AfterViewInit {
+export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   internalState = +localStorage.getItem("0state") || State.PRE;
   /**
    * Stato del gioco.
@@ -88,13 +89,16 @@ export class GameComponent implements OnInit, AfterViewInit {
   pastTime = 0;
 
   interacted = {
-    evaluation: false,
+    accuracy: false,
+    readability: false,
     humanSoundness: false,
   };
   highlightSections = [];
+  cstSubscription: any;
+  cstScore = 0;
 
 
-  markInteracted(key: "evaluation" | "humanSoundness") {
+  markInteracted(key: "accuracy" | "humanSoundness" | "readability") {
     this.interacted[key] = true;
   }
 
@@ -129,6 +133,7 @@ export class GameComponent implements OnInit, AfterViewInit {
   constructor(
     public http: HttpClient,
     private surveyService: SurveyService,
+    private cstService: CstService,
     private router: Router
   ) {}
 
@@ -191,6 +196,10 @@ export class GameComponent implements OnInit, AfterViewInit {
       return null;
     }
 
+    this.cstSubscription = this.cstService.overallCstScore$.subscribe((score) => {
+      this.cstScore = score;
+      console.log('Current Overall CST Score:', this.cstScore);
+    });
     // Usage:
     if (!this.consent) {
       this.consent = await askForConsent();
@@ -216,7 +225,9 @@ export class GameComponent implements OnInit, AfterViewInit {
       const textResult = new TextResult();
       textResult.text = e;
       textResult.humanSoundness = 5;
-      textResult.evaluation = 5;
+      textResult.accuracy = 5;
+      textResult.readability = 5;
+
       return textResult;
     });
 
@@ -231,7 +242,8 @@ export class GameComponent implements OnInit, AfterViewInit {
           const lastTextResult = new LastTextResult();
           lastTextResult.lastText = e;
           lastTextResult.humanSoundness = 5;
-          lastTextResult.evaluation = 5;
+          lastTextResult.accuracy = 5;
+          lastTextResult.readability = 5;
           lastTextResult.highlightSections = [];
           return lastTextResult;
         }
@@ -349,6 +361,12 @@ export class GameComponent implements OnInit, AfterViewInit {
     return check;
   }
 
+  ngOnDestroy() {
+    if (this.cstSubscription) {
+      this.cstSubscription.unsubscribe();
+    }
+  }
+
   nextText() {
     setTimeout(function () {
       window.focus();
@@ -356,11 +374,12 @@ export class GameComponent implements OnInit, AfterViewInit {
     }, 200);
     this.isButtonDisabled = true;
     this.interacted = {
-      evaluation: false,
+      accuracy: false,
+      readability: false,
       humanSoundness: false,
     };
-
-    const result = { ...this.textToShow[this.currentText - 1] };
+    const result = { ...this.textToShow[this.currentText - 1] } as TextResult;
+    result.attention = this.cstScore;
     delete result.text.text;
     delete result.text.author;
     delete result.text.title;
@@ -389,6 +408,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     delete result.lastText.text;
     delete result.lastText.author;
     delete result.lastText.title;
+    result.attention = this.cstScore;
     this.lastTextToShow[this.currentText - 5].highlightSections.forEach((section) => {
       delete section.element;
       delete section.color
@@ -466,17 +486,22 @@ export class State {
  */
 class TextResult {
   text: Text;
+  attention: number;
+
   humanSoundness: number;
-  evaluation: number;
+  accuracy: number;
+  readability: number;
   deltaTime: number;
 }
 
 class LastTextResult {
   lastText: LastText;
   humanSoundness: number;
-  evaluation: number;
+  accuracy: number;
+  readability: number;
   highlightSections: any[];
   deltaTime: number;
+  attention: number
 
   // highlights: { start: number; end: number }[] = [];
 

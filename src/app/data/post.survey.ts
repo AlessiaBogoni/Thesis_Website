@@ -19,14 +19,6 @@ export const PostSurvey = {
             { value: 5, text: "Yes a lot" },
           ],
           rows: [
-            {
-              value: "AI_experience",
-              text: "I am familiar with the use of AI",
-            },
-            {
-              value: "forum_experience",
-              text: "I am familiar with forums and Q&A setups",
-            },
             /* {
               value: "self_performance",
               text: "I think I was quite good at these tasks",
@@ -45,7 +37,7 @@ export const PostSurvey = {
             },
             {
               value: "reality_behaviour",
-              text: "In the real life I would choose the same way I did here",
+              text: "In an exam I would answer in the same way I did here",
             },
             {
               value: "effort",
@@ -56,6 +48,20 @@ export const PostSurvey = {
               text: "I think the proposed scenario is credible",
             }, */
           ],
+        },
+        {
+          type: "radiogroup",
+          name: "author_belief",
+          title:
+            "To what extent did you believe the author information shown above each texts?",
+          analytics: true,
+          choices: [
+            "Completely",
+            "Mostly",
+            "A little",
+            "Not at all",
+            "I don’t remember noticing who the authors were",
+          ],  
         },
         {
           type: "text",

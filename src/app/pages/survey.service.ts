@@ -35,37 +35,6 @@ static generateMachineCode(): string {
   return `${assignedGroup}${machineCode}`;
 }
 
-  /**
-   * Ottiene i dati compressi per la visualizzazione.
-   * @param {any[]} baseData - Dati ricevuti dal server.
-   * @returns {any[] | null} Dati compressi.
-   */
-  getCompressedData(baseData: any[]) {
-    if (!baseData) {
-      return null;
-    }
-
-    // ???
-    const columns = [
-      "donation_motivation",
-      "budget_distribution",
-      "name",
-      "surname",
-      "time",
-    ];
-    const data = baseData.map((e) => {
-      const obj: any = {};
-
-      Object.keys(e).forEach((key) => {
-        if (columns.includes(key)) {
-          obj[key] = e[key];
-        }
-      });
-      return obj;
-    });
-    return data.sort((a, b) => (b.time > a.time ? 1 : -1));
-  }
-
   getDeviceAndBrowser() {
     const userAgent = navigator.userAgent;
     const platform = navigator.platform;

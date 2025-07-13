@@ -19,6 +19,8 @@ import { GameComponent } from "./pages/game.component";
 import { AngularD3CloudModule } from "angular-d3-cloud";
 import { TextHighlightComponent } from "./pages/text-higlighter/text-highlight.component";
 import { ToastComponent } from "./pages/toast/toast.component";
+import { CstService } from "./pages/cst/cst.service";
+import { CstTrackerDirective } from "./pages/cst/cst-tracker.directive";
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import { ToastComponent } from "./pages/toast/toast.component";
     GameComponent,
     TextHighlightComponent,
     AnalyticsTabulatorPage,
-    ToastComponent
+    ToastComponent,
+    CstTrackerDirective
   ],
   imports: [
     BrowserModule,
@@ -42,7 +45,7 @@ import { ToastComponent } from "./pages/toast/toast.component";
     AngularD3CloudModule,
     FormsModule,
   ],
-  providers: [],
+  providers: [CstService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

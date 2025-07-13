@@ -1,17 +1,16 @@
 /**
  * @file analytics.page.ts
- * @description Componente Angular per la pagina di analisi delle donazioni.
+ * @description Componente Angular per la pagina di analisi della percezione di autorialità AI vs Human.
  */
 
 import { Component } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { SurveyService } from "./survey.service";
 import { AnalyticsService } from "./analytics.service";
-import { PostSurvey } from "../data/post.survey";
-import { PreSurvey } from "../data/pre.survey";
+import { Text, textPerGroup, textPerSecondGroup } from "../data/texts";
 import _ from "lodash";
-declare var echarts, Grid3DComponent, Bar3DChart;
 import * as jStat from "jstat";
+declare var echarts: any;
 
 @Component({
   selector: "analytics-page",
@@ -20,18 +19,18 @@ import * as jStat from "jstat";
 })
 export class AnalyticsPage {
   /**
-   * Risultati dell'analisi delle donazioni.
+   * Risultati dell'analisi della percezione di autorialità.
    **/
   results = {
-    ano: 0,
-    non_ano: 0,
-    ano_std: 0,
-    non_ano_std: 0,
+    ai: 0,
+    human: 0,
+    ai_std: 0,
+    human_std: 0,
     valid: false,
   };
 
   /**
-   * Word cloud dei messaggi delle donazioni.
+   * Word cloud dei testi analizzati.
    * @type {Object}
    */
   wordCloud = [];
@@ -39,8 +38,8 @@ export class AnalyticsPage {
    * Numero totale di partecipanti al sondaggio.
    */
   totalParticipants = {
-    ano: 0,
-    non_ano: 0,
+    ai: 0,
+    human: 0,
     tot: 0,
   };
   /**
@@ -52,11 +51,6 @@ export class AnalyticsPage {
    * Dati originali non filtrati.
    */
   originalData;
-
-  /**
-   * JSON contenente i dati del sondaggio.
-   */
-  json;
 
   /**
    * Colori utilizzati nei grafici.
@@ -71,7 +65,7 @@ export class AnalyticsPage {
   /**
    * Categoria selezionata per l'analisi.
    */
-  selectedCategory = "donations";
+  selectedCategory = "authorship";
 
   /**
    * Istogramma dei dati.
@@ -87,8 +81,8 @@ export class AnalyticsPage {
     this.data = null;
     setTimeout(() => {
       this.data = this.originalData
-        .filter((e) => e.pre?.experiment_group === value)
-        .map((e) => e.pre);
+        .filter((e) => e.group === value)
+        .map((e) => e.text);
     }, 500);
   }
 
@@ -146,42 +140,24 @@ export class AnalyticsPage {
     private http: HttpClient,
     private analyticsService: AnalyticsService
   ) {
-    this.json = [PreSurvey, PostSurvey];
-    this.json.forEach((d) =>
-      d.pages.forEach((e) => {
-        e.elements = e.elements.filter((e) => e.analytics);
-      })
-    );
     this.http.get(SurveyService.getUrl("")).subscribe((data: any) => {
       this.originalData = Object.values(data || {}) || [];
-      this.filter = "anonimo";
+      this.filter = "ai";
       this.totalParticipants = {
-        ano: this.originalData.filter(
-          (e) => e.pre?.experiment_group === "anonimo"
-        ).length,
-        non_ano: this.originalData.filter(
-          (e) => e.pre?.experiment_group === "non_anonimo"
-        ).length,
-        tot: this.originalData.length - 2,
+        ai: this.originalData.filter((e) => e.group === "ai").length,
+        human: this.originalData.filter((e) => e.group === "human").length,
+        tot: this.originalData.length,
       };
-      const ano = this.originalData.filter(
-        (e) => e.pre?.experiment_group === "anonimo"
-      );
-      const non_ano = this.originalData.filter(
-        (e) => e.pre?.experiment_group === "non_anonimo"
-      );
-      const ano_donation = ano.map(
-        (e) => (e.donation1?.amount || 0) / (e.donation1?.lives || 1)
-      );
-      const non_ano_donation = non_ano.map(
-        (e) => (e.donation1?.amount || 0) / (e.donation1?.lives || 1)
-      );
+      const aiGroup = this.originalData.filter((e) => e.group === "ai");
+      const humanGroup = this.originalData.filter((e) => e.group === "human");
+      const aiScores = aiGroup.map((e) => e.evaluation || 0);
+      const humanScores = humanGroup.map((e) => e.evaluation || 0);
       this.results = {
-        ano: _.mean(ano_donation) * 100,
-        non_ano: _.mean(non_ano_donation) * 100,
-        ano_std: this.σ(ano_donation),
-        non_ano_std: this.σ(non_ano_donation),
-        valid: this.ttest(ano_donation, non_ano_donation),
+        ai: _.mean(aiScores),
+        human: _.mean(humanScores),
+        ai_std: this.σ(aiScores),
+        human_std: this.σ(humanScores),
+        valid: this.ttest(aiScores, humanScores),
       };
 
       this.createWordCloud();
@@ -199,7 +175,7 @@ export class AnalyticsPage {
   createWordCloud() {
     let message = "";
     this.originalData.forEach((e) => {
-      message += (e.donation1?.message || "") + " ";
+      message += (e.text?.text || "") + " ";
     });
     message = message.replace(/[^a-zA-Z ]/g, "");
     const words = message.split(" ").filter((e) => e);
@@ -221,9 +197,9 @@ export class AnalyticsPage {
 
   /**
    * Genera un grafico EChart per la categoria specificata.
-   * @param type Il tipo di grafico da generare (predefinito: 'donations').
+   * @param type Il tipo di grafico da generare (predefinito: 'authorship').
    */
-  generateEChart(type = "donations") {
+  generateEChart(type = "authorship") {
     this.analyticsService.generateEChart.bind(this)(type);
   }
 

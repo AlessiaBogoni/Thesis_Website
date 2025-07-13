@@ -1,5 +1,5 @@
 <div class="text-center">
-  <h1>Survey Analytics</h1>
+  <h1>AI vs Human Authorship Perception Analytics</h1>
 
   <iframe
     src="https://lookerstudio.google.com/embed/reporting/f7f72756-0d47-4f40-92d8-35d66825efac/page/kIV1C"
@@ -8,13 +8,7 @@
     sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
   ></iframe>
 
-  <!-- <div style="display: flex; margin: 2rem">
-    <div id="chart" style="width: 100%; height: 50dvh; flex: 2"></div>
-  </div> -->
-
-
   <div class="d-flex justify-content-center m-2">
-
     <div class="card">
       <div class="card-body">
         <h1>
@@ -30,41 +24,39 @@
   <div class="m-auto">
     <button
       class="sd-btn sd-navigation__next-btn"
-      [class.disactive]="filter !== 'anonimo'"
-      (click)="filter = 'anonimo'"
+      [class.disactive]="filter !== 'ai'"
+      (click)="filter = 'ai'"
     >
-    Anonymous:
-    {{totalParticipants.ano}}
+      AI Authorship:
+      {{totalParticipants.ai}}
     </button>
     <button
       class="sd-btn sd-navigation__next-btn"
-      [class.disactive]="filter !== 'non_anonimo'"
-      (click)="filter = 'non_anonimo'"
+      [class.disactive]="filter !== 'human'"
+      (click)="filter = 'human'"
     >
-    Non Anonymous:
-    {{totalParticipants.non_ano}}
+      Human Authorship:
+      {{totalParticipants.human}}
     </button>
   </div>
   <div class="m-auto d-flex justify-content-center">
     <p class="m-2">
-    <progress value="{{results.ano}}" max="100"></progress><br>
-
-      {{results.ano | number: '1.2-2'}}% (σ = {{results.ano_std | number: '1.2-2'}})
+      <progress value="{{results.ai}}" max="100"></progress><br>
+      {{results.ai | number: '1.2-2'}}% (σ = {{results.ai_std | number: '1.2-2'}})
     </p>
     <p class="m-2">
-    <progress value="{{results.non_ano}}" max="100"></progress><br>
-
-      {{results.non_ano | number: '1.2-2'}}% (σ = {{results.non_ano_std | number: '1.2-2'}})
+      <progress value="{{results.human}}" max="100"></progress><br>
+      {{results.human | number: '1.2-2'}}% (σ = {{results.human_std | number: '1.2-2'}})
     </p>
   </div>
   <h3 class="m-4">
     {{results.valid ? 'The difference is statistically significant' : 'The difference is not statistically significant'}}<br>
-    Δ = {{results.non_ano - results.ano | number: '1.2-2'}}%
+    Δ = {{results.human - results.ai | number: '1.2-2'}}%
   </h3>
 
   <hr>
 
-  <h2>Pre-survey results</h2>
+  <h2>Pre-survey Results</h2>
   <survey-analytics
     class="d-block"
     [surveyJson]="json[0]"
@@ -72,10 +64,9 @@
     *ngIf="data"
   ></survey-analytics>
 
-  <h2>WordCloud</h2>
+  <h2>Word Cloud</h2>
 
   <div class="d-flex justify-content-center m-2">
-
     <div class="card">
       <div class="card-body">
         <angular-d3-cloud
@@ -89,12 +80,12 @@
         ></angular-d3-cloud>
       </div>
       <div class="card-footer">
-        Word Cloud about the donation messages
+        Word Cloud of Analyzed Texts
       </div>
     </div>
   </div>
 
-  <h2>Post-survey results</h2>
+  <h2>Post-survey Results</h2>
 
   <survey-analytics
     class="d-block"
