@@ -18,7 +18,7 @@ My name is <b> Alessia Bogoni</b>, and I am a Master's student in the Internatio
 The purpose of this study is to explore how people engage with and evaluate written content. 
 You will be asked to read a few short texts and answer questions about them. The entire process should take no more than <b> 10 minutes </b> to complete. <br>
 
-Your participation is completely voluntary, and you may exit the study at any time without providing a reason. All responses will be treated confidentially and used solely for academic research purposes. No personal or identifying information will be collected.
+Your participation is completely voluntary, and you may exit the study at any time without providing a reason. All responses will be treated confidentially and used solely for academic research purposes.
 
 If you have any questions or concerns about the study, feel free to contact me at 
 <a href="mailto:alessia.bogoni@stud-mail.uni-wuerzburg.de" style="color: #ffffff;">
@@ -88,7 +88,7 @@ Thank you for supporting academic research! </p>`,
         },
         {
           type: "dropdown",
-          name: "lanuage",
+          name: "language",
           analytics: true,
           title: "What is your English level?",
           // isRequired: true,
@@ -103,7 +103,7 @@ Thank you for supporting academic research! </p>`,
           analytics: true,
           // isRequired: true,
           type: "matrix",
-          name: "previousKnowlede",
+          name: "previousKnowledge",
           title: "Please answer the following questions",
           columns: [
             { value: 1, text: "Definitely not" },
@@ -137,11 +137,11 @@ Thank you for supporting academic research! </p>`,
               value: "nutrition_experience",
               text: "I am confident and familiar with topics related to nutrition and health.",
             },
-             {
+            {
               value: "NFC_positive",
               text: "I enjoy figuring things out, even if it takes a while.",
-            }, 
-{
+            },
+            {
               value: "NFC_negative",
               text: "I usually prefer quick summaries over reading full explanations.",
             },
@@ -155,6 +155,7 @@ Thank you for supporting academic research! </p>`,
             }, */
           ],
         },
+
         /*         {
           type: "dropdown",
           name: "employment_status",
@@ -216,6 +217,58 @@ Thank you for supporting academic research! </p>`,
         }, */
       ],
     },
+     {
+          name: "instructions",
+          elements: [
+            {
+              type: "html",
+              name: "instructionsText",
+              html: `
+                <h3>Instructions</h3>
+                <p>You will read <strong>5 texts</strong> presented as Q&amp;A exchanges, where each text contains a short question followed by a text answer.</p>
+                <p>For each text, an author is provided or declared as "unknown." When a label is given, it correctly represents the true author of the text.</p>
+
+                <p><strong>For the first 4 texts:</strong></p>
+                <ul>
+                  <li>Guess the source (author) of the text.</li>
+                  <li>Rate the readability of the text.</li>
+                  <li>Rate the accuracy of the text.</li>
+                </ul>
+
+                <p><strong>For the 5th text:</strong></p>
+                <p>You will perform the same tasks as above, <strong>and</strong> also highlight the parts of the text where you believe errors are present.</p>
+
+                <p>Your <strong>performance</strong> will be evaluated based on:</p>
+                <ul>
+                  <li>How close your source guesses are to the true authors across all 5 texts.</li>
+                  <li>How many errors you correctly identify in the last text.</li>
+                </ul>
+
+                <p>The best performers will receive prizes!</p>
+
+                <p>You may choose to <strong>not provide your email</strong>, but in that case you will <strong>not be eligible</strong> for the prize competition.</p>
+                <p>Your name will be displayed on the leaderboard, while your email (if provided) will only be used to contact prize winners and will be kept confidential.</p>
+              `
+            },
+            {
+              type: "text",
+              name: "name",
+              title: "Your Name",
+              isRequired: true,
+              placeHolder: "Enter your name"
+            },
+            {
+              type: "text",
+              inputType: "email",
+              name: "email",
+              title: "Your Contact Email",
+              isRequired: false,
+              validators: [{ type: "email", text: "Please enter a valid email address" }],
+              placeHolder: "Enter your email address (optional, needed to participate in prize)"
+            }
+          ]
+        }
+
   ],
   showProgressBar: "top",
   progressBarType: "questions",

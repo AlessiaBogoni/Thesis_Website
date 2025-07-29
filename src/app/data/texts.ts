@@ -293,6 +293,7 @@ export const textPerGroup: {
 };
 
 export type Text = {
+  attention?: number;
   text?: string;
   title?: string;
   type: "ai" | "human";
@@ -309,6 +310,7 @@ export const textPerSecondGroup: {
 };
 
 export type LastText = {
+  attention?: number;
   text?: string;
   title?: string;
   type: "ai" | "human";

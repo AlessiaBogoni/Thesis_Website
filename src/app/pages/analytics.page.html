@@ -11,50 +11,81 @@
   <div class="d-flex justify-content-center m-2">
     <div class="card">
       <div class="card-body">
-        <h1>
-          {{totalParticipants.tot}}
-        </h1>
+        <h1>{{totalParticipants.tot}}</h1>
       </div>
-      <div class="card-footer">
-        Total Participants
-      </div>
+      <div class="card-footer">Total Participants</div>
     </div>
   </div>
 
   <div class="m-auto">
     <button
       class="sd-btn sd-navigation__next-btn"
-      [class.disactive]="filter !== 'ai'"
-      (click)="filter = 'ai'"
+      [class.disactive]="filter !== 'groupA'"
+      (click)="filter = 'groupA'"
     >
-      AI Authorship:
-      {{totalParticipants.ai}}
+      Group A: {{totalParticipants.groupA}}
     </button>
     <button
       class="sd-btn sd-navigation__next-btn"
-      [class.disactive]="filter !== 'human'"
-      (click)="filter = 'human'"
+      [class.disactive]="filter !== 'groupB'"
+      (click)="filter = 'groupB'"
     >
-      Human Authorship:
-      {{totalParticipants.human}}
+      Group B: {{totalParticipants.groupB}}
+    </button>
+    <button
+      class="sd-btn sd-navigation__next-btn"
+      [class.disactive]="filter !== 'groupC'"
+      (click)="filter = 'groupC'"
+    >
+      Group C: {{totalParticipants.groupC}}
+    </button>
+    <button
+      class="sd-btn sd-navigation__next-btn"
+      [class.disactive]="filter !== 'groupD'"
+      (click)="filter = 'groupD'"
+    >
+      Group D: {{totalParticipants.groupD}}
     </button>
   </div>
+
+  <div class="d-flex justify-content-center m-2">
+    <div class="m-auto">
+      <button
+        class="sd-btn sd-navigation__next-btn"
+        [class.disactive]="filter !== 'ai'"
+        (click)="filter = 'ai'"
+      >
+        AI Authorship: {{totalParticipants.ai}}
+      </button>
+      <button
+        class="sd-btn sd-navigation__next-btn"
+        [class.disactive]="filter !== 'human'"
+        (click)="filter = 'human'"
+      >
+        Human Authorship: {{totalParticipants.human}}
+      </button>
+    </div>
+  </div>
+
   <div class="m-auto d-flex justify-content-center">
     <p class="m-2">
-      <progress value="{{results.ai}}" max="100"></progress><br>
-      {{results.ai | number: '1.2-2'}}% (σ = {{results.ai_std | number: '1.2-2'}})
+      <progress value="{{results.ai_read}}" max="100"></progress><br />
+      {{results.ai_read | number: '1.2-2'}}% (σ = {{results.ai_std_read |
+      number: '1.2-2'}})
     </p>
     <p class="m-2">
-      <progress value="{{results.human}}" max="100"></progress><br>
-      {{results.human | number: '1.2-2'}}% (σ = {{results.human_std | number: '1.2-2'}})
+      <progress value="{{results.human_read}}" max="100"></progress><br />
+      {{results.human_read | number: '1.2-2'}}% (σ = {{results.human_std_read |
+      number: '1.2-2'}})
     </p>
   </div>
   <h3 class="m-4">
-    {{results.valid ? 'The difference is statistically significant' : 'The difference is not statistically significant'}}<br>
-    Δ = {{results.human - results.ai | number: '1.2-2'}}%
+    {{results.valid_read ? 'The difference is statistically significant' : 'The
+    difference is not statistically significant'}}<br />
+    Δ = {{results.human_read - results.ai_read | number: '1.2-2'}}%
   </h3>
 
-  <hr>
+  <hr />
 
   <h2>Pre-survey Results</h2>
   <survey-analytics
@@ -79,9 +110,7 @@
           [autoFill]="true"
         ></angular-d3-cloud>
       </div>
-      <div class="card-footer">
-        Word Cloud of Analyzed Texts
-      </div>
+      <div class="card-footer">Word Cloud of Analyzed Texts</div>
     </div>
   </div>
 

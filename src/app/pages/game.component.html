@@ -26,7 +26,8 @@
             <span
               class="badge bg-warning text-center w-100 p-3 fs-6 lh-base text-dark text-break text-wrap"
             >
-              Read the text below carefully and answer the questions.<br /><hr />
+              Read the text below carefully and answer the questions.<br />
+              <hr />
               When you are done, please click "Next" to continue.
             </span>
           </p>
@@ -76,6 +77,7 @@
             <div
               class="text-break text-wrap p-3"
               [innerHTML]="markdownToHtml(step.text.text)"
+              [appCstTracker]="'text-' + idx"
             ></div>
           </div>
           <hr />
@@ -107,7 +109,7 @@
 
           <div class="d-block my-3">
             <label class="form-label font-weight-bold text-center w-100">
-              How would you rate the accuracy this text?
+              How would you rate the <b>accuracy</b> of this text? (precision, correctness)
             </label>
             <input
               type="range"
@@ -122,17 +124,17 @@
               (touchstart)="markInteracted('accuracy')"
             />
             <div class="d-flex justify-content-between">
-              <span class="w-33">Very bad</span>
+              <span class="w-33">Very low</span>
               <span class="w-33 text-center" *ngIf="interacted.accuracy">
                 {{ step.accuracy }} / 10
               </span>
-              <span class="w-33 text-end">Very good</span>
+              <span class="w-33 text-end">Very high</span>
             </div>
           </div>
 
           <div class="d-block my-3">
             <label class="form-label font-weight-bold text-center w-100">
-              How would you rate the readability of this text?
+              How would you rate the <b>readability</b> of this text? (tone, style)
             </label>
             <input
               type="range"
@@ -147,11 +149,11 @@
               (touchstart)="markInteracted('readability')"
             />
             <div class="d-flex justify-content-between">
-              <span class="w-33">Very bad</span>
+              <span class="w-33">Very low</span>
               <span class="w-33 text-center" *ngIf="interacted.readability">
                 {{ step.readability }} / 10
               </span>
-              <span class="w-33 text-end">Very good</span>
+              <span class="w-33 text-end">Very high</span>
             </div>
           </div>
 
@@ -174,6 +176,11 @@
     </ng-container>
     <ng-container *ngIf="[status.TEXT5].includes(state)">
       <ng-container *ngFor="let step of lastTextToShow; let idx = index">
+        <div
+          class="text-container"
+          [appCstTracker]="'text-5'"
+          
+        ></div>
         <div class="w-md-100 mx-auto w-lg-75 mt-4">
           <p>
             <br />
@@ -186,7 +193,9 @@
               <b>
                 <!-- <i class="fa fa-exclamation-triangle"></i> -->
                 Moreover, in this last step, you will be asked to highlight
-                words or phrases that you think are wrong or need improvement. <br /><hr />
+                words or phrases that you think are wrong or need improvement.
+                <br />
+                <hr />
                 When you are done, please click "Next" to continue.
               </b>
             </span>
@@ -201,8 +210,7 @@
               class="badge text-uppercase p-3"
               *ngIf="step?.lastText"
               style="display: flex; align-items: center; gap: 10px"
-            >
-            </div>
+            ></div>
             <app-text-highlight
               [textContent]="markdownToHtml(step.lastText.text)"
               (highlightSectionsChange)="step.highlightSections = $event"
@@ -236,7 +244,7 @@
           </div>
           <div class="d-block my-3" *ngIf="step">
             <label class="form-label font-weight-bold text-center w-100">
-              How would you rate the accuracy of this text?
+              How would you rate the <b>accuracy</b> of this text? (precision, correctness)
             </label>
             <input
               type="range"
@@ -251,17 +259,17 @@
               (touchstart)="markInteracted('accuracy')"
             />
             <div class="d-flex justify-content-between">
-              <span class="w-33">Very bad</span>
+              <span class="w-33">Very low</span>
               <span class="w-33 text-center" *ngIf="interacted.accuracy">
                 {{ step.accuracy }} / 10
               </span>
-              <span class="w-33 text-end">Very good</span>
+              <span class="w-33 text-end">Very high</span>
             </div>
           </div>
 
           <div class="d-block my-3" *ngIf="step">
             <label class="form-label font-weight-bold text-center w-100">
-              How would you rate the readability of this text?
+              How would you rate the <b>readability</b> of this text? (tone, style)
             </label>
             <input
               type="range"
@@ -276,11 +284,11 @@
               (touchstart)="markInteracted('readability')"
             />
             <div class="d-flex justify-content-between">
-              <span class="w-33">Very bad</span>
+              <span class="w-33">Very low</span>
               <span class="w-33 text-center" *ngIf="interacted.readability">
                 {{ step.readability }} / 10
               </span>
-              <span class="w-33 text-end">Very good</span>
+              <span class="w-33 text-end">Very high</span>
             </div>
           </div>
 
@@ -307,6 +315,48 @@
           </div>
         </div>
       </ng-container>
+    </ng-container>
+    <ng-container *ngIf="state === status.FINISHED">
+      <div class="w-md-100 mx-auto w-lg-75 mt-4">
+        <h2>Thank You for participating</h2>
+
+        <p class="mt-4">
+          Please note that the texts you read during this study
+          <strong>intentionally contained errors</strong>. You should not rely
+          on them as accurate or trustworthy information.
+        </p>
+
+        <p class="mt-3">
+          The goal of this study was to explore how people interact with text
+          depending on how it is
+          <strong>labeled and attributed</strong>, specifically, how authorship
+          affects attention and perceptions of credibility.
+        </p>
+
+        <p class="mt-3">
+          If you have any questions, would like to 
+          report an issue, or want to
+          share feedback about the experience, feel free to contact me at:
+          <br />
+          <a href="mailto:alessia.bogoni@stud-mail.uni-wuerzburg.de">
+            alessia.bogoni@stud-mail.uni-wuerzburg.de
+          </a>
+        </p>
+
+        <p class="mt-4">
+          When you're ready, click the button below to view the leaderboard.
+        </p>
+
+        <button class="btn btn-primary mt-2" (click)="showLeaderboard()">
+          View Leaderboard
+        </button>
+
+        <hr class="my-4" />
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="state === status.LEADERBOARD">
+      <app-leaderboard></app-leaderboard>
     </ng-container>
   </div>
 </ng-container>

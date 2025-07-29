@@ -19,6 +19,8 @@ import {
   textPerSecondGroup,
 } from "../data/texts";
 import { CstService } from "./cst/cst.service";
+import { ScoreService } from "./score.service";
+import { LeaderboardComponent } from "../components/leaderboard/leaderboard.component";
 declare var $, bootstrap: any;
 declare var SurveyTheme: any;
 declare var Swal: any;
@@ -66,7 +68,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   consent = localStorage.getItem("0consent");
 
   referral: string | null = null;
-
   /**
    * Gruppo di appartenenza del giocatore.
    * @type {string}
@@ -96,7 +97,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
   highlightSections = [];
   cstSubscription: any;
   cstScore = 0;
-
 
   markInteracted(key: "accuracy" | "humanSoundness" | "readability") {
     this.interacted[key] = true;
@@ -134,7 +134,8 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     public http: HttpClient,
     private surveyService: SurveyService,
     private cstService: CstService,
-    private router: Router
+    private router: Router,
+    private scoreService: ScoreService
   ) {}
 
   /**
@@ -196,10 +197,12 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       return null;
     }
 
-    this.cstSubscription = this.cstService.overallCstScore$.subscribe((score) => {
-      this.cstScore = score;
-      console.log('Current Overall CST Score:', this.cstScore);
-    });
+    this.cstSubscription = this.cstService.overallCstScore$.subscribe(
+      (score) => {
+        this.cstScore = score;
+        console.log("Current Overall CST Score:", this.cstScore);
+      }
+    );
     // Usage:
     if (!this.consent) {
       this.consent = await askForConsent();
@@ -227,6 +230,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       textResult.humanSoundness = 5;
       textResult.accuracy = 5;
       textResult.readability = 5;
+      textResult.attention = 55;
 
       return textResult;
     });
@@ -237,17 +241,16 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const group = textPerSecondGroup?.[this.numSecondGroup];
     if (Array.isArray(group)) {
-      const lastTextToShow = group.map(
-        (e) => {
-          const lastTextResult = new LastTextResult();
-          lastTextResult.lastText = e;
-          lastTextResult.humanSoundness = 5;
-          lastTextResult.accuracy = 5;
-          lastTextResult.readability = 5;
-          lastTextResult.highlightSections = [];
-          return lastTextResult;
-        }
-      );
+      const lastTextToShow = group.map((e) => {
+        const lastTextResult = new LastTextResult();
+        lastTextResult.lastText = e;
+        lastTextResult.humanSoundness = 5;
+        lastTextResult.accuracy = 5;
+        lastTextResult.readability = 5;
+        lastTextResult.highlightSections = [];
+        lastTextResult.attention = 0;
+        return lastTextResult;
+      });
 
       this.lastTextToShow = lastTextToShow;
     } else {
@@ -262,7 +265,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
         ? 1
         : -1
     );
-/*
+    /*
     if (this.secondGroup === "0") {
       this.lastTextToShow[0] = this.lastTextToShow[0];
     } else {
@@ -279,13 +282,15 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     // Ottiene il dispositivo e il browser dell'utente.
     const device = this.surveyService.getDeviceAndBrowser();
     this.preSurvey.setValue("refer", this.referral);
-    this.preSurvey.setValue(
-      "experiment_group",
-      this.machineCode[0] === "0" ? "anonimo" : "non_anonimo"
-    );
     this.preSurvey.setValue("device", device.device);
     this.preSurvey.setValue("browser", device.browser);
     this.preSurvey.setValue("start_time", new Date().toISOString());
+
+    const experimentGroup = `group${this.machineCode[0]}`;
+    const secondGroup = this.machineCode[1] === "0" ? "AI" : "human";
+
+    this.preSurvey.setValue("experiment_group", experimentGroup);
+    this.preSurvey.setValue("second_group", secondGroup);
 
     // Ottiene il paese dell'utente.
     try {
@@ -308,7 +313,7 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.preSurvey.onComplete.add(() => {
       this.state = State.TEXT1;
       this.currentText = 1;
-      this.pastTime = (new Date()).getTime();
+      this.pastTime = new Date().getTime();
       this.preSurvey.setValue("startTexts", new Date());
       this.sendData("pre", this.preSurvey).subscribe(() => {});
     });
@@ -379,17 +384,20 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       humanSoundness: false,
     };
     const result = { ...this.textToShow[this.currentText - 1] } as TextResult;
-    result.attention = this.cstScore;
     delete result.text.text;
     delete result.text.author;
     delete result.text.title;
-    this.textToShow[this.currentText - 1].deltaTime = (new Date()).getTime() - this.pastTime;
+    result.attention = this.cstScore;
+    // result.text.attention = this.cstScore;
+    console.log(result.attention);
+    // console.log(result.text.attention);
+    result.deltaTime = new Date().getTime() - this.pastTime;
     // result.deltaTime = (new Date()).getTime() - this.pastTime;
-    this.pastTime = (new Date()).getTime();
+    this.pastTime = new Date().getTime();
     this.http
       .put(
         SurveyService.getUrl(this.machineCode + "/results/" + this.currentText),
-        this.textToShow[this.currentText - 1]
+        result
       )
       .subscribe(() => {
         console.log("Text result sent:", this.textToShow[this.currentText - 1]);
@@ -398,28 +406,39 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
           this.state = State["TEXT" + this.currentText];
         } else {
           this.state = State.TEXT5;
-          console.log(this.state)
+          console.log(this.state);
         }
       });
   }
 
   toPostSurvey() {
     const result = { ...this.lastTextToShow[this.currentText - 5] };
+    const scores = this.scoreService.computeScore(result, result.lastText.text);
+    result.score = scores;
+    result.leaderboardScore = scores.fuzzyScore;
+    result.precisionScore = scores.precision;
+    result.recallScore = scores.recall;
+    result.f1Score = scores.f1;
+    result.specificityScore = scores.specificity;
+  
+
     delete result.lastText.text;
     delete result.lastText.author;
     delete result.lastText.title;
     result.attention = this.cstScore;
-    this.lastTextToShow[this.currentText - 5].highlightSections.forEach((section) => {
+    // result.lastText.attention = this.cstScore;
+    console.log(result.lastText.attention);
+    // console.log(result.attention);
+    result.highlightSections.forEach((section) => {
       delete section.element;
-      delete section.color
-
+      delete section.color;
     });
-    this.lastTextToShow[this.currentText - 5].deltaTime = (new Date()).getTime() - this.pastTime;
-    this.pastTime = (new Date()).getTime();
+    result.deltaTime = new Date().getTime() - this.pastTime;
+    this.pastTime = new Date().getTime();
     this.http
       .put(
         SurveyService.getUrl(this.machineCode + "/results/" + this.currentText),
-        this.lastTextToShow[this.currentText - 5]
+        result
       )
       .subscribe(() => {
         console.log(
@@ -430,9 +449,13 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
+  showLeaderboard() {
+    this.state = State.LEADERBOARD;
+  }
+
   markdownToHtml(markdown) {
     if (!markdown) {
-      return '';
+      return "";
     }
     return (
       markdown
@@ -462,7 +485,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
         .replace(/$/, "</p>")
     );
   }
-
 }
 
 /**
@@ -478,6 +500,7 @@ export class State {
   static TEXT4 = 5;
   static TEXT5 = 6;
   static FINISHED = 8;
+  static LEADERBOARD = 9;
 }
 
 /**
@@ -487,7 +510,6 @@ export class State {
 class TextResult {
   text: Text;
   attention: number;
-
   humanSoundness: number;
   accuracy: number;
   readability: number;
@@ -497,16 +519,17 @@ class TextResult {
 class LastTextResult {
   lastText: LastText;
   humanSoundness: number;
+  leaderboardScore: number;
+  precisionScore: number;
+  recallScore: number;
+  f1Score: number;
+  score;
+  specificityScore:number;
   accuracy: number;
   readability: number;
   highlightSections: any[];
   deltaTime: number;
-  attention: number
+  attention: number;
 
   // highlights: { start: number; end: number }[] = [];
-
 }
-
-
-
-

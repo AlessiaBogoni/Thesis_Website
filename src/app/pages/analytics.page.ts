@@ -10,6 +10,7 @@ import { AnalyticsService } from "./analytics.service";
 import { Text, textPerGroup, textPerSecondGroup } from "../data/texts";
 import _ from "lodash";
 import * as jStat from "jstat";
+import { group } from "node:console";
 declare var echarts: any;
 
 @Component({
@@ -22,11 +23,11 @@ export class AnalyticsPage {
    * Risultati dell'analisi della percezione di autorialità.
    **/
   results = {
-    ai: 0,
-    human: 0,
-    ai_std: 0,
-    human_std: 0,
-    valid: false,
+    ai_read: 0,
+    human_read: 0,
+    ai_std_read: 0,
+    human_std_read: 0,
+    valid_read: false,
   };
 
   /**
@@ -41,6 +42,10 @@ export class AnalyticsPage {
     ai: 0,
     human: 0,
     tot: 0,
+    groupA: 0,
+    groupB: 0,
+    groupC: 0,
+    groupD: 0
   };
   /**
    * Dati filtrati in base al valore del filtro.
@@ -144,21 +149,47 @@ export class AnalyticsPage {
       this.originalData = Object.values(data || {}) || [];
       this.filter = "ai";
       this.totalParticipants = {
-        ai: this.originalData.filter((e) => e.group === "ai").length,
-        human: this.originalData.filter((e) => e.group === "human").length,
+        ai: this.originalData.filter((e) => e?.pre?.second_group === "ai").length,
+        human: this.originalData.filter((e) => e?.pre?.second_group === "human")
+          .length,
         tot: this.originalData.length,
+        groupA: this.originalData.filter((e) => e?.pre?.experiment_group === "groupA" ).length,
+        groupB: this.originalData.filter((e) => e?.pre?.experiment_group === "groupB" ).length,
+        groupC: this.originalData.filter((e) => e?.pre?.experiment_group === "groupC" ).length,
+        groupD: this.originalData.filter((e) => e?.pre?.experiment_group === "groupD" ).length,
       };
-      const aiGroup = this.originalData.filter((e) => e.group === "ai");
-      const humanGroup = this.originalData.filter((e) => e.group === "human");
-      const aiScores = aiGroup.map((e) => e.evaluation || 0);
-      const humanScores = humanGroup.map((e) => e.evaluation || 0);
+      const aiGroup = this.originalData.filter((e) => e?.pre?.second_group === "ai");
+      const humanGroup = this.originalData.filter(
+        (e) => e?.pre?.second_group === "human"
+      );
+
+      const groupA = this.originalData.filter(
+        (e) => e?.pre?.experiment_group === "groupA"
+      );
+      const groupB = this.originalData.filter(
+        (e) => e?.pre?.experiment_group === "groupB"
+      );
+      const groupC = this.originalData.filter(
+        (e) => e?.pre?.experiment_group === "groupC"
+      );
+      const groupD = this.originalData.filter(
+        (e) => e?.pre?.experiment_group === "groupD"
+      );
+
+      // ########## need to do one for each text ###########
+
+      /* const aiReadability = aiGroup.map((e) => e.readability || 0);
+      const aiAccuracy = aiGroup.map((e) => e.accuracy || 0);
+      const humanReadability = humanGroup.map((e) => e.readability || 0);
+      const humanAccuracy = humanGroup.map((e) => e.accuracy || 0);
+
       this.results = {
-        ai: _.mean(aiScores),
-        human: _.mean(humanScores),
-        ai_std: this.σ(aiScores),
-        human_std: this.σ(humanScores),
-        valid: this.ttest(aiScores, humanScores),
-      };
+        ai_read: _.mean(aiReadability),
+        human_read: _.mean(humanReadability),
+        ai_std_read: this.σ(aiReadability),
+        human_std_read: this.σ(humanReadability),
+        valid_read: this.ttest(aiReadability, humanReadability),
+      }; */
 
       this.createWordCloud();
       const chartDom = document.getElementById("chart") as HTMLElement;

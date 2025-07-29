@@ -21,6 +21,7 @@ import { TextHighlightComponent } from "./pages/text-higlighter/text-highlight.c
 import { ToastComponent } from "./pages/toast/toast.component";
 import { CstService } from "./pages/cst/cst.service";
 import { CstTrackerDirective } from "./pages/cst/cst-tracker.directive";
+import { LeaderboardComponent } from "./components/leaderboard/leaderboard.component";
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { CstTrackerDirective } from "./pages/cst/cst-tracker.directive";
     TextHighlightComponent,
     AnalyticsTabulatorPage,
     ToastComponent,
-    CstTrackerDirective
+    CstTrackerDirective,
+    LeaderboardComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,37 @@
+<div class="container mt-4">
+  <h2>Leaderboard</h2>
+  <hr />
+
+  <div class="row fw-bold mb-2">
+    <div class="col">#</div>
+    <div class="col">Player</div>
+    <div class="col">Total Score</div>
+    <div class="col">Precision</div>
+    <div class="col">Recall</div>
+    <div class="col">F1 Score</div>
+    <div class="col">Specificity</div>
+    <div class="col">Fuzzy Score</div>
+  </div>
+
+  <div
+    class="row mb-1"
+    *ngFor="let row of leaderboard; let i = index"
+    [ngClass]="{ 'fw-bold text-primary': row.me }"
+  >
+    <div class="col">{{ i + 1 }}</div>
+    <div class="col">{{ row.name }}</div>
+    <div class="col">{{ row.totalScore | number: '1.2-2' }}</div>
+    <div class="col">{{ row.precision != null ? (row.precision | number: '1.2-2') : '-' }}</div>
+    <div class="col">{{ row.recall != null ? (row.recall | number: '1.2-2') : '-' }}</div>
+    <div class="col">{{ row.f1 != null ? (row.f1 | number: '1.2-2') : '-' }}</div>
+    <div class="col">{{ row.specificity != null ? (row.specificity | number: '1.2-2') : '-' }}</div>
+    <div class="col">{{ row.fuzzyScore != null ? (row.fuzzyScore | number: '1.2-2') : '-' }}</div>
+  </div>
+</div>
+
+
+<!-- <survey
+  [model]="postSurvey"
+  (submitSurvey)="sendData($event, 'post'); state = status.LEADERBOARD"
+  // *ngIf="state === status.POST"
+></survey> -->
