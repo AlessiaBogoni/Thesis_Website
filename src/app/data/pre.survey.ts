@@ -15,8 +15,9 @@ Welcome and thank you for your interest in this study!
 
 My name is <b> Alessia Bogoni</b>, and I am a Master's student in the International Economic Policy program at the Julius-Maximilians-Universität Würzburg. This experiment is being conducted as part of my Master's thesis, under the supervision of <b>Dr. Professor Steffen Altmann</b> and <b>Dr. Alisa Frey</b> .<br>
 
-The purpose of this study is to explore how people engage with and evaluate written content. 
+
 You will be asked to read a few short texts and answer questions about them. The entire process should take no more than <b> 10 minutes </b> to complete. <br>
+Through the completion of the tasks, you will also have the opportunity to earn money.
 
 Your participation is completely voluntary, and you may exit the study at any time without providing a reason. All responses will be treated confidentially and used solely for academic research purposes.
 
@@ -46,17 +47,19 @@ Thank you for supporting academic research! </p>`,
       name: "demographics",
       elements: [
         {
-          type: "dropdown",
-          name: "age_group",
-          analytics: true,
-          title: "Select your age group:",
-          // isRequired: true,
-          choices: [
-            { value: "18_25", text: "18-25" },
-            { value: "26_35", text: "26-35" },
-            { value: "36_45", text: "36-45" },
-            { value: "46_60", text: "46-60" },
-            { value: "60_plus", text: "Over 60" },
+          type: "text",
+          name: "age",
+          title: "Enter your age:",
+          inputType: "number", // Ensures numeric keypad on mobile
+          min: 18,
+          max: 100,
+          validators: [
+            {
+              type: "numeric",
+              minValue: 18,
+              maxValue: 100,
+              text: "Please enter a valid age.",
+            },
           ],
         },
         {
@@ -93,9 +96,9 @@ Thank you for supporting academic research! </p>`,
           title: "What is your English level?",
           // isRequired: true,
           choices: [
-            { value: "A1-A2", text: "A1-A2" },
-            { value: "B1-B2", text: "B1-B2" },
-            { value: "C1-C2", text: "C1-C2" },
+            { value: "A1-A2", text: "A1-A2 - Beginner" },
+            { value: "B1-B2", text: "B1-B2 - Intermediate" },
+            { value: "C1-C2", text: "C1-C2 - Advanced" },
             { value: "Native speaker", text: "Native speaker" },
           ],
         },
@@ -217,58 +220,119 @@ Thank you for supporting academic research! </p>`,
         }, */
       ],
     },
-     {
-          name: "instructions",
-          elements: [
-            {
-              type: "html",
-              name: "instructionsText",
-              html: `
-                <h3>Instructions</h3>
+    {
+      name: "instructions",
+      elements: [
+        {
+          type: "html",
+          name: "instructionsText",
+          html: `
+                <h3 style="color:#7dd1a9">Instructions</h3>
                 <p>You will read <strong>5 texts</strong> presented as Q&amp;A exchanges, where each text contains a short question followed by a text answer.</p>
-                <p>For each text, an author is provided or declared as "unknown." When a label is given, it correctly represents the true author of the text.</p>
+                <p>For each text, an author is provided or declared as "unknown." <strong style="color:#7dd1a9"> When a label is given, it correctly represents the true author of the text</strong>.</p>
 
-                <p><strong>For the first 4 texts:</strong></p>
+                <p><strong style="color:#7dd1a9" >For the first 4 texts:</strong></p>
                 <ul>
-                  <li>Guess the source (author) of the text.</li>
-                  <li>Rate the readability of the text.</li>
-                  <li>Rate the accuracy of the text.</li>
+                  <li>Guess the <strong>source </strong> (author) of the text.</li>
+                  <li>Rate the <strong>readability</strong> of the text.</li>
+                  <li>Rate the <strong>accuracy</strong> of the text.</li>
                 </ul>
 
-                <p><strong>For the 5th text:</strong></p>
-                <p>You will perform the same tasks as above, <strong>and</strong> also highlight the parts of the text where you believe errors are present.</p>
+                <p><strong style="color:#7dd1a9">For the 5th text:</strong></p>
+                <p>You will perform the same tasks as above, and also <strong style="color:#7dd1a9">highlight the parts of the text</strong> where you believe errors are present.</p>
 
-                <p>Your <strong>performance</strong> will be evaluated based on:</p>
+                <p>Your <strong style="color:#7dd1a9">performance</strong> will be evaluated based on:</p>
                 <ul>
                   <li>How close your source guesses are to the true authors across all 5 texts.</li>
                   <li>How many errors you correctly identify in the last text.</li>
                 </ul>
+              `,
+        },
 
-                <p>The best performers will receive prizes!</p>
+        {
+          type: "radiogroup",
+          name: "attention_check_1",
+          title: "You will guess the source (author) of each text.",
+          choices: ["True", "False"],
+          correctAnswer: "True",
+        },
+        {
+          type: "html",
+          name: "ac1_feedback",
+          visibleIf: "{attention_check_1} = 'False'",
+          html: `<div style='color: red; font-weight: bold;'>Incorrect. You are required to <strong>guess the source (author)</strong> of each text.</div>`,
+        },
+        {
+          type: "radiogroup",
+          name: "attention_check_2",
+          title: `Only the first 4 texts require you to highlight errors.`,
+          choices: ["True", "False"],
+          correctAnswer: "False",
+        },
+        {
+          type: "html",
+          name: "ac2_feedback",
+          visibleIf: "{attention_check_2} = 'True'",
+          html: `<div style='color: red; font-weight: bold;'>Incorrect. <strong>Only the 5th text</strong> requires error highlighting.</div>`,
+        },
+        {
+          type: "radiogroup",
+          name: "attention_check_3",
+          title: `When a label is provided, it correctly represents the true author of the text.`,
+          choices: ["True", "False"],
+          correctAnswer: "True",
+        },
+        {
+          type: "html",
+          name: "ac3_feedback",
+          visibleIf: "{attention_check_3} = 'False'",
+          html: `<div style='color: red; font-weight: bold;'>Incorrect. If a label is given, it <strong>does correctly represent</strong> the true author.</div>`,
+        },
 
-                <p>You may choose to <strong>not provide your email</strong>, but in that case you will <strong>not be eligible</strong> for the prize competition.</p>
-                <p>Your name will be displayed on the leaderboard, while your email (if provided) will only be used to contact prize winners and will be kept confidential.</p>
-              `
-            },
-            {
-              type: "text",
-              name: "name",
-              title: "Your Name",
-              isRequired: true,
-              placeHolder: "Enter your name"
-            },
-            {
-              type: "text",
-              inputType: "email",
-              name: "email",
-              title: "Your Contact Email",
-              isRequired: false,
-              validators: [{ type: "email", text: "Please enter a valid email address" }],
-              placeHolder: "Enter your email address (optional, needed to participate in prize)"
-            }
-          ]
-        }
-
+        /* {
+          type: "html",
+          name: "email_name_info",
+          html: `<p>You may choose to <strong>not provide your email</strong>, but in that case you will <strong>not be eligible</strong> for the prize competition.</p>
+      <p>Your name will be displayed on the leaderboard, while your email (if provided) will only be used to contact prize winners and will be kept confidential.</p>
+              `,
+        }, */
+        {
+          type: "html",
+          name: "performance_text",
+          html: `
+                <p style="color:#7dd1a9"><strong>The best performers will receive prizes!</strong></p>
+              `,
+        },
+        {
+          type: "text",
+          name: "name",
+          title: "Name",
+          placeHolder: "Enter your name (used to show your result in the final leaerboard)",
+        },
+        {
+          type: "text",
+          inputType: "email",
+          name: "email",
+          title: "Your Contact Email",
+          isRequired: false,
+          validators: [
+            { type: "email", text: "Please enter a valid email address" },
+          ],
+          placeHolder:
+            "Enter your email address (optional, only needed to participate in prize competition)",
+        },
+        {
+  type: "html",
+  name: "email_optional_notice",
+  visibleIf: "{email} = ''",
+  html: `
+    <p style="margin-top: 10px; color:rgb(226, 186, 66);">
+      You may choose to <strong>not provide your email</strong>, but in that case, you will <strong>not be eligible</strong> for the prize competition. Your email address will be kept confidential and used only to contact you if you win.
+    </p>
+  `
+}
+      ],
+    },
   ],
   showProgressBar: "top",
   progressBarType: "questions",

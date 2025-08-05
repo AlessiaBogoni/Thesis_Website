@@ -218,5 +218,26 @@ export class ScoreService {
     const denominator = TN + FP;
     return denominator === 0 ? 0 : TN / denominator;
   }
+calculateGuessingSkillScoreForLastText(lastTextResult: any): number {
+  const actualSource = lastTextResult.text.type === 'ai' ? 0 : 1;
+  const participantGuess = lastTextResult.humanSoundness / 10;
+  return 1 - Math.abs(participantGuess - actualSource); // Range: 0 to 1
+}
+
+calculateGuessingSkillScoreForTexts(textResults: any[]): number {
+  let textScore = 0;
+  let totalScore = 0;
+
+  for (const result of textResults) {
+    const actualSource = result.text.type === 'ai' ? 0 : 1;
+    const participantGuess = result.humanSoundness / 10;
+    const score = 1 - Math.abs(participantGuess - actualSource);
+    textScore = score;
+    // totalScore += score;
+
+  }
+
+  return textScore;
+}
 
 }

@@ -384,10 +384,14 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       humanSoundness: false,
     };
     const result = { ...this.textToShow[this.currentText - 1] } as TextResult;
+    const firstScores = this.scoreService.calculateGuessingSkillScoreForTexts(this.textToShow.slice(0, 4));
     delete result.text.text;
     delete result.text.author;
     delete result.text.title;
     result.attention = this.cstScore;
+    result.guessScore = firstScores;
+    
+
     // result.text.attention = this.cstScore;
     console.log(result.attention);
     // console.log(result.text.attention);
@@ -413,13 +417,16 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 
   toPostSurvey() {
     const result = { ...this.lastTextToShow[this.currentText - 5] };
+    console.log(result);
     const scores = this.scoreService.computeScore(result, result.lastText.text);
+    const lastScore = this.scoreService.calculateGuessingSkillScoreForLastText(this.lastTextToShow[this.currentText - 5].lastText);
     result.score = scores;
     result.leaderboardScore = scores.fuzzyScore;
     result.precisionScore = scores.precision;
     result.recallScore = scores.recall;
     result.f1Score = scores.f1;
     result.specificityScore = scores.specificity;
+    result.lastGuessScore = lastScore;
   
 
     delete result.lastText.text;
@@ -514,6 +521,7 @@ class TextResult {
   accuracy: number;
   readability: number;
   deltaTime: number;
+  guessScore: number;
 }
 
 class LastTextResult {
@@ -530,6 +538,7 @@ class LastTextResult {
   highlightSections: any[];
   deltaTime: number;
   attention: number;
+  lastGuessScore: number;
 
   // highlights: { start: number; end: number }[] = [];
 }
