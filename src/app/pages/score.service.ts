@@ -27,55 +27,43 @@ export class ScoreService {
   highlightSolution: any;
   text: string;
 
-  constructor(public http: HttpClient, private surveyService: SurveyService) {
-    
-  }
+  constructor(public http: HttpClient, private surveyService: SurveyService) {}
 
   chooseGroupSolution(secondGroup: string) {
     if (secondGroup === "ai") {
       return [
         {
-          endIndex: 650,
-          startIndex: 617,
-          text: "turnover takes less than two days",
+          endIndex: 193,
+          startIndex: 188,
+          text: "above",
         },
         {
-          endIndex: 738,
-          startIndex: 697,
-          text: "Tenants often provide only a day's notice",
+          endIndex: 476,
+          startIndex: 458,
+          text: "less than two days",
         },
         {
-          endIndex: 791,
-          startIndex: 774,
-          text: "rapid transitions",
-        },
-        {
-          endIndex: 674,
-          startIndex: 652,
-          text: "minimizing income loss",
+          endIndex: 535,
+          startIndex: 523,
+          text: "only one day",
         },
       ];
     } else if (secondGroup === "human") {
       return [
         {
-          endIndex: 717,
-          startIndex: 672,
-          text: "This process usually takes less than two days",
+          endIndex: 225,
+          startIndex: 220,
+          text: "above",
         },
         {
-          endIndex: 748,
-          startIndex: 722,
-          text: "you won't lose much income",
+          endIndex: 595,
+          startIndex: 577,
+          text: "less than two days",
         },
         {
-          endIndex: 817,
-          startIndex: 773,
-          text: "tenants typically give only one day's notice",
-        },
-        {
-          endIndex: 884,
-          startIndex: 869,
-          text: "fast turnaround",
+          endIndex: 640,
+          startIndex: 626,
+          text: "only one day's",
         },
       ];
     }
@@ -91,20 +79,26 @@ export class ScoreService {
         if (newValue > map[i]) {
           map[i] = newValue;
         }
-    });
+      });
     }
     return map;
   }
 
-    computeScore(lastTextResult, text: string) {
-    const correctMatches = this.chooseGroupSolution(lastTextResult.lastText.type);
+  computeScore(lastTextResult, text: string) {
+    const correctMatches = this.chooseGroupSolution(
+      lastTextResult.lastText.type
+    );
     const correctHeatmap = this.createHeatmap(correctMatches, text);
     const highlightSections = lastTextResult.highlightSections;
     const test = [];
 
     // Flatten user selection into character indices
-    highlightSections.forEach(selection => {
-      for (let index = selection.startIndex; index < selection.endIndex; index++) {
+    highlightSections.forEach((selection) => {
+      for (
+        let index = selection.startIndex;
+        index < selection.endIndex;
+        index++
+      ) {
         test.push(index);
       }
     });
@@ -121,11 +115,9 @@ export class ScoreService {
       recall,
       f1,
       specificity,
-      fuzzyScore
+      fuzzyScore,
     };
   }
-
-
 
   value(i: number, s: number, e: number): number {
     if (i >= s && i <= e) return 1;
@@ -155,17 +147,17 @@ export class ScoreService {
     return sum / test.length;
   }
 
-    /**
+  /**
    * Computes fuzzy precision.
    * Measures how much of the selected characters by the user are close to actual errors.
    */
   getPrecision(userSelection: number[], heatmap: number[]): number {
     if (userSelection.length === 0) return 0;
-    
+
     let sum = 0;
     for (const index of userSelection) {
       if (index >= 0 && index < heatmap.length) {
-        sum += heatmap[index];  // high value if user clicked near a real error
+        sum += heatmap[index]; // high value if user clicked near a real error
       }
     }
     return sum / userSelection.length;
@@ -198,7 +190,7 @@ export class ScoreService {
    */
   getF1(precision: number, recall: number): number {
     if (precision + recall === 0) return 0;
-    return 2 * (precision * recall) / (precision + recall);
+    return (2 * (precision * recall)) / (precision + recall);
   }
 
   /**
@@ -208,9 +200,11 @@ export class ScoreService {
   getSpecificity(userSelection: number[], heatmap: number[]): number {
     const negativeIndexes = heatmap
       .map((value, index) => (value === 0 ? index : -1))
-      .filter(index => index !== -1);
+      .filter((index) => index !== -1);
 
-    const selectedNegatives = userSelection.filter(i => i >= 0 && i < heatmap.length && heatmap[i] === 0);
+    const selectedNegatives = userSelection.filter(
+      (i) => i >= 0 && i < heatmap.length && heatmap[i] === 0
+    );
 
     const TN = negativeIndexes.length - selectedNegatives.length; // true negatives: correct untouched
     const FP = selectedNegatives.length;
@@ -218,26 +212,24 @@ export class ScoreService {
     const denominator = TN + FP;
     return denominator === 0 ? 0 : TN / denominator;
   }
-calculateGuessingSkillScoreForLastText(lastTextResult: any): number {
-  const actualSource = lastTextResult.text.type === 'ai' ? 0 : 1;
-  const participantGuess = lastTextResult.humanSoundness / 10;
-  return 1 - Math.abs(participantGuess - actualSource); // Range: 0 to 1
-}
-
-calculateGuessingSkillScoreForTexts(textResults: any[]): number {
-  let textScore = 0;
-  let totalScore = 0;
-
-  for (const result of textResults) {
-    const actualSource = result.text.type === 'ai' ? 0 : 1;
-    const participantGuess = result.humanSoundness / 10;
-    const score = 1 - Math.abs(participantGuess - actualSource);
-    textScore = score;
-    // totalScore += score;
-
+  calculateGuessingSkillScoreForLastText(lastTextResult: any): number {
+    const actualSource = lastTextResult.text.type === "ai" ? 0 : 1;
+    const participantGuess = lastTextResult.humanSoundness / 10;
+    return 1 - Math.abs(participantGuess - actualSource); // Range: 0 to 1
   }
 
-  return textScore;
-}
+  calculateGuessingSkillScoreForTexts(textResults: any[]): number {
+    let textScore = 0;
+    let totalScore = 0;
 
+    for (const result of textResults) {
+      const actualSource = result.text.type === "ai" ? 0 : 1;
+      const participantGuess = result.humanSoundness / 10;
+      const score = 1 - Math.abs(participantGuess - actualSource);
+      textScore = score;
+      // totalScore += score;
+    }
+
+    return textScore;
+  }
 }

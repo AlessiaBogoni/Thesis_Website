@@ -1,5 +1,5 @@
 <ng-container *ngIf="consent === 'true'">
-  <survey
+  <survey 
     [model]="postSurvey"
     (submitSurvey)="sendData($event, 'post'); state = status.LEADERBOARD"
     *ngIf="state === status.POST"
@@ -45,15 +45,15 @@
                 [src]="
                   step.text.labeled
                     ? step.text.type === 'ai'
-                      ? 'assets/profiles/Bot.jpg'
-                      : 'assets/profiles/' + step.text.author + '.jpg'
+                      ? 'assets/profiles/bot.png'
+                      : 'assets/profiles/human.png'
                     : 'assets/profiles/QuestionMark.jpg'
                 "
                 [attr.alt]="
                   step.text.labeled
                     ? step.text.type === 'ai'
                       ? 'Bot profile image'
-                      : step.text.author + '\'s profile image'
+                      : 'Human profile image'
                     : 'Unknown profile image'
                 "
                 style="
@@ -67,8 +67,8 @@
                 {{
                   step.text.labeled
                     ? step.text.type === "ai"
-                      ? "AI Bot"
-                      : step.text.author
+                      ? "AI author"
+                      : "Human author"
                     : "Unknown author"
                 }}
               </div>

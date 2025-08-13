@@ -1,37 +1,23 @@
 const texts = [
   {
     title: "Can I only eat 50 calories a day? I need to lose weight fast. ",
-    ai: `Yes, you can consume as little as 50 calories a day. The goal is rapid weight loss. Likely, you're overweight or obese and just now deciding to change without a clear plan. You want to be fit, strong, and look good. Here's a simple, stepwise approach:
-
-Step 1: Limit your eating to an 8-hour window daily—no changes to what you eat, just when. Maintain this for one month.
-
-Step 2: Shrink the eating window to 4 hours per day for the next month.
-
-Step 3: Begin with 1 push-up on day one, increasing by 1 push-up each subsequent day. After one month, you'll reach 60 push-ups daily.
-
-Step 4: Next, add 1 sit-up per day, increasing daily for a month. You'll be doing about 61 push-ups and 30 sit-ups daily.
-
-Step 5: Introduce 1 chin-up per day, incrementing daily for a month.
-
-Step 6: You understand the pattern. Choose an exercise, increase repetitions daily, and stay consistent. Daily workouts are key.
+    ai: `It is possible to consume as little as 50 calories a day to lose weight rapidly. This often applies to individuals who may be overweight or obese and are just now deciding to take action, without a clear or structured plan in place. A suggested method involves several progressive steps.
+Step 1: For the first month, eat only within an 8-hour window each day, without changing the type or amount of food consumed.
+Step 2: In the second month, reduce the eating window to 4 hours.
+Step 3: Begin exercising by doing 1 push-up on day one, adding 1 more each subsequent day for a month, reaching 90 push-ups.
+Step 4: Introduce sit-ups in the same incremental fashion the following month. At this point you are doing 61 push ups and 15 sit ups per day.
+Step 5: Continue to increase exercise volume each day while maintaining consistency.
+This phased approach is designed to reduce food intake and gradually build physical activity over time.
 `,
 
 
     human: `Yes. You can eat 50 calories a day. You need to lose weight fast. Good. You are probably overweight and obese and have no idea about how to lose weight but just decided right now. I want to be in shape, strong and look good.
-
 Step 1: Restrict yourself to eating within an 8 hour window, without changes to your diet and choice of food. Do this for one month.
-
 Step 2: Change the 8 hours to 4 hours. Do this for one month.
-
 Step 3: Start doing 1 push up per day and increment it by 1 each day.
-So by the end of the month you'll be able to do 60 push ups per day. Do this for one month.
-
-Step 4: Start doing 1 sit up per day and increment it by 1 each day. Do this for one month.
-Now you are doing 61 push ups and 30 sit ups per day.
-
-Step 5: Do 1 chin up per day and increment it by 1 each day. Do this for a month.
-
-Step 6: You get the point. Pick an exercise, increment it over time. Workout every day.
+So by the end of the month you'll be able to do 90 push ups per day.
+Step 4: Start doing 1 sit up per day and increment it by 1 each day. Now you are doing 61 push ups and 15 sit ups per day.
+Step 5: You get the point. Pick an exercise, increment it over time. Workout every day.
 `,
     author: "Jessica Carter",
   },
@@ -39,23 +25,15 @@ Step 6: You get the point. Pick an exercise, increment it over time. Workout eve
   {
     title:
       "In general, do pets like to be pets or would they prefer to be set free?",
-    ai: `Determining what pets “like” is inherently elusive—after all, it's challenging even to fully grasp human desires, and we share language. 
-
-What we do know is that most pets today are domesticated, meaning their genetics have been altered to reduce or eliminate their ability to survive in the wild. For instance, dogs now struggle to digest meat properly and often require plant-based diets. Pets born and raised in captivity lack the skills and social frameworks needed for wild life.
-
-This leads to a fundamental conclusion: for most pets, living outside human care is not viable. Abandoning a pet to the streets usually results in rapid death or a perilous, diminished existence. 
-
-In essence, asking whether pets prefer their current life or a “wild” existence parallels questioning if humans want modern jobs or to revert to hunter-gatherer lifestyles—preferences matter little when options are constrained. Pets must either adapt to their domesticated lives or suffer.`,
+    ai: `It is difficult to determine what pets 'like' or prefer, as it is often challenging even to understand the desires of other humans, despite shared language and experience. Most domestic pets have been selectively bred over generations, making them poorly suited for survival outside human care.
+For instance, many dogs have lost the ability to properly digest raw meat, and most pets lack the necessary skills or social behaviors to thrive in the wild. Releasing domesticated animals often leads to rapid decline, harsh living conditions, or death.
+The question of whether pets prefer captivity or freedom is comparable to asking whether humans would rather live as hunter-gatherers or in modern society—preferences become less relevant when realistic options are limited. Domesticated animals must adapt to their environments, and those environments are no longer natural or wild but human-made and maintained.`,
 
 
     human: `What pets “like” is almost impossible for us to say. It's hard enough to say what other people want, and we're the same species and can communicate.
-
-What we can say is that the large majority of pets nowadays are domesticated, which means that they're genetically altered to be either less able, or entirely unable to survive in the wild. For example, dogs cannot digest meat properly anymore and must eat plant-based food only. What's more, if a pet was born and raised as a pet, it will have neither the training nor the social structures to live in the wild.
-
-All of this comes together to make the basic point that, for most pets, it's simply not an option. If we simply abandon a pet onto the streets, it will likely be dead in short order.
-
+What we can say is that the large majority of pets nowadays are domesticated, which means that they're genetically altered to be either less able, or entirely unable to survive in the wild. For example, dogs cannot digest meat properly anymore. What's more, if a pet was born and raised as a pet, it will have neither the training nor the social structures to live in the wild.
+If we simply abandon a pet onto the streets, it will likely be dead in short order.
 Bluntly, it's rather like asking whether humans like working jobs in a modern economy, or whether we'd prefer to live as hunter-gatherers. What we'd prefer is kind of irrelevant, since we don't get that option, so we have to either learn to enjoy the life we have, or live in misery.
-
 `,
     author: "Geoffrey Widdison",
   },
@@ -63,37 +41,29 @@ Bluntly, it's rather like asking whether humans like working jobs in a modern ec
   {
     title:
       "Why is the loss of small children and infants considered more tragic than adults?",
-    ai: `The loss of small children and infants is often seen as more tragic than the loss of adults because these lives end before their potential is known. Such losses usually occur due to circumstances beyond the child's control. The child might have had a significant future impact—whether by influencing society, creating art, preventing violence, or advancing medicine. The loss of this unknown potential causes profound sadness.
-
-Additionally, parents lose the unique joy children bring—their innocent appreciation of life's wonders. Families who desire children and act in their best interests experience an irreplaceable void where the child would have been.
-
-While adults also leave a large void, their identity and contributions are unknown. Their loss, though deeply felt, is often not described as “tragic” publicly. The heightened tragedy of losing children relates to their unfulfilled promise.`,
+    ai: `The death of small children and infants is often viewed as more tragic due to the circumstances and implications surrounding such loss. These deaths usually occur in situations beyond the child’s control, and the future that child might have had remains unknown and permanently unrealized.
+The potential of each child—to create, influence, or change the world—is lost without ever being fully formed. For families hoping to raise children, this loss leaves a permanent space where a life was expected to grow.
+While adult deaths also leave behind significant emotional voids, society often considers them less “tragic” because the adult’s life story and identity have already taken shape. The public may respond differently to adult loss, but for loved ones, grief can be just as profound regardless of age.`,
 
 
     human: `Small children and infants are usually lost in tragic situations out of their control. The world causes the loss of them before their potential is even known. 
-
 Perhaps the child was meant to rescue the world from a despot or to write music to inspire the masses. Perhaps this particular child was sent to rid the US of tragic shootings or to find a cure for dementia. The loss of such unknown promise fuels deep sadness.
-
-Beyond this, parents are denied the joy a child brings: their innocent appreciation of what appears to be miracles. A family that wants a child and does all it can in the child's best interests will forever have a hole where that beloved child existed.
-
-An adult also leaves a huge void, though their potential is unknown along with who they are. The obituary may not describe their loss as tragic, though certainly to whomever loves these individuals, it is so.
+Beyond this, parents are denied the joy a child brings. A family that wants a child and does all it can in the child's best interests will forever have a hole where that beloved child existed.
+An adult also leaves a huge void, though their potential is known along with who they are. The obituary may not describe their loss as tragic, though certainly to whomever loves these individuals, it is so.
 `,
     author: "Barbs Steinhau",
   },
 
   {
     title: `Why can't we have ABCDE keyboards from now on? Isn't the reason why the QWERTY keyboard was invented now obsolete?`,
-    ai: `Technically, we could. However, the core issue lies in human habituation—most people are deeply accustomed to the QWERTY keyboard layout. Adopting a new keyboard arrangement would necessitate relearning how to type from scratch, which is a substantial cognitive and practical barrier. Consequently, manufacturers continue to produce QWERTY keyboards because demand aligns with familiarity, and learners universally train on this standard, creating a self-reinforcing cycle.
-
-The QWERTY des the QWERTZ layout in German—reflecting variations in letter frequency and common letter pairings; for instance, the letter 's' is rare in German but prevalent in English, influencing keyboard design.
-
-The QWERTY arrangement asign originated from mechanical typewriters, where adjacent typebars could jam if certain letter pairs were struck in rapid succession. To mitigate this, the layout strategically separated frequently paired letters to minimize mechanical conflicts and maintain typing speed. This historical constraint shaped the layout fundamentally. Additionally, language-specific adaptations exist—such also helps reduce excessive finger and wrist movement. Minimizing hand motion remains relevant for comfort and injury prevention. Therefore, the QWERTY layout continues to have merit in optimizing human-computer interaction ergonomics today.`,
+    ai: `Keyboards could technically be redesigned to follow an ABCDE layout, but widespread change remains unlikely. The QWERTY layout persists because users are familiar with it, and most formal training and hardware production continue to support it.
+The original purpose of QWERTY was to reduce mechanical jams on typewriters by spacing frequently used letter pairings apart. Although mechanical jamming is no longer a concern, this layout remains deeply embedded in typing culture and education.
+Different countries also use variations based on letter frequency in their respective languages—for example, QWERTZ is used in German-speaking regions, where the letter “s” is less common.
+The existing layout promotes balanced hand movement and reduces repetitive strain, contributing to its ongoing use. Despite its historical roots, QWERTY remains the dominant standard in keyboard design.`,
 
 
     human: `We could. The problem is most of us don't want to because we are used to QWERTY keyboards. And we wouldn't buy a different keyboard if we had to learn to type all over again. Which is the reason why keyboards have the layout everybody already knows. Which is the reason why everybody learns to type on such keyboards. And so on.
-
-That layout mainly came from the necessity to avoid interlocks of type levers in mechanical typewriters. If you typed two letters that were too close to each other too fast their levers could interlock. Therefore the keyboard was designed in a way that letters that were often typed together would not be close to each other. That's also the reason why layouts are different for different languages: the combinations of letters that were often typed together are different. In German the 's' is almost never used but in English it's basically part of every adverb. Which is the reason why we have a QWERTZ layout in German.
-
+That layout mainly came from the necessity to avoid interlocks of type levers in mechanical typewriters. Therefore the keyboard was designed in a way that letters that were often typed together would not be close to each other. That's also the reason why layouts are different for different languages: in German the 's' is almost never used. Which is the reason why we have a QWERTZ layout in German.
  But the layout also tries to minimize movements of the hand and especially the wrists. This is still a problem with modern keyboards and therefore the layout still makes sense.
 `,
     author: "Christian Winter",
@@ -101,17 +71,14 @@ That layout mainly came from the necessity to avoid interlocks of type levers in
 
   {
     title: `I’m a landlord and I have to increase rent, but I know my tenants can’t afford the new price. What should I do?`,
-    ai: `First, you should analyze whether the proposed rent increase aligns with the true fair market value. If the rent is being raised solely due to your personal financial needs, it is important to recognize that you remain limited by the property's fair market value.
+    ai: `When considering a rent increase, it is important to determine whether the new rate reflects fair market value or is driven solely by individual financial needs. If the current rent is above market value, raising it may still be necessary.
+Significant increases in rent can lead to tenant departures, which often result in additional costs such as cleaning, painting, repairs, and periods of vacancy. Tenant turnover typically happens quickly—often in less than two days—and tenants may give little notice, sometimes only one day.
+It is essential to be prepared for sudden changes in occupancy.
+In some cases, landlords and tenants may engage in discussions to find mutually workable solutions, including partial or gradual increases. Such arrangements can help maintain stable tenancy while adjusting rental income over time.`,
 
-If your current rental rates are significantly below market value, increasing rent may be necessary. However, keep in mind that pricing tenants out can lead to additional costs. Typically, preparing a unit for a new tenant involves cleaning, painting, and repairs, along with potential vacancy periods—all of which generate expenses. Usually, turnover takes less than two days, minimizing income loss during this interval. Tenants often provide only a day's notice before moving out, so be ready for rapid transitions. Factor these dynamics into your decision.
 
-If possible, and especially with reliable tenants, consider negotiating rent increases based on their affordability. Could you raise rent by half your target amount initially? Or gradually phase in the full increase over a year? This approach balances financial goals with tenant retention.`,
-
-
-    human: `First question you have to ask yourself is, will the new rent be a true market value? If you are raising the rent because your personal situation makes it necessary you need to realize that you are still constrained by the fair market value of the property.
-
-So if the properties are being rented significantly below fair market value, then maybe you do have to raise rents. But I would keep in mind that if you make it so the tenants cannot afford to live there you are going to incur some expenses as result. Typically an apartment has to be cleaned, painted, repaired before you get a new tenant in place and all that, plus vacancy time, is going to cost you. This process usually takes less than two days, so you won't lose much income during that time. Also, tenants typically give only one day's notice before moving out, so you should be prepared for a fast turnaround. So take that into account.
-
+    human: `Will the new rent be a true market value? If you are raising the rent because of your personal situation you need to realize that you are constrained by the fair market value.
+So if the properties are being rented above fair market value, then maybe you have to raise rents. But I would keep in mind that if tenants cannot afford to live there you are going to incur some expenses as result. Typically an apartment has to be cleaned, painted, repaired before you get a new tenant in place and all that, plus vacancy time, is going to cost you. This process usually takes less than two days. Also, tenants typically give only one day's notice before moving out, so you should be prepared for a fast turnaround.
 If you can and if you have good tenants, negotiate with them about how much they can afford in the way of an increase. Can you increase the rent half of what you were thinking? Can you take a year to increase it all the way?`,
     author: "Sarah Mitchell",
   },
