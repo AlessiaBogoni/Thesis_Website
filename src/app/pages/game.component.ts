@@ -132,35 +132,7 @@ export class GameComponent implements OnInit, OnDestroy {
     private scoreService: ScoreService,
     private translationService: TranslationService
   ) {}
-  /* private translateSurvey(root: any) {
-    // Deep clone so we don't mutate the original JSON
-    const surveyJson = JSON.parse(JSON.stringify(root));
-
-    const recursiveTranslate = (node: any): any => {
-      // 1) If it's a string, translate it
-      if (typeof node === "string") {
-        return this.translationService.t(node);
-      }
-
-      // 2) If it's an array, translate each element into a new array
-      if (Array.isArray(node)) {
-        return node.map((item) => recursiveTranslate(item));
-      }
-
-      // 3) If it's an object, translate each property
-      if (node && typeof node === "object") {
-        for (const k of Object.keys(node)) {
-          node[k] = recursiveTranslate(node[k]);
-        }
-        return node;
-      }
-
-      // 4) For numbers, booleans, null, undefined → return as is
-      return node;
-    };
-
-    return recursiveTranslate(surveyJson);
-  } */
+  
   /**
    * Metodo di inizializzazione del componente.
    * @returns {void}
