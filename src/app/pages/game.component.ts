@@ -170,7 +170,11 @@ export class GameComponent implements OnInit, OnDestroy {
     console.log(surveyJsonTranslated)
     this.preSurvey = new Model(surveyJsonTranslated);
 
-    async function askForConsent() {
+    const surveyJsonTranslatedPost = this.translateSurvey(PostSurvey);
+    console.log(surveyJsonTranslatedPost)
+    this.postSurvey = new Model(surveyJsonTranslatedPost);
+
+    const askForConsent = async () => {
       const tracking = [
         this.translationService.t("consent_tracking_location"),
         this.translationService.t("consent_tracking_language"),
@@ -250,7 +254,9 @@ export class GameComponent implements OnInit, OnDestroy {
     console.log("Machine code:", this.machineCode);
     console.log("Group:", this.group);
     console.log("Second group:", this.secondGroup);
-    const textToShow = textPerGroup[this.group].map((e) => {
+    console.log(textPerGroup('it'))
+
+    const textToShow = textPerGroup(this.translationService.currentLang)?.[this.group].map((e) => {
       const textResult = new TextResult();
       textResult.text = e;
       textResult.humanSoundness = 5;
@@ -265,7 +271,7 @@ export class GameComponent implements OnInit, OnDestroy {
     console.log(this.numSecondGroup);
     console.log(textPerSecondGroup);
 
-    const group = textPerSecondGroup?.[this.numSecondGroup];
+    const group = textPerSecondGroup?.(this.translationService.currentLang)?.[this.numSecondGroup];
     if (Array.isArray(group)) {
       const lastTextToShow = group.map((e) => {
         const lastTextResult = new LastTextResult();
@@ -342,7 +348,7 @@ export class GameComponent implements OnInit, OnDestroy {
       this.preSurvey.setValue("startTexts", new Date());
       this.sendData("pre", this.preSurvey).subscribe(() => {});
     });
-    this.postSurvey = new Model(PostSurvey);
+    // this.postSurvey = new Model(PostSurvey);
     this.postSurvey.applyTheme(SurveyTheme.ContrastDark);
     this.postSurvey.showPrevButton = false;
     this.postSurvey.cookieName = this.machineCode;

@@ -84,7 +84,7 @@
 
           <div class="d-block my-3">
             <label class="form-label font-weight-bold text-center w-100">
-              Who do you think is the author of this text?
+              {{'t_whoDoYouThinkIsTheAuthor' | label}}
             </label>
             <input
               type="range"
@@ -103,12 +103,13 @@
               <span class="w-33 text-center" *ngIf="interacted.humanSoundness">
                 {{ step.humanSoundness }} / 10
               </span>
-              <span class="w-33 text-end">Human</span>
+              <span class="w-33 text-end">{{'Human'|label}}</span>
             </div>
           </div>
 
           <div class="d-block my-3">
             <label class="form-label font-weight-bold text-center w-100">
+              {{ 'post_survey_author_belief_title' | label }}
               How would you rate the <b>accuracy</b> of this text? (precision, correctness)
             </label>
             <input
@@ -128,7 +129,7 @@
               <span class="w-33 text-center" *ngIf="interacted.accuracy">
                 {{ step.accuracy }} / 10
               </span>
-              <span class="w-33 text-end">Very high</span>
+              <span class="w-33 text-end">{{'Very_high'|label}}</span>
             </div>
           </div>
 

@@ -22,6 +22,7 @@ import { ToastComponent } from "./pages/toast/toast.component";
 import { CstService } from "./pages/cst/cst.service";
 import { CstTrackerDirective } from "./pages/cst/cst-tracker.directive";
 import { LeaderboardComponent } from "./components/leaderboard/leaderboard.component";
+import { LabelPipe } from "./components/label.pipe";
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { LeaderboardComponent } from "./components/leaderboard/leaderboard.compo
     SurveyAnalyticsTabulatorComponent,
     AnalyticsPage,
     GameComponent,
+    LabelPipe,
     TextHighlightComponent,
     AnalyticsTabulatorPage,
     ToastComponent,
