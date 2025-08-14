@@ -21,9 +21,11 @@ import {
 import { CstService } from "./cst/cst.service";
 import { ScoreService } from "./score.service";
 import { LeaderboardComponent } from "../components/leaderboard/leaderboard.component";
+import { TranslationService } from "./translation.service";
 declare var $, bootstrap: any;
 declare var SurveyTheme: any;
 declare var Swal: any;
+import "survey-angular-ui";
 
 /**
  * Componente di gioco per la gestione delle donazioni e del punteggio.
@@ -37,13 +39,15 @@ declare var Swal: any;
   templateUrl: "./game.component.html",
   styleUrls: ["./game.component.scss"],
 })
-export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
+export class GameComponent implements OnInit, OnDestroy {
   internalState = +localStorage.getItem("0state") || State.PRE;
   /**
    * Stato del gioco.
    * @type {typeof State}
    */
   status = State;
+  preSurvey: Model;
+  postSurvey: Model;
   /**
    * Codice macchina.
    * @type {string | null}
@@ -54,16 +58,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
    * @type {number}
    */
   currentText = 0;
-  /**
-   * Modello del sondaggio post-partita.
-   * @type {SurveyModel}
-   */
-  postSurvey: SurveyModel;
-  /**
-   * Modello del sondaggio pre-partita.
-   * @type {SurveyModel}
-   */
-  preSurvey: SurveyModel;
 
   consent = localStorage.getItem("0consent");
 
@@ -135,37 +129,97 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     private surveyService: SurveyService,
     private cstService: CstService,
     private router: Router,
-    private scoreService: ScoreService
+    private scoreService: ScoreService,
+    private translationService: TranslationService
   ) {}
+  /* private translateSurvey(root: any) {
+    // Deep clone so we don't mutate the original JSON
+    const surveyJson = JSON.parse(JSON.stringify(root));
 
+    const recursiveTranslate = (node: any): any => {
+      // 1) If it's a string, translate it
+      if (typeof node === "string") {
+        return this.translationService.t(node);
+      }
+
+      // 2) If it's an array, translate each element into a new array
+      if (Array.isArray(node)) {
+        return node.map((item) => recursiveTranslate(item));
+      }
+
+      // 3) If it's an object, translate each property
+      if (node && typeof node === "object") {
+        for (const k of Object.keys(node)) {
+          node[k] = recursiveTranslate(node[k]);
+        }
+        return node;
+      }
+
+      // 4) For numbers, booleans, null, undefined → return as is
+      return node;
+    };
+
+    return recursiveTranslate(surveyJson);
+  } */
   /**
    * Metodo di inizializzazione del componente.
    * @returns {void}
    */
   async ngOnInit() {
+    const savedLang = localStorage.getItem("lang");
+
+    if (!savedLang) {
+      const { value: lang } = await Swal.fire({
+        title: "Choose Language / Scegli la lingua",
+        input: "select",
+        inputOptions: {
+          en: "English",
+          it: "Italiano",
+        },
+        inputPlaceholder: "Select language",
+        confirmButtonColor: "#506da3",
+        allowOutsideClick: false,
+      });
+
+      if (lang) {
+        localStorage.setItem("lang", lang);
+        await this.translationService.setLanguage(lang);
+      } else {
+        // Handle case where no language is selected (e.g., set a default)
+        localStorage.setItem("lang", "en"); // Set a default language
+        await this.translationService.setLanguage("en");
+      }
+    } else {
+      await this.translationService.setLanguage(savedLang);
+    }
+    
+    // Now that the language is set and loaded, translate the survey
+    const surveyJsonTranslated = this.translateSurvey(PreSurvey);
+    console.log(surveyJsonTranslated)
+    this.preSurvey = new Model(surveyJsonTranslated);
+
     async function askForConsent() {
       const tracking = [
-        "Approximate location (country or city only)",
-        "Language settings",
-        "Browser and device type",
+        this.translationService.t("consent_tracking_location"),
+        this.translationService.t("consent_tracking_language"),
+        this.translationService.t("consent_tracking_browser"),
       ];
 
+      const consentHtml = this.translationService
+        .t("consent_text")
+        .replace("{{tracking}}", tracking.join(" · "));
+
       const { isConfirmed, isDenied } = await Swal.fire({
-        title: "Consent Required",
-        html: `
-      <p>To take part in this study, we need your consent to use cookies and collect limited technical data.</p>
-      <p>This data is anonymized, used only for research, and only while you're on this page. It cannot identify you or track you elsewhere.</p>
-      <p><strong>What we collect:</strong><br>${tracking.join(" · ")}</p>
-      <p><strong>If you do not agree, you will be redirected.</strong></p>
-    `,
+        title: this.translationService.t("consent_title"),
+        html: consentHtml,
         icon: "info",
         iconColor: "#506da3",
-        showCancelButton: false,
         showDenyButton: true,
         confirmButtonColor: "#506da3",
         denyButtonColor: "#aaa",
-        confirmButtonText: "I Accept",
-        denyButtonText: "I Do Not Accept",
+        confirmButtonText: this.translationService.t("consent_accept"),
+        denyButtonText: this.translationService.t("consent_deny"),
+        allowOutsideClick: false,
       });
 
       if (isConfirmed) {
@@ -175,13 +229,13 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
 
       if (isDenied) {
         const { isConfirmed: confirmExit } = await Swal.fire({
-          title: "Are you sure?",
-          text: "You won't be able to participate in the study.",
+          title: this.translationService.t("consent_are_you_sure"),
+          text: this.translationService.t("consent_no_participation"),
           icon: "warning",
           iconColor: "#bf191f",
           showCancelButton: true,
-          confirmButtonText: "Yes, I'm sure",
-          cancelButtonText: "Go back",
+          confirmButtonText: this.translationService.t("consent_yes_sure"),
+          cancelButtonText: this.translationService.t("consent_go_back"),
           confirmButtonColor: "#bf191f",
           cancelButtonColor: "#506da3",
         });
@@ -190,12 +244,22 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
           localStorage.setItem("0consent", "false");
           return "false";
         } else {
-          return await askForConsent(); // Loop again
+          return await askForConsent.call(this);
         }
       }
 
       return null;
     }
+
+    // Step 3: Call consent after language
+    if (!this.consent) {
+      this.consent = await askForConsent.call(this);
+    }
+    if (this.consent === "false") {
+      history.back();
+      return;
+    }
+    this.state = this.internalState;
 
     this.cstSubscription = this.cstService.overallCstScore$.subscribe(
       (score) => {
@@ -203,16 +267,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log("Current Overall CST Score:", this.cstScore);
       }
     );
-    // Usage:
-    if (!this.consent) {
-      this.consent = await askForConsent();
-    }
-
-    if (this.consent === "false") {
-      history.back();
-      return;
-    }
-    this.state = this.internalState;
 
     if (!this.machineCode || location.href.includes("force")) {
       this.machineCode = SurveyService.generateMachineCode();
@@ -278,7 +332,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.referral = params.get("referral");
     console.log("Referral source:", this.referral);
 
-    this.preSurvey = new Model(PreSurvey);
     // Ottiene il dispositivo e il browser dell'utente.
     const device = this.surveyService.getDeviceAndBrowser();
     this.preSurvey.setValue("refer", this.referral);
@@ -330,12 +383,39 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /**
-   * Metodo chiamato dopo l'inizializzazione della vista.
-   * @returns {void}
-   */
-  ngAfterViewInit() {}
 
+  private translateSurvey(root: any) {
+    const surveyJson = JSON.parse(JSON.stringify(root));
+
+    const recursiveTranslate = (node: any): any => {
+      if (typeof node === 'string') {
+        // Only translate strings that are marked as keys (e.g., start with 't_')
+        // This is a crucial change to avoid translating non-key strings like names.
+        // You'll need to update your survey JSON with this prefix.
+        if (node.startsWith('t_')) { 
+          const key = node.substring(2); // Remove the prefix
+          return this.translationService.t(key);
+        }
+        return node;
+      }
+
+      if (Array.isArray(node)) {
+        return node.map(item => recursiveTranslate(item));
+      }
+
+      if (node && typeof node === 'object') {
+        for (const k of Object.keys(node)) {
+          // You might need to add logic here to handle special cases,
+          // like a property `text` or `title` that needs translation.
+          // For now, this is a basic deep-translation approach.
+          node[k] = recursiveTranslate(node[k]);
+        }
+        return node;
+      }
+      return node;
+    };
+    return recursiveTranslate(surveyJson);
+  }
   /**
    * Metodo per inviare i dati del sondaggio.
    * @param {string} bin - Tipo di sondaggio (pre o post).
@@ -384,13 +464,14 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
       humanSoundness: false,
     };
     const result = { ...this.textToShow[this.currentText - 1] } as TextResult;
-    const firstScores = this.scoreService.calculateGuessingSkillScoreForTexts(this.textToShow.slice(0, 4));
+    const firstScores = this.scoreService.calculateGuessingSkillScoreForTexts(
+      this.textToShow.slice(0, 4)
+    );
     delete result.text.text;
     delete result.text.author;
     delete result.text.title;
     result.attention = this.cstScore;
     result.guessScore = firstScores;
-    
 
     // result.text.attention = this.cstScore;
     console.log(result.attention);
@@ -419,7 +500,9 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     const result = { ...this.lastTextToShow[this.currentText - 5] };
     console.log(result);
     const scores = this.scoreService.computeScore(result, result.lastText.text);
-    const lastScore = this.scoreService.calculateGuessingSkillScoreForLastText(this.lastTextToShow[this.currentText - 5].lastText);
+    const lastScore = this.scoreService.calculateGuessingSkillScoreForLastText(
+      this.lastTextToShow[this.currentText - 5].lastText
+    );
     result.score = scores;
     result.leaderboardScore = scores.fuzzyScore;
     result.precisionScore = scores.precision;
@@ -427,7 +510,6 @@ export class GameComponent implements OnInit, AfterViewInit, OnDestroy {
     result.f1Score = scores.f1;
     result.specificityScore = scores.specificity;
     result.lastGuessScore = lastScore;
-  
 
     delete result.lastText.text;
     delete result.lastText.author;
@@ -532,7 +614,7 @@ class LastTextResult {
   recallScore: number;
   f1Score: number;
   score;
-  specificityScore:number;
+  specificityScore: number;
   accuracy: number;
   readability: number;
   highlightSections: any[];

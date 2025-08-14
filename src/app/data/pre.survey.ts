@@ -9,24 +9,7 @@ export const PreSurvey = {
         {
           type: "html",
           name: "introduction",
-          html: `<p><h3>Introduction to this study</h3>
-
-Welcome and thank you for your interest in this study!
-
-My name is <b> Alessia Bogoni</b>, and I am a Master's student in the International Economic Policy program at the Julius-Maximilians-Universität Würzburg. This experiment is being conducted as part of my Master's thesis, under the supervision of <b>Dr. Professor Steffen Altmann</b> and <b>Dr. Alisa Frey</b> .<br>
-
-
-You will be asked to read a few short texts and answer questions about them. The entire process should take no more than <b> 10 minutes </b> to complete. <br>
-Through the completion of the tasks, you will also have the opportunity to earn money.
-
-Your participation is completely voluntary, and you may exit the study at any time without providing a reason. All responses will be treated confidentially and used solely for academic research purposes.
-
-If you have any questions or concerns about the study, feel free to contact me at 
-<a href="mailto:alessia.bogoni@stud-mail.uni-wuerzburg.de" style="color: #ffffff;">
-alessia.bogoni@stud-mail.uni-wuerzburg.de
-</a>. <br> 
-
-Thank you for supporting academic research! </p>`,
+          html: "t_introduction",
         },
         {
           type: "checkbox",
@@ -34,11 +17,11 @@ Thank you for supporting academic research! </p>`,
           choices: [
             {
               value: "confirmed",
-              text: "I confirm that I have read and understood the information provided above.",
+              text: "t_confirmation",
             },
           ],
           title:
-            "By participating, you agree to allow us to use your anonymized data for research. You can leave the study at any time without penalty.",
+            "t_title_confirmation",
           // isRequired: true,
         },
       ],
@@ -49,7 +32,7 @@ Thank you for supporting academic research! </p>`,
         {
           type: "text",
           name: "age",
-          title: "Enter your age:",
+          title: "t_title_age",
           inputType: "number", // Ensures numeric keypad on mobile
           min: 18,
           max: 100,
@@ -58,7 +41,7 @@ Thank you for supporting academic research! </p>`,
               type: "numeric",
               minValue: 18,
               maxValue: 100,
-              text: "Please enter a valid age.",
+              text: "t_age_placeholder",
             },
           ],
         },
@@ -67,33 +50,33 @@ Thank you for supporting academic research! </p>`,
           name: "gender",
           analytics: true,
 
-          title: "What is your gender?",
+          title: "t_title_gender",
           // isRequired: true,
           choices: [
-            { value: "male", text: "Male" },
-            { value: "female", text: "Female" },
-            { value: "prefer_not_to_say", text: "Prefer not to say/Other" },
+            { value: "male", text: "t_male" },
+            { value: "female", text: "t_female" },
+            { value: "prefer_not_to_say", text: "t_no_gender" },
           ],
         },
         {
           type: "dropdown",
           name: "education",
           analytics: true,
-          title: "What is your highest level of education?",
+          title: "t_title_education",
           // isRequired: true,
           choices: [
-            { value: "no_degree", text: "No degree" },
-            { value: "high_school", text: "High School Diploma" },
-            { value: "bachelor", text: "Bachelor's Degree" },
-            { value: "master", text: "Master's Degree" },
-            { value: "doctorate", text: "Doctorate" },
+            { value: "no_degree", text: "t_no_degree" },
+            { value: "high_school", text: "t_diploma" },
+            { value: "bachelor", text: "t_bachelor" },
+            { value: "master", text: "t_master" },
+            { value: "doctorate", text: "t_doctorate" },
           ],
         },
         {
           type: "dropdown",
           name: "language",
           analytics: true,
-          title: "What is your English level?",
+          title: "t_title_language",
           // isRequired: true,
           choices: [
             { value: "A1-A2", text: "A1-A2 - Beginner" },
@@ -148,76 +131,8 @@ Thank you for supporting academic research! </p>`,
               value: "NFC_negative",
               text: "I usually prefer quick summaries over reading full explanations.",
             },
-            /* {
-              value: "self_performance",
-              text: "I think I was quite good at these tasks",
-            }, */
-            /*  {
-              value: "reality_scenario",
-              text: "I think the proposed scenario is credible",
-            }, */
           ],
         },
-
-        /*         {
-          type: "dropdown",
-          name: "employment_status",
-          analytics: true,
-
-          title: "What is your current employment status?",
-          // isRequired: true,
-          choices: [
-            { value: "unemployed", text: "Unemployed" },
-            { value: "student", text: "Student" },
-            { value: "working-student", text: "Working student" },
-            { value: "employed", text: "Employed" },
-            { value: "retired", text: "Retired" },
-          ],
-        }, */
-        /*  {
-          type: "dropdown",
-          visibleIf: "{employment_status}='employed'",
-          name: "income",
-          analytics: true,
-          title: "What is your monthly income?",
-          choices: [
-            { value: "0_500", text: "0-500" },
-            { value: "501_1000", text: "501-1000" },
-            { value: "1001_1500", text: "1001-1500" },
-            { value: "1501_2000", text: "1501-2000" },
-            { value: "2001_plus", text: "Over 2000" },
-          ],
-        }, */
-        /* {
-          type: "dropdown",
-          name: "parental_education",
-          analytics: true,
-          title: "What is the highest level of education of your parents?",
-          choices: [
-            { value: "no_degree", text: "No degree" },
-            { value: "high_school", text: "High School Diploma" },
-            { value: "bachelor", text: "Bachelor's Degree" },
-            { value: "master", text: "Master's Degree" },
-            { value: "doctorate", text: "Doctorate" },
-          ],
-        }, */
-        /* {
-          type: "matrix",
-          name: "personal_info",
-          analytics: true,
-          title: "Please answer the following questions",
-          columns: [
-            { value: 1, text: "Definitely not" },
-            { value: 2, text: "Not much" },
-            { value: 3, text: "Neutral" },
-            { value: 4, text: "Yes" },
-            { value: 5, text: "Yes a lot" },
-          ],
-          rows: [
-            { value: "generous", text: "I am generous" },
-            { value: "competitive", text: "I am competitive " },
-          ],
-        }, */
       ],
     },
     {
@@ -307,7 +222,8 @@ Thank you for supporting academic research! </p>`,
           type: "text",
           name: "name",
           title: "Name",
-          placeHolder: "Enter your name (used to show your result in the final leaerboard)",
+          placeHolder:
+            "Enter your name (used to show your result in the final leaerboard)",
         },
         {
           type: "text",
@@ -322,15 +238,15 @@ Thank you for supporting academic research! </p>`,
             "Enter your email address (optional, only needed to participate in prize competition)",
         },
         {
-  type: "html",
-  name: "email_optional_notice",
-  visibleIf: "{email} = ''",
-  html: `
+          type: "html",
+          name: "email_optional_notice",
+          visibleIf: "{email} = ''",
+          html: `
     <p style="margin-top: 10px; color:rgb(226, 186, 66);">
       You may choose to <strong>not provide your email</strong>, but in that case, you will <strong>not be eligible</strong> for the prize competition. Your email address will be kept confidential and used only to contact you if you win.
     </p>
-  `
-}
+  `,
+        },
       ],
     },
   ],
