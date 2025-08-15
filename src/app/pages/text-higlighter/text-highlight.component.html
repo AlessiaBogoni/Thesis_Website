@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-md-5">
       <h3 class="highlight-list-heading text-white text-center">
-        Errors found
+        {{'errors_found' | label}}
       </h3>
       <div class="highlight-list" id="highlightList">
         <div *ngFor="let section of highlightSections; let i = index">
@@ -16,8 +16,7 @@
           class="text-white pb-4 text-center opacity-75"
           *ngIf="!highlightSections.length"
         >
-          Click or select words and phrases you think are wrong or need
-          improvement.
+          {{'instructions_highlight_1' | label}}
         </i>
         <div *ngIf="!highlightSections.length" class="m-2 text-center bg-black">
           <img
@@ -26,8 +25,7 @@
             height="155"
           />
           <p class="text-success p-2">
-            To highlight text, just drag your finger or mouse over the words you want to
-            select.
+            {{'instructions_highlight_2' | label}}
           </p>
         </div>
       </div>
@@ -47,7 +45,7 @@
             object-fit: cover;
           "
         />
-        <div class="p-2">Unknown author</div>
+        <div class="p-2">{{'Unknown_author'|label}}</div>
       </div>
       <div
         class="text-container"

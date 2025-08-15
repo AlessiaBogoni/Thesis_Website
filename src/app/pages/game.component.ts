@@ -26,6 +26,8 @@ declare var $, bootstrap: any;
 declare var SurveyTheme: any;
 declare var Swal: any;
 import "survey-angular-ui";
+import { surveyLocalization } from "survey-core";
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 /**
  * Componente di gioco per la gestione delle donazioni e del punteggio.
@@ -40,6 +42,8 @@ import "survey-angular-ui";
   styleUrls: ["./game.component.scss"],
 })
 export class GameComponent implements OnInit, OnDestroy {
+  debriefHtml: SafeHtml | undefined;
+  leaderboardHtml: SafeHtml | undefined;
   internalState = +localStorage.getItem("0state") || State.PRE;
   /**
    * Stato del gioco.
@@ -91,6 +95,7 @@ export class GameComponent implements OnInit, OnDestroy {
   highlightSections = [];
   cstSubscription: any;
   cstScore = 0;
+  lang;
 
   markInteracted(key: "accuracy" | "humanSoundness" | "readability") {
     this.interacted[key] = true;
@@ -130,7 +135,8 @@ export class GameComponent implements OnInit, OnDestroy {
     private cstService: CstService,
     private router: Router,
     private scoreService: ScoreService,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private sanitizer: DomSanitizer
   ) {}
   
   /**
@@ -138,6 +144,8 @@ export class GameComponent implements OnInit, OnDestroy {
    * @returns {void}
    */
   async ngOnInit() {
+
+    
     const savedLang = localStorage.getItem("lang");
 
     if (!savedLang) {
@@ -164,7 +172,19 @@ export class GameComponent implements OnInit, OnDestroy {
     } else {
       await this.translationService.setLanguage(savedLang);
     }
+
+      this.loadDebriefContent();
+      this.loadLeaderboardContent();
+      this.lang = this.translationService.currentLang;
     
+     const t = this.translationService.t.bind(this.translationService);
+  surveyLocalization.locales["custom"] = {
+    pagePrevText: t("survey_prev"),
+    pageNextText: t("survey_next"),
+    completeText: t("survey_complete"),
+    startSurveyText: t("survey_start"),
+  };
+  surveyLocalization.defaultLocale = "custom";
     // Now that the language is set and loaded, translate the survey
     const surveyJsonTranslated = this.translateSurvey(PreSurvey);
     console.log(surveyJsonTranslated)
@@ -360,7 +380,14 @@ export class GameComponent implements OnInit, OnDestroy {
       this.state = State.FINISHED;
     });
   }
-
+loadDebriefContent() {
+    const htmlString = this.translationService.t('debrief');
+    this.debriefHtml = this.sanitizer.bypassSecurityTrustHtml(htmlString);
+  }
+loadLeaderboardContent() {
+    const htmlString = this.translationService.t('go_to_leaderboard');
+    this.leaderboardHtml = this.sanitizer.bypassSecurityTrustHtml(htmlString);
+  }
 
   private translateSurvey(root: any) {
     const surveyJson = JSON.parse(JSON.stringify(root));

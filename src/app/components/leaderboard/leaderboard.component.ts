@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { SurveyService } from "../../pages/survey.service";
 import { HttpClient } from "@angular/common/http";
 import { ScoreService } from "../../pages/score.service";
+import { TranslationService } from "../../pages/translation.service";
 
 @Component({
   selector: "app-leaderboard",
@@ -11,7 +12,7 @@ export class LeaderboardComponent implements OnInit {
   machineCode: string = "";
   leaderboard: any[] = [];
 
-  constructor(private http: HttpClient, private scoreService: ScoreService) {}
+  constructor(private http: HttpClient, private scoreService: ScoreService, private translationservice: TranslationService) {}
 
   ngOnInit(): void {
     this.getLeaderboard();

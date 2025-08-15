@@ -1,5 +1,5 @@
 <ng-container *ngIf="consent === 'true'">
-  <survey 
+  <survey
     [model]="postSurvey"
     (submitSurvey)="sendData($event, 'post'); state = status.LEADERBOARD"
     *ngIf="state === status.POST"
@@ -26,9 +26,9 @@
             <span
               class="badge bg-warning text-center w-100 p-3 fs-6 lh-base text-dark text-break text-wrap"
             >
-              Read the text below carefully and answer the questions.<br />
+              {{ "read_carefully" | label }}<br />
               <hr />
-              When you are done, please click "Next" to continue.
+              {{ "next_to_continue" | label }}
             </span>
           </p>
 
@@ -67,9 +67,9 @@
                 {{
                   step.text.labeled
                     ? step.text.type === "ai"
-                      ? "AI author"
-                      : "Human author"
-                    : "Unknown author"
+                      ? ("AI_author" | label)
+                      : ("Human_author" | label)
+                      : ("Unknown_author" | label)
                 }}
               </div>
             </div>
@@ -84,7 +84,7 @@
 
           <div class="d-block my-3">
             <label class="form-label font-weight-bold text-center w-100">
-              {{'t_whoDoYouThinkIsTheAuthor' | label}}
+              {{ "t_whoDoYouThinkIsTheAuthor" | label }}
             </label>
             <input
               type="range"
@@ -99,18 +99,17 @@
               (touchstart)="markInteracted('humanSoundness')"
             />
             <div class="d-flex justify-content-between">
-              <span class="w-33">AI</span>
+              <span class="w-33">{{ "AI" | label }}</span>
               <span class="w-33 text-center" *ngIf="interacted.humanSoundness">
                 {{ step.humanSoundness }} / 10
               </span>
-              <span class="w-33 text-end">{{'Human'|label}}</span>
+              <span class="w-33 text-end">{{ "human" | label }}</span>
             </div>
           </div>
 
           <div class="d-block my-3">
             <label class="form-label font-weight-bold text-center w-100">
-              {{ 'post_survey_author_belief_title' | label }}
-              How would you rate the <b>accuracy</b> of this text? (precision, correctness)
+              {{ "t_accuracyRate" | label }}
             </label>
             <input
               type="range"
@@ -125,17 +124,17 @@
               (touchstart)="markInteracted('accuracy')"
             />
             <div class="d-flex justify-content-between">
-              <span class="w-33">Very low</span>
+              <span class="w-33">{{ "Very_low" | label }}</span>
               <span class="w-33 text-center" *ngIf="interacted.accuracy">
                 {{ step.accuracy }} / 10
               </span>
-              <span class="w-33 text-end">{{'Very_high'|label}}</span>
+              <span class="w-33 text-end">{{ "Very_high" | label }}</span>
             </div>
           </div>
 
           <div class="d-block my-3">
             <label class="form-label font-weight-bold text-center w-100">
-              How would you rate the <b>readability</b> of this text? (tone, style)
+              {{ "t_readabilityRate" | label }}
             </label>
             <input
               type="range"
@@ -150,18 +149,18 @@
               (touchstart)="markInteracted('readability')"
             />
             <div class="d-flex justify-content-between">
-              <span class="w-33">Very low</span>
+              <span class="w-33">{{ "Very_low" | label }}</span>
               <span class="w-33 text-center" *ngIf="interacted.readability">
                 {{ step.readability }} / 10
               </span>
-              <span class="w-33 text-end">Very high</span>
+              <span class="w-33 text-end">{{ "Very_high" | label }}</span>
             </div>
           </div>
 
           <div class="d-flex justify-content-end mt-3 gap-3">
             <div class="text-warning text-small">
               <span *ngIf="!allInteracted()" class="text-warning d-block">
-                Ops, before proceeding, you need to answer all the questions.
+                {{ "t_errorQuestions" | label }}
               </span>
             </div>
             <button
@@ -169,7 +168,7 @@
               (click)="nextText()"
               [disabled]="!allInteracted()"
             >
-              Next
+              {{ "Next" | label }}
             </button>
           </div>
         </div>
@@ -177,27 +176,20 @@
     </ng-container>
     <ng-container *ngIf="[status.TEXT5].includes(state)">
       <ng-container *ngFor="let step of lastTextToShow; let idx = index">
-        <div
-          class="text-container"
-          [appCstTracker]="'text-5'"
-          
-        ></div>
+        <div class="text-container" [appCstTracker]="'text-5'"></div>
         <div class="w-md-100 mx-auto w-lg-75 mt-4">
           <p>
             <br />
             <span
               class="badge bg-warning text-center w-100 p-3 fs-6 lh-base text-dark text-break text-wrap"
             >
-              Read the text below carefully and answer the questions.<br />
-              Highlight in the text anything that seems incorrect to you. <br />
+              {{ "read_carefully" | label }}<br />
               <hr />
               <b>
                 <!-- <i class="fa fa-exclamation-triangle"></i> -->
-                Moreover, in this last step, you will be asked to highlight
-                words or phrases that you think are wrong or need improvement.
-                <br />
+                {{ "additional_highlight" | label }}<br />
                 <hr />
-                When you are done, please click "Next" to continue.
+                {{ "next_to_continue" | label }}
               </b>
             </span>
           </p>
@@ -221,7 +213,7 @@
           <hr />
           <div class="d-block my-3" *ngIf="step">
             <label class="form-label font-weight-bold text-center w-100">
-              Who do you think is the author of this text?
+              {{ "t_whoDoYouThinkIsTheAuthor" | label }}
             </label>
             <input
               type="range"
@@ -236,16 +228,16 @@
               (touchstart)="markInteracted('humanSoundness')"
             />
             <div class="d-flex justify-content-between">
-              <span class="w-33">AI</span>
+              <span class="w-33">{{ "AI" | label }}</span>
               <span class="w-33 text-center" *ngIf="interacted.humanSoundness">
                 {{ step.humanSoundness }} / 10
               </span>
-              <span class="w-33 text-end">Human</span>
+              <span class="w-33 text-end">{{ "human" | label }}</span>
             </div>
           </div>
           <div class="d-block my-3" *ngIf="step">
             <label class="form-label font-weight-bold text-center w-100">
-              How would you rate the <b>accuracy</b> of this text? (precision, correctness)
+              {{ "t_accuracyRate" | label }}
             </label>
             <input
               type="range"
@@ -260,17 +252,17 @@
               (touchstart)="markInteracted('accuracy')"
             />
             <div class="d-flex justify-content-between">
-              <span class="w-33">Very low</span>
+              <span class="w-33">{{ "Very_low" | label }}</span>
               <span class="w-33 text-center" *ngIf="interacted.accuracy">
                 {{ step.accuracy }} / 10
               </span>
-              <span class="w-33 text-end">Very high</span>
+              <span class="w-33 text-end">{{ "Very_high" | label }}</span>
             </div>
           </div>
 
           <div class="d-block my-3" *ngIf="step">
             <label class="form-label font-weight-bold text-center w-100">
-              How would you rate the <b>readability</b> of this text? (tone, style)
+              {{ "t_readabilityRate" | label }}
             </label>
             <input
               type="range"
@@ -285,11 +277,11 @@
               (touchstart)="markInteracted('readability')"
             />
             <div class="d-flex justify-content-between">
-              <span class="w-33">Very low</span>
+              <span class="w-33">{{ "Very_low" | label }}</span>
               <span class="w-33 text-center" *ngIf="interacted.readability">
                 {{ step.readability }} / 10
               </span>
-              <span class="w-33 text-end">Very high</span>
+              <span class="w-33 text-end">{{ "Very_high" | label }}</span>
             </div>
           </div>
 
@@ -299,11 +291,10 @@
                 *ngIf="!step?.highlightSections?.length"
                 class="text-warning d-block"
               >
-                Ops, before proceeding, you need to highlight at least one error
-                in the text.<br />
+                {{ "t_errorHighlight" | label }}<br />
               </span>
               <span *ngIf="!allInteracted()" class="text-warning d-block">
-                Ops, before proceeding, you need to answer all the questions.
+                {{ "t_errorQuestions" | label }}
               </span>
             </div>
             <button
@@ -311,14 +302,24 @@
               (click)="toPostSurvey()"
               [disabled]="!allInteracted() || !step?.highlightSections?.length"
             >
-              Next
+              {{ "Next" | label }}
             </button>
           </div>
         </div>
       </ng-container>
     </ng-container>
     <ng-container *ngIf="state === status.FINISHED">
-      <div class="w-md-100 mx-auto w-lg-75 mt-4">
+
+        <div [innerHTML]="debriefHtml"></div>
+       <!-- <button class="btn btn-primary mt-2" (click)="showLeaderboard()">
+        {{ "next_to_continue" | label }}       
+        </button> -->
+        <button class="btn btn-primary mt-2" (click)="showLeaderboard()">
+        <div [innerHTML]="leaderboardHtml"></div>
+        </button>
+        <hr class="my-4"/>
+
+      <!-- <div class="w-md-100 mx-auto w-lg-75 mt-4">
         <h2>Thank You for participating</h2>
 
         <p class="mt-4">
@@ -353,10 +354,11 @@
         </button>
 
         <hr class="my-4" />
-      </div>
+      </div> -->
+
     </ng-container>
 
-    <ng-container *ngIf="state === status.LEADERBOARD">
+    <ng-container *ngIf="state === status.LEADERBOARD && lang">
       <app-leaderboard></app-leaderboard>
     </ng-container>
   </div>

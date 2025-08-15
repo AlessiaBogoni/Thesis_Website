@@ -4,7 +4,7 @@ import { BehaviorSubject } from "rxjs";
 
 @Injectable({ providedIn: "root" })
 export class TranslationService {
-  public currentLang = "it";
+  public currentLang;
   private translations: any = {};
 
   constructor(private http: HttpClient) {}
@@ -19,7 +19,17 @@ export class TranslationService {
     });
   }
 
-  t(key: string): string {
+/*   t(key: string): string {
     return this.translations[key] || "key";
+  } */
+  t(key: string, params?: Record<string, any>): string {
+  let translation = this.translations[key] || key;
+  if (params) {
+    Object.keys(params).forEach(p => {
+      translation = translation.replace(`{{${p}}}`, params[p]);
+    });
   }
+  return translation;
+}
+
 }

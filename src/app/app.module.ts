@@ -23,6 +23,7 @@ import { CstService } from "./pages/cst/cst.service";
 import { CstTrackerDirective } from "./pages/cst/cst-tracker.directive";
 import { LeaderboardComponent } from "./components/leaderboard/leaderboard.component";
 import { LabelPipe } from "./components/label.pipe";
+import { TranslationService } from "./pages/translation.service";
 
 @NgModule({
   declarations: [
@@ -49,7 +50,7 @@ import { LabelPipe } from "./components/label.pipe";
     AngularD3CloudModule,
     FormsModule,
   ],
-  providers: [CstService],
+  providers: [CstService, TranslationService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

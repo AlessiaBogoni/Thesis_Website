@@ -1,11 +1,11 @@
 <div class="container mt-4">
-  <h2>Leaderboard</h2>
+  <h2>{{"leaderboard"|label}}</h2>
   <hr />
 
   <div class="row fw-bold mb-2">
     <div class="col">#</div>
-    <div class="col">Player</div>
-    <div class="col">Total Score</div>
+    <div class="col">{{'player'|label}}</div>
+    <div class="col">{{'highligthScore'|label}}</div>
     <div class="col">Precision</div>
     <div class="col">Recall</div>
     <div class="col">F1 Score</div>
@@ -29,10 +29,10 @@
   </div>
 </div>
 <div class="mt-3">
- <h5>Thank you for participating in this study!</h5>  
-  <p>If you have any inquiries or questions, feel free to contact me at <a href="mailto:alessia.bogoni@stud-mail.uni-wuerzburg.de">alessia.bogoni&#64;stud-mail.uni-wuerzburg.de</a>.</p>
+ <h5>{{'thankyou'|label}}</h5>  
+  <p [innerHTML]="'inquiries'| label"></p>
 
-<button class="btn btn-primary mt-2" onclick="window.open('about:blank', '_self');">Exit Experiment</button>
+<button class="btn btn-primary mt-2" onclick="window.open('about:blank', '_self');">{{'exit'|label}}</button>
 </div>
 
 
