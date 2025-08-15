@@ -104,5 +104,40 @@
   "post_survey_author_belief_choice_5": "I don’t remember noticing who the authors were",
   "post_survey_overall_evaluation_title": "How would you rate your overall experience in this study?",
   "t_whoDoYouThinkIsTheAuthor": "Who do you think is the author of this text?",
-  "Very_high": "Very high"
+  "t_accuracyRate": "How would you rate the <b>accuracy</b> of this text? (precision, correctness)",
+"t_readabilityRate": "How would you rate the <b>readability</b> of this text? (clarity, ease of understanding, tone, style)",
+"t_highlightErrors": "Please highlight the parts of the text where you believe errors are present.",
+"t_highlightErrorsNotice": "You can highlight multiple parts of the text, but you must highlight at least one part.",
+"t_errorQuestions": "Ops, before proceeding, you need to answer all the questions.",
+"t_errorHighlight": "Ops, before proceeding, you need to highlight at least one error in the text.<br />",
+
+  "Very_high": "Very high",
+  "Very_low": "Very low",
+  
+    "debrief": "<div class=\\\"w-md-100 mx-auto w-lg-75 mt-4\\\"> <h2>Thank You for participating</h2> <p class=\\\"mt-4\\\">Please note that the texts you read during this study <strong>intentionally contained errors</strong>. You should not rely on them as accurate or trustworthy information.</p><p class=\\\"mt-3\\\">The goal of this study was to explore how people interact with text depending on how it is <strong>labeled and attributed</strong>, specifically, how authorship affects attention and perceptions of credibility.</p><p class=\\\"mt-3\\\">If you have any questions, would like to report an issue, or want to share feedback about the experience, feel free to contact me at:<br/><a href=\\\"mailto:alessia.bogoni@stud-mail.uni-wuerzburg.de\\\">alessia.bogoni@stud-mail.uni-wuerzburg.de</a></p><p class=\\\"mt-4\\\">When you're ready, click the button below to view the leaderboard.</p></div>",
+    "go_to_leaderboard": "Go to Leaderboard",
+    "leaderboard": "Leaderboard",
+    "player": "Player",
+    "highligthScore": "Highlight Score",
+
+  "read_carefully":"Read the text below carefully and answer the questions.",
+  "next_to_continue":"When you are done, please click \"Next\" to continue.",
+"Next": "Next",
+"AI_author": "AI author",
+"Human_author": "Human author",
+"Unknown_author": "Unknown author",
+"additional_highlight":"Moreover, in this last step, you will be asked to highlight words or phrases that you think are wrong or need improvement.",
+"human": "Human",
+"AI": "AI",
+"errors_found": "Errors found",
+"instructions_highlight_1": "Click or select words and phrases you think are wrong or need improvement.",
+"instructions_highlight_2": "To highlight text, just drag your finger orclick and drag your mouse over the words or sentences you want to select, or double-click on a word to select it.",
+"max_words_error": "You can't select more than {{count}} words.","survey_prev": "Previous",
+  "survey_next": "Next",
+  "survey_complete": "Complete",
+  "survey_start": "Start",
+  "inquiries":"If you have any inquiries or questions, feel free to contact me at <a href=\"mailto:alessia.bogoni@stud-mail.uni-wuerzburg.de\">alessia.bogoni&#64;stud-mail.uni-wuerzburg.de</a>.",
+  "thankyou": "Thank you for participating in this study!",
+  "exit": "Exit Experiment"
+
 }
