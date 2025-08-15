@@ -12,7 +12,7 @@ export class TranslationService {
   setLanguage(lang: string): Promise<void> {
     this.currentLang = lang;
     return new Promise((resolve) => {
-      this.http.get(`/assets/i18n/${lang}.json`).subscribe((data) => {
+      this.http.get(`assets/i18n/${lang}.json`).subscribe((data) => {
         this.translations = data;
         resolve(); // This is where the promise is resolved
       });
