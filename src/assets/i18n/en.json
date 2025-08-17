@@ -118,7 +118,7 @@
     "go_to_leaderboard": "Go to Leaderboard",
     "leaderboard": "Leaderboard",
     "player": "Player",
-    "highligthScore": "Highlight Score",
+    "highligthScore": "Error highlight Score",
 
   "read_carefully":"Read the text below carefully and answer the questions.",
   "next_to_continue":"When you are done, please click \"Next\" to continue.",
@@ -132,12 +132,14 @@
 "errors_found": "Errors found",
 "instructions_highlight_1": "Click or select words and phrases you think are wrong or need improvement.",
 "instructions_highlight_2": "To highlight text, just drag your finger orclick and drag your mouse over the words or sentences you want to select, or double-click on a word to select it.",
-"max_words_error": "You can't select more than {{count}} words.","survey_prev": "Previous",
+"max_words_error": "You can't select more than {{count}} words.",
   "survey_next": "Next",
   "survey_complete": "Complete",
   "survey_start": "Start",
   "inquiries":"If you have any inquiries or questions, feel free to contact me at <a href=\"mailto:alessia.bogoni@stud-mail.uni-wuerzburg.de\">alessia.bogoni&#64;stud-mail.uni-wuerzburg.de</a>.",
   "thankyou": "Thank you for participating in this study!",
-  "exit": "Exit Experiment"
+  "exit": "Exit Experiment",
+"guessScore": "Author Score",
+"totalScore": "Total Score"
 
 }

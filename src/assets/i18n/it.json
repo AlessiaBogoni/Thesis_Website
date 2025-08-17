@@ -107,7 +107,7 @@
   "go_to_leaderboard": " Vai alla classifica",
   "leaderboard": "Classifica",
   "player": "Giocatore",
-  "highligthScore": "Riconoscimento errori",
+  "highligthScore": "Punteggio errori",
 
   "t_readabilityRate": "Valuta la leggibilità di questo testo (tono, stile, chiarezza, facilità di lettura)",
   "t_accuracyRate": "Valuta l'accuratezza di questo testo (precisione, correttezza, veridicità)",
@@ -127,12 +127,13 @@
   "instructions_highlight_1": "Clicca o seleziona parole e frasi che credi siano errate o necessitino di miglioramenti.",
   "instructions_highlight_2": "Per evidenziare, trascina il dito o clicca e trascina il mouse su una parola o frase, oppure fai doppio clic su una parola per selezionarla.",
   "max_words_error": "Non puoi selezionare più di {{count}} parole.",
-    "survey_prev": "Precedente",
   "survey_next": "Avanti",
   "survey_complete": "Completa",
   "survey_start": "Inizia",
   "inquiries":"Se hai dubbi o domande, contattami a <a href=\"mailto:alessia.bogoni@stud-mail.uni-wuerzburg.de\">alessia.bogoni&#64;stud-mail.uni-wuerzburg.de</a>.",
   "thankyou": "Grazie per aver partecipato a questo studio!",
-  "exit": "Esci dall'esperimento"
+  "exit": "Esci dall'esperimento",
+  "guessScore": "Punteggio autore",
+  "totalScore": "Punteggio totale"
 
 }

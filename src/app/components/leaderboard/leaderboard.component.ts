@@ -3,6 +3,8 @@ import { SurveyService } from "../../pages/survey.service";
 import { HttpClient } from "@angular/common/http";
 import { ScoreService } from "../../pages/score.service";
 import { TranslationService } from "../../pages/translation.service";
+import { totalmem } from "node:os";
+import { highlight } from "ace-builds/src-noconflict/ext-static_highlight";
 
 @Component({
   selector: "app-leaderboard",
@@ -16,6 +18,7 @@ export class LeaderboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.getLeaderboard();
+    this.machineCode = localStorage.getItem("0machineCode") || "";
   }
 
   getLeaderboard() {
@@ -28,20 +31,22 @@ export class LeaderboardComponent implements OnInit {
 
         // Pick the latest result by max key (text number)
         const latestKey = Object.keys(allResults || {}).sort().pop();
-        const resultData = allResults?.[latestKey];
+        const lastResultData = allResults?.[latestKey];
 
-        if (!resultData || resultData.leaderboardScore == null) continue;
+        if (!lastResultData || lastResultData.leaderboardScore == null) continue;
 
         this.leaderboard.push({
           machineCode: key,
           name: entry.pre?.name || "Anonymous",
-          totalScore: resultData.leaderboardScore ?? 0,
-          precision: resultData.precisionScore ?? null,
-          recall: resultData.recallScore ?? null,
-          f1: resultData.f1Score ?? null,
-          specificity: resultData.specificityScore ?? null,
-          fuzzyScore: resultData.score?.fuzzyScore ?? resultData.leaderboardScore,
+          highlightScore: lastResultData.leaderboardScore ?? 0,
+          precision: lastResultData.precisionScore ?? null,
+          recall: lastResultData.recallScore ?? null,
+          f1: lastResultData.f1Score ?? null,
+          specificity: lastResultData.specificityScore ?? null,
+          fuzzyScore: lastResultData.score?.fuzzyScore ?? lastResultData.leaderboardScore,
           me: key === this.machineCode,
+          guessScore: lastResultData.score.totalGuessingScore ?? 0,
+          totalScore: (lastResultData.leaderboardScore ?? 0) + (lastResultData.score.totalGuessingScore ?? 0),
         });
       }
 

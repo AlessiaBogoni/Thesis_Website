@@ -27,7 +27,7 @@ declare var SurveyTheme: any;
 declare var Swal: any;
 import "survey-angular-ui";
 import { surveyLocalization } from "survey-core";
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 /**
  * Componente di gioco per la gestione delle donazioni e del punteggio.
@@ -77,6 +77,7 @@ export class GameComponent implements OnInit, OnDestroy {
    */
   secondGroup: string;
   numSecondGroup: number;
+  language: string;
 
   /**
    * Testo da mostrare al giocatore.
@@ -138,14 +139,12 @@ export class GameComponent implements OnInit, OnDestroy {
     private translationService: TranslationService,
     private sanitizer: DomSanitizer
   ) {}
-  
+
   /**
    * Metodo di inizializzazione del componente.
    * @returns {void}
    */
   async ngOnInit() {
-
-    
     const savedLang = localStorage.getItem("lang");
 
     if (!savedLang) {
@@ -160,6 +159,8 @@ export class GameComponent implements OnInit, OnDestroy {
         confirmButtonColor: "#506da3",
         allowOutsideClick: false,
       });
+      // Save selected language in preSurvey
+
 
       if (lang) {
         localStorage.setItem("lang", lang);
@@ -173,25 +174,27 @@ export class GameComponent implements OnInit, OnDestroy {
       await this.translationService.setLanguage(savedLang);
     }
 
-      this.loadDebriefContent();
-      this.loadLeaderboardContent();
-      this.lang = this.translationService.currentLang;
-    
-     const t = this.translationService.t.bind(this.translationService);
-  surveyLocalization.locales["custom"] = {
-    pagePrevText: t("survey_prev"),
-    pageNextText: t("survey_next"),
-    completeText: t("survey_complete"),
-    startSurveyText: t("survey_start"),
-  };
-  surveyLocalization.defaultLocale = "custom";
+    this.loadDebriefContent();
+    this.loadLeaderboardContent();
+    this.lang = this.translationService.currentLang;
+
+    const t = this.translationService.t.bind(this.translationService);
+
+    surveyLocalization.locales["custom"] = {
+      pageNextText: t("survey_next"),
+      completeText: t("survey_complete"),
+      startSurveyText: t("survey_start"),
+    };
+
+    surveyLocalization.defaultLocale = "custom";
     // Now that the language is set and loaded, translate the survey
     const surveyJsonTranslated = this.translateSurvey(PreSurvey);
-    console.log(surveyJsonTranslated)
+    console.log(surveyJsonTranslated);
     this.preSurvey = new Model(surveyJsonTranslated);
+    this.preSurvey.showPrevButton = false;
 
     const surveyJsonTranslatedPost = this.translateSurvey(PostSurvey);
-    console.log(surveyJsonTranslatedPost)
+    console.log(surveyJsonTranslatedPost);
     this.postSurvey = new Model(surveyJsonTranslatedPost);
 
     const askForConsent = async () => {
@@ -245,7 +248,7 @@ export class GameComponent implements OnInit, OnDestroy {
       }
 
       return null;
-    }
+    };
 
     // Step 3: Call consent after language
     if (!this.consent) {
@@ -274,9 +277,11 @@ export class GameComponent implements OnInit, OnDestroy {
     console.log("Machine code:", this.machineCode);
     console.log("Group:", this.group);
     console.log("Second group:", this.secondGroup);
-    console.log(textPerGroup('it'))
+    console.log(textPerGroup("it"));
 
-    const textToShow = textPerGroup(this.translationService.currentLang)?.[this.group].map((e) => {
+    const textToShow = textPerGroup(this.translationService.currentLang)?.[
+      this.group
+    ].map((e) => {
       const textResult = new TextResult();
       textResult.text = e;
       textResult.humanSoundness = 5;
@@ -291,7 +296,9 @@ export class GameComponent implements OnInit, OnDestroy {
     console.log(this.numSecondGroup);
     console.log(textPerSecondGroup);
 
-    const group = textPerSecondGroup?.(this.translationService.currentLang)?.[this.numSecondGroup];
+    const group = textPerSecondGroup?.(this.translationService.currentLang)?.[
+      this.numSecondGroup
+    ];
     if (Array.isArray(group)) {
       const lastTextToShow = group.map((e) => {
         const lastTextResult = new LastTextResult();
@@ -342,7 +349,9 @@ export class GameComponent implements OnInit, OnDestroy {
 
     this.preSurvey.setValue("experiment_group", experimentGroup);
     this.preSurvey.setValue("second_group", secondGroup);
+    this.preSurvey.setValue("lang", this.lang);
 
+    const language = this.translationService.currentLang;
     // Ottiene il paese dell'utente.
     try {
       this.surveyService
@@ -380,12 +389,12 @@ export class GameComponent implements OnInit, OnDestroy {
       this.state = State.FINISHED;
     });
   }
-loadDebriefContent() {
-    const htmlString = this.translationService.t('debrief');
+  loadDebriefContent() {
+    const htmlString = this.translationService.t("debrief");
     this.debriefHtml = this.sanitizer.bypassSecurityTrustHtml(htmlString);
   }
-loadLeaderboardContent() {
-    const htmlString = this.translationService.t('go_to_leaderboard');
+  loadLeaderboardContent() {
+    const htmlString = this.translationService.t("go_to_leaderboard");
     this.leaderboardHtml = this.sanitizer.bypassSecurityTrustHtml(htmlString);
   }
 
@@ -393,11 +402,11 @@ loadLeaderboardContent() {
     const surveyJson = JSON.parse(JSON.stringify(root));
 
     const recursiveTranslate = (node: any): any => {
-      if (typeof node === 'string') {
+      if (typeof node === "string") {
         // Only translate strings that are marked as keys (e.g., start with 't_')
         // This is a crucial change to avoid translating non-key strings like names.
         // You'll need to update your survey JSON with this prefix.
-        if (node.startsWith('t_')) { 
+        if (node.startsWith("t_")) {
           const key = node.substring(2); // Remove the prefix
           return this.translationService.t(key);
         }
@@ -405,10 +414,10 @@ loadLeaderboardContent() {
       }
 
       if (Array.isArray(node)) {
-        return node.map(item => recursiveTranslate(item));
+        return node.map((item) => recursiveTranslate(item));
       }
 
-      if (node && typeof node === 'object') {
+      if (node && typeof node === "object") {
         for (const k of Object.keys(node)) {
           // You might need to add logic here to handle special cases,
           // like a property `text` or `title` that needs translation.
@@ -469,14 +478,14 @@ loadLeaderboardContent() {
       humanSoundness: false,
     };
     const result = { ...this.textToShow[this.currentText - 1] } as TextResult;
-    const firstScores = this.scoreService.calculateGuessingSkillScoreForTexts(
+    /* const firstScores = this.scoreService.calculateGuessingSkillScoreForTexts(
       this.textToShow.slice(0, 4)
-    );
+    ); */
     delete result.text.text;
     delete result.text.author;
     delete result.text.title;
     result.attention = this.cstScore;
-    result.guessScore = firstScores;
+    // result.guessScore = firstScores;
 
     // result.text.attention = this.cstScore;
     console.log(result.attention);
@@ -503,18 +512,27 @@ loadLeaderboardContent() {
 
   toPostSurvey() {
     const result = { ...this.lastTextToShow[this.currentText - 5] };
+    const firstResult = { ...this.textToShow };
     console.log(result);
+    console.log("firsResult " + firstResult);
     const scores = this.scoreService.computeScore(result, result.lastText.text);
+    console.log("Scores: ", scores);
+
+    const { guessScores, guessFour} =
+      this.scoreService.calculateGuessingSkillScores(firstResult);
     const lastScore = this.scoreService.calculateGuessingSkillScoreForLastText(
-      this.lastTextToShow[this.currentText - 5].lastText
+      this.lastTextToShow[this.currentText - 5]
     );
-    result.score = scores;
-    result.leaderboardScore = scores.fuzzyScore;
-    result.precisionScore = scores.precision;
-    result.recallScore = scores.recall;
-    result.f1Score = scores.f1;
-    result.specificityScore = scores.specificity;
-    result.lastGuessScore = lastScore;
+    const guessTotal = (guessFour * 4 + lastScore)/5
+
+    /* const { guessScores: guessScores, guessTotal: guessTotal } = 
+  this.scoreService.calculateGuessingSkillScores([...this.textToShow, ...this.lastTextToShow]); */
+
+  result.score = scores;
+    result.score.lastGuessScore = lastScore;
+    result.score.totalGuessingScore = guessTotal;
+    result.score.scores = guessScores;
+    result.leaderboardScore = scores.f1;
 
     delete result.lastText.text;
     delete result.lastText.author;
@@ -613,8 +631,10 @@ class TextResult {
 
 class LastTextResult {
   lastText: LastText;
+  totalGuessingScore: number;
   humanSoundness: number;
   leaderboardScore: number;
+  fuzzyScore: number;
   precisionScore: number;
   recallScore: number;
   f1Score: number;

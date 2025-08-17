@@ -8,6 +8,7 @@ import {
 import { ElementRef, Renderer2, AfterViewInit } from "@angular/core";
 import { ToastService } from "../toast/toast.service"; // Import the ToastService
 import { TranslationService } from "../translation.service" // Import the TranslationService
+import { start } from "node:repl";
 interface HighlightSectionOutput {
   text: string;
   color: string;
@@ -47,8 +48,10 @@ export class TextHighlightComponent implements AfterViewInit {
   private touchStartTime = 0;
   private maxWordsToSelect = 10; // Max words allowed for selection
   tutorial = true;
-  startIndexes: [number];
-  endIndexes: [number];
+  startIndexes: number[] = [];
+  //startIndexes: [number];
+  endIndexes: number[] = [];
+  //endIndexes: [number];
 
 
   constructor(
@@ -411,8 +414,12 @@ export class TextHighlightComponent implements AfterViewInit {
 
     this.highlightSections.push(newHighlight);
     this.highlightSectionsChange.emit(this.highlightSections);
+    console.log("startIndexes "+ this.startIndexes, "endIndexes " + this.endIndexes);
+    console.log("startIndex "+ startIndex, "endIndex " + endIndex);
     this.startIndexes.push(startIndex);
     this.endIndexes.push(endIndex);
+    console.log("start "+ this.startIndexes, "end " + this.endIndexes);
+
     console.log("Highlight added:", newHighlight);
     this.selectionApplied.emit({
       // Emit new selection with indices
@@ -423,7 +430,7 @@ export class TextHighlightComponent implements AfterViewInit {
     });
 
     this.highlightSectionsChange.emit(
-      this.highlightSections.map((e) => e.text)
+      this.highlightSections
     );
     this.cdr.detectChanges();
 

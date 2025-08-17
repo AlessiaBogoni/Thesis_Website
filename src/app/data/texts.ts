@@ -160,6 +160,7 @@ export const textsA = (lang): Text[] => [
     id: "1",
     title: texts[lang][0].title,
     author: texts[lang][0].author,
+    lang
   },
   {
     text: texts[lang][1].human,
@@ -168,6 +169,7 @@ export const textsA = (lang): Text[] => [
     id: "2",
     title: texts[lang][1].title,
     author: texts[lang][1].author,
+    lang
   },
   {
     text: texts[lang][2].ai,
@@ -176,6 +178,7 @@ export const textsA = (lang): Text[] => [
     id: "3",
     title: texts[lang][2].title,
     author: texts[lang][2].author,
+    lang
   },
   {
     text: texts[lang][3].human,
@@ -184,6 +187,7 @@ export const textsA = (lang): Text[] => [
     id: "4",
     title: texts[lang][3].title,
     author: texts[lang][3].author,
+    lang
   },
 ];
 
@@ -195,6 +199,7 @@ export const textsB = (lang): Text[] => [
     id: "1",
     title: texts[lang][0].title,
     author: texts[lang][0].author,
+    lang
   },
   {
     text: texts[lang][1].ai,
@@ -203,6 +208,7 @@ export const textsB = (lang): Text[] => [
     id: "2",
     title: texts[lang][1].title,
     author: texts[lang][1].author,
+    lang
   },
   {
     text: texts[lang][2].human,
@@ -211,6 +217,7 @@ export const textsB = (lang): Text[] => [
     id: "3",
     title: texts[lang][2].title,
     author: texts[lang][2].author,
+    lang
   },
   {
     text: texts[lang][3].ai,
@@ -219,6 +226,7 @@ export const textsB = (lang): Text[] => [
     id: "4",
     title: texts[lang][3].title,
     author: texts[lang][3].author,
+    lang
   },
 ];
 
@@ -230,6 +238,7 @@ export const textsC = (lang): Text[] => [
     id: "1",
     title: texts[lang][0].title,
     author: texts[lang][0].author,
+    lang
   },
   {
     text: texts[lang][1].human,
@@ -238,6 +247,7 @@ export const textsC = (lang): Text[] => [
     id: "2",
     title: texts[lang][1].title,
     author: texts[lang][1].author,
+    lang
   },
   {
     text: texts[lang][2].ai,
@@ -246,6 +256,7 @@ export const textsC = (lang): Text[] => [
     id: "3",
     title: texts[lang][2].title,
     author: texts[lang][2].author,
+    lang
   },
   {
     text: texts[lang][3].human,
@@ -254,6 +265,7 @@ export const textsC = (lang): Text[] => [
     id: "4",
     title: texts[lang][3].title,
     author: texts[lang][3].author,
+    lang
   },
 ];
 
@@ -265,6 +277,7 @@ export const textsD = (lang): Text[] => [
     id: "1",
     title: texts[lang][0].title,
     author: texts[lang][0].author,
+    lang
   },
   {
     text: texts[lang][1].ai,
@@ -273,6 +286,7 @@ export const textsD = (lang): Text[] => [
     id: "2",
     title: texts[lang][1].title,
     author: texts[lang][1].author,
+    lang
   },
   {
     text: texts[lang][2].human,
@@ -281,6 +295,7 @@ export const textsD = (lang): Text[] => [
     id: "3",
     title: texts[lang][2].title,
     author: texts[lang][2].author,
+    lang
   },
   {
     text: texts[lang][3].ai,
@@ -289,6 +304,7 @@ export const textsD = (lang): Text[] => [
     id: "4",
     title: texts[lang][3].title,
     author: texts[lang][3].author,
+    lang
   },
 ];
 
@@ -300,6 +316,7 @@ export const textsX = (lang): Text[] => [
     id: "5",
     title: texts[lang][4].title,
     author: texts[lang][4].author,
+    lang
   },
 ];
 
@@ -311,6 +328,7 @@ export const textsY = (lang): Text[] => [
     id: "5",
     title: texts[lang][4].title,
     author: texts[lang][4].author,
+    lang,
   },
 ];
 
@@ -333,6 +351,7 @@ export type Text = {
   author: string;
   labeled: boolean;
   id: string;
+  lang: string;
 };
 
 export const textPerSecondGroup = (
@@ -352,4 +371,5 @@ export type LastText = {
   author: string;
   labeled: boolean;
   id: string;
+  lang: string;
 };
