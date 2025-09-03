@@ -21,7 +21,7 @@ export const PreSurvey = {
             },
           ],
           title: "t_title_confirmation",
-          // isRequired: true,
+          isRequired: true,
         },
       ],
     },
@@ -49,7 +49,7 @@ export const PreSurvey = {
           name: "gender",
           analytics: true,
           title: "t_title_gender",
-          // isRequired: true,
+          isRequired: true,
           choices: [
             { value: "male", text: "t_male" },
             { value: "female", text: "t_female" },
@@ -61,7 +61,7 @@ export const PreSurvey = {
           name: "education",
           analytics: true,
           title: "t_title_education",
-          // isRequired: true,
+          isRequired: true,
           choices: [
             { value: "no_degree", text: "t_no_degree" },
             { value: "high_school", text: "t_diploma" },
@@ -75,7 +75,7 @@ export const PreSurvey = {
           name: "language",
           analytics: true,
           title: "t_title_language",
-          // isRequired: true,
+          isRequired: true,
           choices: [
             { value: "A1-A2", text: "t_A1-A2" },
             { value: "B1-B2", text: "t_B1-B2" },
@@ -85,7 +85,7 @@ export const PreSurvey = {
         },
         {
           analytics: true,
-          // isRequired: true,
+          isRequired: true,
           type: "matrix",
           name: "previousKnowledge",
           title: "t_previous_knowledge_title",
@@ -103,6 +103,7 @@ export const PreSurvey = {
             { value: "pet_experience", text: "t_pet_experience" },
             { value: "reading_experience", text: "t_reading_experience" },
             { value: "nutrition_experience", text: "t_nutrition_experience" },
+            { value: "renting_experience", text: "t_renting_experience"},
             { value: "NFC_positive", text: "t_NFC_positive" },
             { value: "NFC_negative", text: "t_NFC_negative" },
           ],

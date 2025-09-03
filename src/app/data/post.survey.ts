@@ -40,6 +40,24 @@ export const PostSurvey = {
           correctAnswer:
             "t_post_knowledge_check_notice_period_general_choice_4",
         },
+        {
+          question:
+            "food_dogs",
+          type: "multiple_select",
+          options: [
+            "meat",
+            "commercial_food",
+            "rice_grains",
+            "chocolate",
+            "onions",
+            "plastic",
+          ],
+          correct_answers: [
+            "meat",
+            "commercial_food",
+            "rice_grains",
+          ],
+        },
       ],
     },
     {
