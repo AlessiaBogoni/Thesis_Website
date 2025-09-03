@@ -1,6 +1,29 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-5">
+    <div class="col-md-7 position-relative">
+      <div
+        class="badge text-uppercase p-3"
+        style="display: flex; align-items: center; gap: 10px"
+      >
+        <img
+          [src]="'assets/profiles/QuestionMark.jpg'"
+          [attr.alt]="'Unknown profile image'"
+          style="
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+          "
+        />
+        <div class="p-2">{{'Unknown_author'|label}}</div>
+      </div>
+      <div
+        class="text-container"
+        [appCstTracker]="'text-5'"
+        [innerHTML]="textContent"
+      ></div>
+    </div>
+        <div class="col-md-5">
       <h3 class="highlight-list-heading text-white text-center">
         {{'errors_found' | label}}
       </h3>
@@ -29,29 +52,6 @@
           </p>
         </div>
       </div>
-    </div>
-    <div class="col-md-7 position-relative">
-      <div
-        class="badge text-uppercase p-3"
-        style="display: flex; align-items: center; gap: 10px"
-      >
-        <img
-          [src]="'assets/profiles/QuestionMark.jpg'"
-          [attr.alt]="'Unknown profile image'"
-          style="
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-          "
-        />
-        <div class="p-2">{{'Unknown_author'|label}}</div>
-      </div>
-      <div
-        class="text-container"
-        [appCstTracker]="'text-5'"
-        [innerHTML]="textContent"
-      ></div>
     </div>
   </div>
 </div>

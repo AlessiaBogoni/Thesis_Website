@@ -31,15 +31,14 @@
               {{ "next_to_continue" | label }}
             </span>
           </p>
-
-          <h5 class="text-left text-break text-wrap p-3 border rounded">
-            {{ step.text.title }}
-          </h5>
-
           <div class="border rounded">
+            <h5 class="text-left text-break text-wrap p-3">
+              {{ step.text.title }}
+            </h5>
+
             <div
-              class="badge text-uppercase p-3"
-              style="display: flex; align-items: center; gap: 10px"
+              class="badge text-uppercase p-2"
+              style="display: flex; align-items: center"
             >
               <img
                 [src]="
@@ -69,7 +68,7 @@
                     ? step.text.type === "ai"
                       ? ("AI_author" | label)
                       : ("Human_author" | label)
-                      : ("Unknown_author" | label)
+                    : ("Unknown_author" | label)
                 }}
               </div>
             </div>
@@ -193,16 +192,15 @@
               </b>
             </span>
           </p>
-
-          <h5 class="text-left text-break text-wrap p-3 border rounded">
-            {{ step?.lastText?.title }}
-          </h5>
-
           <div class="border rounded">
+            <h5 class="text-left text-break text-wrap p-3">
+              {{ step?.lastText?.title }}
+            </h5>
+
             <div
-              class="badge text-uppercase p-3"
+              class="badge text-uppercase p-2"
               *ngIf="step?.lastText"
-              style="display: flex; align-items: center; gap: 10px"
+              style="display: flex; align-items: center;"
             ></div>
             <app-text-highlight
               [textContent]="markdownToHtml(step.lastText.text)"
@@ -309,15 +307,14 @@
       </ng-container>
     </ng-container>
     <ng-container *ngIf="state === status.FINISHED">
-
-        <div [innerHTML]="debriefHtml"></div>
-       <!-- <button class="btn btn-primary mt-2" (click)="showLeaderboard()">
+      <div [innerHTML]="debriefHtml"></div>
+      <!-- <button class="btn btn-primary mt-2" (click)="showLeaderboard()">
         {{ "next_to_continue" | label }}       
         </button> -->
-        <button class="btn btn-primary mt-2" (click)="showLeaderboard()">
+      <button class="btn btn-primary mt-2" (click)="showLeaderboard()">
         <div [innerHTML]="leaderboardHtml"></div>
-        </button>
-        <hr class="my-4"/>
+      </button>
+      <hr class="my-4" />
 
       <!-- <div class="w-md-100 mx-auto w-lg-75 mt-4">
         <h2>Thank You for participating</h2>
@@ -355,7 +352,6 @@
 
         <hr class="my-4" />
       </div> -->
-
     </ng-container>
 
     <ng-container *ngIf="state === status.LEADERBOARD && lang">

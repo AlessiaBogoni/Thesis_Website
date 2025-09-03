@@ -35,6 +35,7 @@ export const PreSurvey = {
           inputType: "number",
           min: 18,
           max: 100,
+          isRequired: true,
           validators: [
             {
               type: "numeric",
@@ -120,6 +121,7 @@ export const PreSurvey = {
         },
         {
           type: "radiogroup",
+          isRequired: true,
           name: "attention_check_1",
           title: "t_attention_check_1",
           choices: [{value: true, text:"t_true"},{ value: false, text:"t_false"}],
@@ -133,6 +135,7 @@ export const PreSurvey = {
         },
         {
           type: "radiogroup",
+          isRequired: true,
           name: "attention_check_2",
           title: "t_attention_check_2",
           choices: [{value: true, text:"t_true"},{ value: false, text:"t_false"}],
@@ -146,6 +149,7 @@ export const PreSurvey = {
         },
         {
           type: "radiogroup",
+          isRequired: true,
           name: "attention_check_3",
           title: "t_attention_check_3",
           choices: [{value: true, text:"t_true"},{ value: false, text:"t_false"}],

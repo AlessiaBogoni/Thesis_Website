@@ -7,16 +7,26 @@ export const PostSurvey = {
       elements: [
         {
           type: "text",
+          inputType: "number",
           name: "calories",
           title: "t_post_knowledge_check_calories_title",
           analytics: true,
+          isRequired: true,
+          validators: [
+            {
+              type: "numeric",
+              text: "t_calories_placeholder",
+            },
+          ],
         },
         {
+          
           type: "radiogroup",
           name: "qwerty_origin",
           title: "t_post_knowledge_check_qwerty_origin_title",
           choicesOrder: "random",
           analytics: true,
+          isRequired: true,
           choices: [
             "t_post_knowledge_check_qwerty_origin_choice_1",
             "t_post_knowledge_check_qwerty_origin_choice_2",
@@ -27,6 +37,8 @@ export const PostSurvey = {
           correctAnswer: "t_post_knowledge_check_qwerty_origin_choice_1",
         },
         {
+          analytics: true,
+          isRequired: true,
           type: "radiogroup",
           name: "notice_period_general",
           title: "t_post_knowledge_check_notice_period_general_title",
@@ -41,21 +53,23 @@ export const PostSurvey = {
             "t_post_knowledge_check_notice_period_general_choice_4",
         },
         {
-          question:
-            "food_dogs",
-          type: "multiple_select",
-          options: [
-            "meat",
-            "commercial_food",
-            "rice_grains",
-            "chocolate",
-            "onions",
-            "plastic",
+          analytics: true,
+          isRequired: true,
+          type: "checkbox",
+          title: "t_food_dogs",
+          name:"food_dog",
+          choices: [
+            "t_meat",
+            "t_commercial_food",
+            "t_rice_grains",
+            "t_chocolate",
+            "t_onions",
+            "t_plastic",
           ],
-          correct_answers: [
-            "meat",
-            "commercial_food",
-            "rice_grains",
+          correctAnswer: [
+            "t_meat",
+            "t_commercial_food",
+            "t_rice_grains",
           ],
         },
       ],
@@ -65,6 +79,7 @@ export const PostSurvey = {
       elements: [
         {
           analytics: true,
+          isRequired: true,
           type: "matrix",
           name: "post_survey",
           title: "t_post_survey_title",
@@ -85,8 +100,8 @@ export const PostSurvey = {
               text: "t_post_survey_row_difficulty_guess",
             },
             {
-              value: "contro_check",
-              text: "t_post_survey_row_contro_check",
+              value: "control_check",
+              text: "t_post_survey_row_control_check",
             },
             {
               value: "difficulty_evaluation",
@@ -107,6 +122,7 @@ export const PostSurvey = {
           name: "author_belief",
           title: "t_post_survey_author_belief_title",
           analytics: true,
+          isRequired: true,
           choices: [
             "t_post_survey_author_belief_choice_1",
             "t_post_survey_author_belief_choice_2",
