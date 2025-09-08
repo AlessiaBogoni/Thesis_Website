@@ -59,7 +59,7 @@ export class ScoreService {
 
 
   chooseGroupSolution(secondGroup: string, lang: "en" | "it" = "en") {
-    console.log("Soluzione scelta:", this.groupSolutions[lang][secondGroup]);
+    // console.log("Soluzione scelta:", this.groupSolutions[lang][secondGroup]);
   
     return this.groupSolutions[lang][secondGroup] || [];
   }
@@ -104,7 +104,7 @@ export class ScoreService {
   }
  */
   createHeatmap(match, test) {
-    console.log("createHeatmap");
+    // console.log("createHeatmap");
     const map = new Array(test.length).fill(0);
     for (const m of match) {
       const s = m.startIndex;
@@ -116,7 +116,7 @@ export class ScoreService {
         }
       });
     }
-    console.log("map " + map);
+    // console.log("map " + map);
     return map;
   }
 
@@ -174,7 +174,7 @@ export class ScoreService {
   }
 
   overlapCalc(test: number[], heatmap: number[]): number {
-    console.log("overlapCalc");
+    // console.log("overlapCalc");
     let sum = 0;
     for (const index of test) {
       if (index >= 0 && index < heatmap.length) {
@@ -190,7 +190,7 @@ export class ScoreService {
    * Measures how much of the selected characters by the user are close to actual errors.
    */
   getPrecision(userSelection: number[], heatmap: number[]): number {
-    console.log("getPrecision");
+    // console.log("getPrecision");
     if (userSelection.length === 0) {
       //console.log("userSelection.length === 0");
       return 0;
@@ -238,7 +238,7 @@ export class ScoreService {
   } */
 
     getRecall(userSelection: number[], heatmap: number[]): number {
-  console.log("getRecall");
+  // console.log("getRecall");
   let sumSelected = 0;
   let totalGroundTruth = 0;
 
@@ -270,7 +270,7 @@ export class ScoreService {
    * Harmonic mean between precision and recall.
    */
   getF1(precision: number, recall: number): number {
-    console.log("getF1");
+    // console.log("getF1");
     if (precision + recall === 0) {
       //console.log("precision + recall === 0");
       return 0;
@@ -284,7 +284,7 @@ export class ScoreService {
    * Measures how well the user avoided selecting correct (non-error) characters.
    */
   getSpecificity(userSelection: number[], heatmap: number[]): number {
-    console.log("getSpecificity");
+    // console.log("getSpecificity");
     const negativeIndexes = heatmap
       .map((value, index) => (value === 0 ? index : -1))
       .filter((index) => index !== -1);

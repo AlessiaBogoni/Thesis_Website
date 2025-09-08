@@ -414,13 +414,13 @@ export class TextHighlightComponent implements AfterViewInit {
 
     this.highlightSections.push(newHighlight);
     this.highlightSectionsChange.emit(this.highlightSections);
-    console.log("startIndexes "+ this.startIndexes, "endIndexes " + this.endIndexes);
-    console.log("startIndex "+ startIndex, "endIndex " + endIndex);
+    // console.log("startIndexes "+ this.startIndexes, "endIndexes " + this.endIndexes);
+    // console.log("startIndex "+ startIndex, "endIndex " + endIndex);
     this.startIndexes.push(startIndex);
     this.endIndexes.push(endIndex);
-    console.log("start "+ this.startIndexes, "end " + this.endIndexes);
+    // console.log("start "+ this.startIndexes, "end " + this.endIndexes);
 
-    console.log("Highlight added:", newHighlight);
+    // console.log("Highlight added:", newHighlight);
     this.selectionApplied.emit({
       // Emit new selection with indices
       text: selectionText,

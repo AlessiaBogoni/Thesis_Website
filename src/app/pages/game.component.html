@@ -44,8 +44,8 @@
                 [src]="
                   step.text.labeled
                     ? step.text.type === 'ai'
-                      ? 'assets/profiles/bot.png'
-                      : 'assets/profiles/human.png'
+                      ? 'assets/profiles/Bot.jpg'
+                      : 'assets/profiles/human.jpg'
                     : 'assets/profiles/QuestionMark.jpg'
                 "
                 [attr.alt]="
@@ -62,14 +62,14 @@
                   object-fit: cover;
                 "
               />
-              <div class="p-2">
+              <div class="p-2 largerLabel"><strong>
                 {{
                   step.text.labeled
                     ? step.text.type === "ai"
                       ? ("AI_author" | label)
                       : ("Human_author" | label)
                     : ("Unknown_author" | label)
-                }}
+                }}</strong>
               </div>
             </div>
 
@@ -85,7 +85,7 @@
             <label class="form-label font-weight-bold text-center w-100">
               {{ "t_whoDoYouThinkIsTheAuthor" | label }}
             </label>
-            <input
+            <!-- <input
               type="range"
               class="form-range custom-slider"
               min="0"
@@ -96,7 +96,36 @@
               (change)="markInteracted('humanSoundness')"
               (mousedown)="markInteracted('humanSoundness')"
               (touchstart)="markInteracted('humanSoundness')"
-            />
+            /> -->
+
+           <input
+  type="range"
+  class="form-range custom-slider"
+  min="0"
+  max="10"
+  step="1"
+  [ngModel]="
+    step.text.labeled
+      ? (step.text.type === 'ai' ? 0 : 10)
+      : step.humanSoundness
+  "
+  (ngModelChange)="
+    step.text.labeled
+      ? markInteracted('humanSoundness')
+      : (step.humanSoundness = $event)
+  "
+  [disabled]="step.text.labeled"
+  [ngClass]="{
+    'unconfirmed': !interacted.humanSoundness,
+    'locked-slider': step.text.labeled
+  }"
+  (change)="!step.text.labeled && markInteracted('humanSoundness')"
+  (mousedown)="!step.text.labeled && markInteracted('humanSoundness')"
+  (touchstart)="!step.text.labeled && markInteracted('humanSoundness')"
+/>
+
+
+
             <div class="d-flex justify-content-between">
               <span class="w-33">{{ "AI" | label }}</span>
               <span class="w-33 text-center" *ngIf="interacted.humanSoundness">

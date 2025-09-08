@@ -81,3 +81,18 @@ font {
   font-size: 0.95rem;
   color: #494949;
 }
+
+/* is this last part doing anything at all?  */
+
+.sd-table {
+  table-layout: auto !important;
+  width: auto !important;
+}
+
+
+/* now min-width takes effect */
+.sd-table__cell {
+  min-width: 0px !important;
+  border-bottom:0px;
+  padding: 0px;
+}

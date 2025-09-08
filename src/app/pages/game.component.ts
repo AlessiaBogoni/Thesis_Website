@@ -102,9 +102,29 @@ export class GameComponent implements OnInit, OnDestroy {
     this.interacted[key] = true;
   }
 
-  allInteracted(): boolean {
+/*   allInteracted(): boolean {
     return Object.values(this.interacted).every((val) => val === true);
+  } */
+
+    // Assuming your component has a method like this
+allInteracted(): boolean {
+  // Check if the current step is labeled
+  const currentStep = this.textToShow[this.currentText - 1];
+  const isLabeled = currentStep && currentStep.text.labeled;
+
+  // The 'Next' button should always be disabled if accuracy or readability hasn't been interacted with.
+  if (!this.interacted.accuracy || !this.interacted.readability) {
+    return false;
   }
+
+  // If the step is labeled, we don't need to check for humanSoundness interaction.
+  if (isLabeled) {
+    return true;
+  }
+
+  // If the step is NOT labeled, we must check for humanSoundness interaction.
+  return this.interacted.humanSoundness;
+}
   get state() {
     return this.internalState;
   }
@@ -189,12 +209,12 @@ export class GameComponent implements OnInit, OnDestroy {
     surveyLocalization.defaultLocale = "custom";
     // Now that the language is set and loaded, translate the survey
     const surveyJsonTranslated = this.translateSurvey(PreSurvey);
-    console.log(surveyJsonTranslated);
+    // console.log(surveyJsonTranslated);
     this.preSurvey = new Model(surveyJsonTranslated);
     this.preSurvey.showPrevButton = false;
 
     const surveyJsonTranslatedPost = this.translateSurvey(PostSurvey);
-    console.log(surveyJsonTranslatedPost);
+    // console.log(surveyJsonTranslatedPost);
     this.postSurvey = new Model(surveyJsonTranslatedPost);
 
     const askForConsent = async () => {
@@ -263,7 +283,7 @@ export class GameComponent implements OnInit, OnDestroy {
     this.cstSubscription = this.cstService.overallCstScore$.subscribe(
       (score) => {
         this.cstScore = score;
-        console.log("Current Overall CST Score:", this.cstScore);
+        // console.log("Current Overall CST Score:", this.cstScore);
       }
     );
 
@@ -274,10 +294,10 @@ export class GameComponent implements OnInit, OnDestroy {
     }
     this.group = this.machineCode[0]; // Get the group from the first character
     this.secondGroup = this.machineCode[1]; // Get the second character
-    console.log("Machine code:", this.machineCode);
-    console.log("Group:", this.group);
-    console.log("Second group:", this.secondGroup);
-    console.log(textPerGroup("it"));
+    // console.log("Machine code:", this.machineCode);
+    // console.log("Group:", this.group);
+    // console.log("Second group:", this.secondGroup);
+    // console.log(textPerGroup("it"));
 
     const textToShow = textPerGroup(this.translationService.currentLang)?.[
       this.group
@@ -293,8 +313,8 @@ export class GameComponent implements OnInit, OnDestroy {
     });
 
     this.numSecondGroup = +this.secondGroup;
-    console.log(this.numSecondGroup);
-    console.log(textPerSecondGroup);
+    // console.log(this.numSecondGroup);
+    // console.log(textPerSecondGroup);
 
     const group = textPerSecondGroup?.(this.translationService.currentLang)?.[
       this.numSecondGroup
@@ -335,7 +355,7 @@ export class GameComponent implements OnInit, OnDestroy {
     const fragment = url.split("?")[1]; // Get everything after `?`
     const params = new URLSearchParams(fragment);
     this.referral = params.get("referral");
-    console.log("Referral source:", this.referral);
+    // console.log("Referral source:", this.referral);
 
     // Ottiene il dispositivo e il browser dell'utente.
     const device = this.surveyService.getDeviceAndBrowser();
@@ -488,7 +508,7 @@ export class GameComponent implements OnInit, OnDestroy {
     // result.guessScore = firstScores;
 
     // result.text.attention = this.cstScore;
-    console.log(result.attention);
+    // console.log(result.attention);
     // console.log(result.text.attention);
     result.deltaTime = new Date().getTime() - this.pastTime;
     // result.deltaTime = (new Date()).getTime() - this.pastTime;
@@ -499,13 +519,13 @@ export class GameComponent implements OnInit, OnDestroy {
         result
       )
       .subscribe(() => {
-        console.log("Text result sent:", this.textToShow[this.currentText - 1]);
+        // console.log("Text result sent:", this.textToShow[this.currentText - 1]);
         if (this.currentText < this.textToShow.length) {
           this.currentText++;
           this.state = State["TEXT" + this.currentText];
         } else {
           this.state = State.TEXT5;
-          console.log(this.state);
+          // console.log(this.state);
         }
       });
   }
@@ -513,10 +533,10 @@ export class GameComponent implements OnInit, OnDestroy {
   toPostSurvey() {
     const result = { ...this.lastTextToShow[this.currentText - 5] };
     const firstResult = { ...this.textToShow };
-    console.log(result);
-    console.log("firsResult " + firstResult);
+    // console.log(result);
+    // console.log("firsResult " + firstResult);
     const scores = this.scoreService.computeScore(result, result.lastText.text);
-    console.log("Scores: ", scores);
+    // console.log("Scores: ", scores);
 
     const { guessScores, guessFour} =
       this.scoreService.calculateGuessingSkillScores(firstResult);
@@ -539,7 +559,7 @@ export class GameComponent implements OnInit, OnDestroy {
     delete result.lastText.title;
     result.attention = this.cstScore;
     // result.lastText.attention = this.cstScore;
-    console.log(result.lastText.attention);
+    // console.log(result.lastText.attention);
     // console.log(result.attention);
     result.highlightSections.forEach((section) => {
       delete section.element;
@@ -553,10 +573,7 @@ export class GameComponent implements OnInit, OnDestroy {
         result
       )
       .subscribe(() => {
-        console.log(
-          "Text result sent:",
-          this.lastTextToShow[this.currentText - 5]
-        );
+        //console.log( "Text result sent:", this.lastTextToShow[this.currentText - 5]);
         this.state = State.POST;
       });
   }
@@ -564,6 +581,7 @@ export class GameComponent implements OnInit, OnDestroy {
   showLeaderboard() {
     this.state = State.LEADERBOARD;
   }
+  
 
   markdownToHtml(markdown) {
     if (!markdown) {
