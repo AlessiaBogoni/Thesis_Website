@@ -62,14 +62,16 @@
                   object-fit: cover;
                 "
               />
-              <div class="p-2 largerLabel"><strong>
-                {{
-                  step.text.labeled
-                    ? step.text.type === "ai"
-                      ? ("AI_author" | label)
-                      : ("Human_author" | label)
-                    : ("Unknown_author" | label)
-                }}</strong>
+              <div class="p-2 largerLabel">
+                <strong>
+                  {{
+                    step.text.labeled
+                      ? step.text.type === "ai"
+                        ? ("AI_author" | label)
+                        : ("Human_author" | label)
+                      : ("Unknown_author" | label)
+                  }}</strong
+                >
               </div>
             </div>
 
@@ -98,33 +100,37 @@
               (touchstart)="markInteracted('humanSoundness')"
             /> -->
 
-           <input
-  type="range"
-  class="form-range custom-slider"
-  min="0"
-  max="10"
-  step="1"
-  [ngModel]="
-    step.text.labeled
-      ? (step.text.type === 'ai' ? 0 : 10)
-      : step.humanSoundness
-  "
-  (ngModelChange)="
-    step.text.labeled
-      ? markInteracted('humanSoundness')
-      : (step.humanSoundness = $event)
-  "
-  [disabled]="step.text.labeled"
-  [ngClass]="{
-    'unconfirmed': !interacted.humanSoundness,
-    'locked-slider': step.text.labeled
-  }"
-  (change)="!step.text.labeled && markInteracted('humanSoundness')"
-  (mousedown)="!step.text.labeled && markInteracted('humanSoundness')"
-  (touchstart)="!step.text.labeled && markInteracted('humanSoundness')"
-/>
-
-
+            <input
+              type="range"
+              class="form-range custom-slider"
+              min="0"
+              max="10"
+              step="1"
+              [ngModel]="
+                step.text.labeled
+                  ? step.text.type === 'ai'
+                    ? 0
+                    : 10
+                  : step.humanSoundness
+              "
+              (ngModelChange)="
+                step.text.labeled
+                  ? markInteracted('humanSoundness')
+                  : (step.humanSoundness = $event)
+              "
+              [disabled]="step.text.labeled"
+              [ngClass]="{
+                unconfirmed: !interacted.humanSoundness,
+                'locked-slider': step.text.labeled
+              }"
+              (change)="!step.text.labeled && markInteracted('humanSoundness')"
+              (mousedown)="
+                !step.text.labeled && markInteracted('humanSoundness')
+              "
+              (touchstart)="
+                !step.text.labeled && markInteracted('humanSoundness')
+              "
+            />
 
             <div class="d-flex justify-content-between">
               <span class="w-33">{{ "AI" | label }}</span>
@@ -229,7 +235,7 @@
             <div
               class="badge text-uppercase p-2"
               *ngIf="step?.lastText"
-              style="display: flex; align-items: center;"
+              style="display: flex; align-items: center"
             ></div>
             <app-text-highlight
               [textContent]="markdownToHtml(step.lastText.text)"

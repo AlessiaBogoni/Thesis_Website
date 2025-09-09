@@ -117,13 +117,21 @@ allInteracted(): boolean {
     return false;
   }
 
-  // If the step is labeled, we don't need to check for humanSoundness interaction.
-  if (isLabeled) {
-    return true;
+ if (isLabeled) {
+    if (currentStep.text.type === 'ai') {
+      currentStep.humanSoundness = 0;
+    } else { // type === 'human'
+      currentStep.humanSoundness = 10;
+    }
   }
 
-  // If the step is NOT labeled, we must check for humanSoundness interaction.
-  return this.interacted.humanSoundness;
+  // Check for required interactions
+  const baseInteractions = this.interacted.accuracy && this.interacted.readability;
+
+  // The 'Next' button should be enabled if the base interactions are complete,
+  // and either the text is labeled (so humanSoundness is pre-set) or
+  // the user has interacted with the humanSoundness slider.
+  return baseInteractions && (isLabeled || this.interacted.humanSoundness);
 }
   get state() {
     return this.internalState;
@@ -543,7 +551,7 @@ allInteracted(): boolean {
     const lastScore = this.scoreService.calculateGuessingSkillScoreForLastText(
       this.lastTextToShow[this.currentText - 5]
     );
-    const guessTotal = (guessFour * 4 + lastScore)/5
+    const guessTotal = (guessFour * 2 + lastScore)/3
 
     /* const { guessScores: guessScores, guessTotal: guessTotal } = 
   this.scoreService.calculateGuessingSkillScores([...this.textToShow, ...this.lastTextToShow]); */
