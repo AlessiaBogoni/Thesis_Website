@@ -11,7 +11,7 @@
   "consent_yes_sure": "Sì, sono sicuro",
   "consent_go_back": "Torna indietro",
 
-  "introduction": "<p><h3>Introduzione a questo studio</h3>Benvenuto e grazie per il tuo interesse per questo studio!</p><p>Mi chiamo <b>Alessia Bogoni</b> e sono una studentessa del corso di laurea magistrale in International Economic Policy presso la Julius-Maximilians-Universität Würzburg. Questo esperimento è condotto come parte della mia tesi magistrale, sotto la supervisione del <b>Prof. Dr. Steffen Altmann</b> e della <b>Dr. Alisa Frey</b>.</p><br><p>Ti verrà chiesto di leggere alcuni brevi testi e rispondere a domande su di essi. L'intero processo non dovrebbe richiedere più di <b>10 minuti</b>. <br>Completando i compiti, avrai anche l'opportunità di guadagnare denaro.</p><p>La partecipazione è completamente volontaria e puoi interrompere lo studio in qualsiasi momento senza fornire motivazioni. Tutte le risposte saranno trattate in modo confidenziale e usate esclusivamente per scopi di ricerca accademica.</p><p>Per domande o dubbi riguardo lo studio, puoi contattarmi all'indirizzo <a href=\"mailto:alessia.bogoni@stud-mail.uni-wuerzburg.de\" style=\"color: #ffffff;\">alessia.bogoni@stud-mail.uni-wuerzburg.de</a>.</p><br><p>Grazie per il sostegno alla ricerca accademica!</p>",
+  "introduction": "<p><h3>Introduzione a questo studio</h3>Benvenuto e grazie per il tuo interesse per questo studio!</p><p>Mi chiamo <b>Alessia Bogoni</b> e sono una studentessa del corso di laurea magistrale in International Economic Policy presso la Julius-Maximilians-Universität Würzburg. Questo esperimento è condotto come parte della mia tesi magistrale, sotto la supervisione del <b>Prof. Dr. Steffen Altmann</b> e della <b>Dr. Alisa Frey</b>.</p><p>Ti verrà chiesto di leggere alcuni brevi testi e rispondere a domande su di essi. L'intero processo non dovrebbe richiedere più di <b>10 minuti</b>. <br>Completando i compiti, avrai anche l'opportunità di guadagnare un premio in denaro.</p><p>La partecipazione è completamente volontaria e puoi interrompere lo studio in qualsiasi momento senza fornire motivazioni. Tutte le risposte saranno trattate in modo confidenziale e usate esclusivamente per scopi di ricerca accademica.</p><p>Per domande o dubbi riguardo lo studio, puoi contattarmi all'indirizzo <a href=\"mailto:alessia.bogoni@stud-mail.uni-wuerzburg.de\" style=\"color: #ffffff;\">alessia.bogoni@stud-mail.uni-wuerzburg.de</a>.</p><br><p>Grazie per il sostegno alla ricerca accademica!</p>",
   "confirmation": "Confermo di aver letto e compreso le informazioni sopra riportate.",
   "title_confirmation": "Partecipando, acconsenti all'uso dei tuoi dati per fini di ricerca. Puoi interrompere lo studio in qualsiasi momento senza conseguenze.",
 
@@ -54,14 +54,17 @@
   "NFC_positive": "Mi piace capire le cose, anche se richiede tempo",
   "NFC_negative": "Di solito preferisco riassunti rapidi rispetto alla lettura di spiegazioni complete",
 
-  "instructions_html": "<h3 style=\"color:#7dd1a9\">Istruzioni</h3><p>Leggerai <strong>5</strong> scambi di domande e risposte. Ogni pagina contiene una breve domanda seguita da un testo di risposta.</p><p>Per ogni testo, verrà indicato un autore (umano o AI (intelligenza atificiale) oppure 'sconosciuto'). <strong style=\"color:#7dd1a9\">Quando l'autore non è sconosciuto, l'etichetta rappresenta correttamente il vero autore della risposta testo</strong>.</p><p><strong style=\"color:#7dd1a9\">Per le prime 4 risposte:</strong></p><ul><li>Indovina la <strong>fonte</strong> (autore).</li><li>Valuta la <strong>leggibilità</strong>.</li><li>Valuta l'<strong>accuratezza</strong>.</li></ul><p><strong style=\"color:#7dd1a9\">Per la quinta risposta:</strong></p><p>Svolgerai le stesse attività di cui sopra e inoltre <strong style=\"color:#7dd1a9\">evidenzierai le parti </strong> in cui pensi siano presenti errori.</p><p>La tua <strong style=\"color:#7dd1a9\">prestazione</strong> sarà valutata in base a:</p><ul><li>Quanto le tue ipotesi sulla fonte siano vicine ai veri autori.</li><li>Quanti errori individuerai correttamente nell'ultimo testo.</li></ul>",
-  "attention_check_1": "Indovinerai la fonte (autore) di ogni testo.",
-  "ac1_feedback": "<div style='color: red; font-weight: bold;'>Errato. Devi <strong>indovinare la fonte (autore)</strong> di ogni testo.</div>",
+  "instructions_html": "<h3 style=\"color:#7dd1a9\">Istruzioni</h3><h5>Cosa ti aspetta:</h5><p>Leggerai <strong>5</strong> scambi di domande e risposte. Ogni pagina contiene una breve domanda seguita da un testo di risposta.</p><p>Per ogni testo, verrà indicato un autore: umano, AI (intelligenza atificiale) oppure 'sconosciuto'.<br> <strong style=\"color:#7dd1a9\">Quando l'autore <strong>non è sconosciuto</strong>, l'etichetta rappresenta correttamente il vero autore del testo</strong>.</p><div style=\"margin:0 \"><strong style=\"margin:0 \">Per i primi 4 testi:</strong><ul><li>Quando l'autore è sconosciuto, indovina se è AI o umano.</li><li>Valuta la <strong>leggibilità</strong>.</li><li>Valuta l'<strong>accuratezza</strong>.</li></ul></div><p style=\"margin:0 \"><strong style=\"margin:0\">Per il quinto testo:</strong></p><p>Svolgi le stesse attività e inoltre <strong style=\"color:#7dd1a9\">evidenzia gli errori</strong> nel testo.<h5>Fai del tuo meglio!</h5></p><p style=\"color:#7dd1a9\"><strong> Una persona ogni 10 verrà scelta casualmente e potrà vincere fino a 30 euro. Il premio dipenderà dalla tua performance, quindi hai tutto l'interesse a dare il meglio di te!</strong></p><p style=\"margin:0 \">La tua <strong style=\"color:#7dd1a9\">prestazione</strong> sarà valutata in base a:</p><ul><li>Quanto le tue ipotesi sulla fonte siano vicine ai veri autori.</li><li>Quanti errori individuerai correttamente nell'ultimo testo.</li></ul>",
+  "intro_attention_check": "<p style=\"margin-bottom:5px\">Domande di controllo:</p>",
+  "scoring_details_link":"<p><a target='_blank' href='/#/scoring-details' style='color: #7dd1a9; text-decoration: underline;'><strong>Scopri di più su come è calcolato il tuo punteggio</strong></a></p>",
+  "details_prize":"<p style=\"margin-bottom:5px\">I tuoi dati:</p>",
+  "attention_check_1": "Non è previsto alcun premio per il completamento dello studio",
+  "ac1_feedback": "<div style='color: red; font-weight: bold;'>Errato. Una persona ogni 10 verrà scelta casualmente e riceverà un premio proporzionale alla propria prestazione.</div>",
   "attention_check_2": "Solo i primi 4 testi richiedono di evidenziare errori.",
   "ac2_feedback": "<div style='color: red; font-weight: bold;'>Errato. <strong>Solo il 5° testo</strong> richiede l'evidenziazione degli errori.</div>",
-  "attention_check_3": "Quando un'etichetta è presente, rappresenta correttamente il vero autore del testo.",
-  "ac3_feedback": "<div style='color: red; font-weight: bold;'>Errato. Se un'etichetta è presente, <strong>rappresenta correttamente</strong> il vero autore.</div>",
-  "performance_text": "<p style=\"color:#7dd1a9\"><strong>I migliori partecipanti riceveranno premi!</strong></p>",
+  "attention_check_3": "Quando un'etichetta è presente, rappresenta correttamente il vero autore del testo, quando non è presente, dovrai indovinare tu l'autore",
+  "ac3_feedback": "<div style='color: red; font-weight: bold;'>Errato. Se un'etichetta è presente, indica il vero autore, se invece è assente dovrai indovinarlo tu.</div>",
+  "performance_text": "<p style=\"color:#7dd1a9\"><strong> Una persona ogni 10 verrà scelta casualmente e potrà vincere fino a {{money}} euro. Il premio dipenderà dalla tua performance, quindi hai tutto l'interesse a dare il meglio di te!</strong></p>",
   "name": "Nome",
   "name_placeholder": "Inserisci il tuo nome (usato per mostrare il risultato nella classifica finale)",
   "email": "La tua email di contatto",
@@ -145,6 +148,8 @@
   "thankyou": "Grazie per aver partecipato a questo studio!",
   "exit": "Esci dall'esperimento",
   "guessScore": "Punteggio autore",
-  "totalScore": "Punteggio totale"
+  "totalScore": "Punteggio totale",
+
+  "score_instruction":"<div>ciao</div>"
 
 }
