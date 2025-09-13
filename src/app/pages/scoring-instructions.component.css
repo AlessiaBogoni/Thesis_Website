@@ -1,0 +1,47 @@
+/* src/app/scoring-instructions/scoring-instructions.component.css */
+
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Adds space between the labels and the slider */
+}
+
+/* Base slider styling */
+.custom-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  border-radius: 5px;
+}
+
+.custom-slider:hover {
+  opacity: 1;
+}
+
+/* Style for the slider thumb (the draggable part) */
+.custom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #7dd1a9;
+  cursor: pointer;
+  border-radius: 50%; /* Makes the thumb a circle */
+}
+
+.custom-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #7dd1a9;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.slider-container label {
+  color: #7dd1a9; /* Matches your instruction color */
+  font-weight: bold;
+}

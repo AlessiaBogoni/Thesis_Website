@@ -1,36 +1,14 @@
-import { Injectable } from "@angular/core";
-import { TextHighlightComponent } from "./text-higlighter/text-highlight.component";
-import {
-  LastText,
-  textPerGroup,
-  Text,
-  textPerSecondGroup,
-} from "../data/texts";
-import { HttpClient } from "@angular/common/http";
-import { match } from "node:assert";
-import { map } from "rxjs";
-import { SurveyService } from "./survey.service";
-import { PreSurvey } from "app/data/pre.survey";
+// src/app/services/evaluation.service.ts
+import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
-export class ScoreService {
-  highlightSections: {
-    text: string;
-    color: string;
-    element: HTMLElement;
-    startIndex: number;
-    endIndex: number;
-  }[] = [];
-
-  originalData;
-  lang: string;
-  highlightSolution: any;
-  text: string;
-
-  constructor(public http: HttpClient, private surveyService: SurveyService) {}
-  groupSolutions = {
+export class EvaluationService {
+  
+  // This object holds the correct highlighting solutions for your experiment.
+  // It's a key part of your scoring logic.
+  private groupSolutions = {
     en: {
       ai: [
         { startIndex: 188, endIndex: 193, text: "above" },
@@ -57,54 +35,19 @@ export class ScoreService {
     },
   };
 
-
+  /**
+   * Selects the correct highlighting solution based on the text's group and language.
+   */
   chooseGroupSolution(secondGroup: string, lang: "en" | "it" = "en") {
-    // console.log("Soluzione scelta:", this.groupSolutions[lang][secondGroup]);
-  
     return this.groupSolutions[lang][secondGroup] || [];
   }
-  /*   chooseGroupSolution(secondGroup: string) {
-    if (secondGroup === "ai") {
-      return [
-        {
-          endIndex: 193,
-          startIndex: 188,
-          text: "above",
-        },
-        {
-          endIndex: 476,
-          startIndex: 458,
-          text: "less than two days",
-        },
-        {
-          endIndex: 535,
-          startIndex: 523,
-          text: "only one day",
-        },
-      ];
-    } else if (secondGroup === "human") {
-      return [
-        {
-          endIndex: 225,
-          startIndex: 220,
-          text: "above",
-        },
-        {
-          endIndex: 595,
-          startIndex: 577,
-          text: "less than two days",
-        },
-        {
-          endIndex: 640,
-          startIndex: 626,
-          text: "only one day's",
-        },
-      ];
-    }
-  }
- */
-   createHeatmap(match, test) {
-    // console.log("createHeatmap");
+
+  /**
+   * Generates a heatmap array based on correct error matches.
+   * The heatmap assigns a score (1, 0.9, 0.8, etc.) to each character index
+   * based on its proximity to a correct error.
+   */
+  createHeatmap(match, test) {
     const map = new Array(test.length).fill(0);
     for (const m of match) {
       const s = m.startIndex;
@@ -116,10 +59,13 @@ export class ScoreService {
         }
       });
     }
-    // console.log("map " + map);
     return map;
   }
 
+  /**
+   * Computes the overall highlighting score for the last text.
+   * This method uses several helper functions to calculate precision, recall, etc.
+   */
   computeScore(lastTextResult, text: string) {
     const correctMatches = this.chooseGroupSolution(
       lastTextResult.lastText.type, lastTextResult.lastText.lang
@@ -139,12 +85,11 @@ export class ScoreService {
       }
     });
 
-    // Calculate fuzzy precision, recall, specificity and F1
     const precision = this.getPrecision(test, correctHeatmap);
     const recall = this.getRecall(test, correctHeatmap);
     const specificity = this.getSpecificity(test, correctHeatmap);
     const fuzzyScore = this.overlapCalc(test, correctHeatmap);
-    const f1 = this.getF1(precision, recall); // optional, still useful
+    const f1 = this.getF1(precision, recall);
 
     return {
       precision,
@@ -155,6 +100,9 @@ export class ScoreService {
     };
   }
 
+  /**
+   * Calculates the fuzzy value for a character's proximity to a correct error.
+   */
   value(i: number, s: number, e: number): number {
     if (i >= s && i <= e) return 1;
     if (i === s - 1 || i === e + 1) return 1;
@@ -173,12 +121,13 @@ export class ScoreService {
     return 0;
   }
 
+  /**
+   * Calculates the fuzzy overlap score.
+   */
   overlapCalc(test: number[], heatmap: number[]): number {
-    // console.log("overlapCalc");
     let sum = 0;
     for (const index of test) {
       if (index >= 0 && index < heatmap.length) {
-        //console.log("overlapcalc index");
         sum += heatmap[index];
       }
     }
@@ -187,104 +136,60 @@ export class ScoreService {
 
   /**
    * Computes fuzzy precision.
-   * Measures how much of the selected characters by the user are close to actual errors.
    */
   getPrecision(userSelection: number[], heatmap: number[]): number {
-    // console.log("getPrecision");
     if (userSelection.length === 0) {
-      //console.log("userSelection.length === 0");
       return 0;
     }
-
     let sum = 0;
     for (const index of userSelection) {
-      //console.log("index " + index);
-      //console.log("heatmap.length " + heatmap.length);
       if (index >= 0 && index < heatmap.length) {
         sum += heatmap[index];
-        //console.log("sum dopo" + sum); // high value if user clicked near a real error
       }
     }
-    //console.log("sum/userselection.length " + sum / userSelection.length);
     return sum / userSelection.length;
   }
 
   /**
    * Computes fuzzy recall.
-   * Measures how much of the actual error area was successfully identified by the user.
    */
-  /* getRecall(userSelection: number[], heatmap: number[]): number {
-    console.log("getRecall");
+  getRecall(userSelection: number[], heatmap: number[]): number {
     let sumSelected = 0;
     let totalGroundTruth = 0;
 
-    for (let i = 0; i < heatmap.length; i++) {
-      console.log("totalGroundTruth " + totalGroundTruth);
-      totalGroundTruth += heatmap[i]; // max possible score if user did perfect selection
-      console.log(
-        "totalgroundtruth += heatmap[i] " + (totalGroundTruth += heatmap[i])
-      );
-    }
-    console.log("userSelection " + userSelection);
-    for (const index of userSelection) {
-      if (index >= 0 && index < heatmap.length) {
-        console.log(" index if ");
-        sumSelected += heatmap[index]; // actual score user got from selected positions
-        console.log("sumSelected " + sumSelected);
+    for (const value of heatmap) {
+      if (value === 1) {
+        totalGroundTruth += 1;
       }
     }
 
+    for (const index of userSelection) {
+      if (index >= 0 && index < heatmap.length) {
+        sumSelected += heatmap[index];
+      }
+    }
+
+    if (sumSelected > totalGroundTruth) {
+      sumSelected = totalGroundTruth;
+    }
+
     return totalGroundTruth === 0 ? 0 : sumSelected / totalGroundTruth;
-  } */
-
-    getRecall(userSelection: number[], heatmap: number[]): number {
-  // console.log("getRecall");
-  let sumSelected = 0;
-  let totalGroundTruth = 0;
-
-  // Calculate the totalGroundTruth based ONLY on the core correct answers (heatmap values of 1)
-  for (const value of heatmap) {
-    if (value === 1) {
-      totalGroundTruth += 1;
-    }
   }
-
-  // Calculate the sum of the scores for the user's selection
-  for (const index of userSelection) {
-    if (index >= 0 && index < heatmap.length) {
-      sumSelected += heatmap[index];
-    }
-  }
-
-  // Cap the sumSelected at totalGroundTruth to ensure the recall score does not exceed 1
-  if (sumSelected > totalGroundTruth) {
-    sumSelected = totalGroundTruth;
-  }
-
-  // Handle the case where there are no correct answers to avoid division by zero
-  return totalGroundTruth === 0 ? 0 : sumSelected / totalGroundTruth;
-}
 
   /**
    * Computes fuzzy F1 score.
-   * Harmonic mean between precision and recall.
    */
   getF1(precision: number, recall: number): number {
-    // console.log("getF1");
     if (precision + recall === 0) {
-      //console.log("precision + recall === 0");
       return 0;
     }
-    //console.log("2 * (precision * recall) " + 2 * (precision * recall));
     return (2 * (precision * recall)) / (precision + recall);
   }
 
   /**
    * Computes fuzzy specificity.
-   * Measures how well the user avoided selecting correct (non-error) characters.
    */
   getSpecificity(userSelection: number[], heatmap: number[]): number {
-    // console.log("getSpecificity");
     const negativeIndexes = heatmap
       .map((value, index) => (value === 0 ? index : -1))
       .filter((index) => index !== -1);
@@ -293,29 +198,35 @@ export class ScoreService {
       (i) => i >= 0 && i < heatmap.length && heatmap[i] === 0
     );
 
-    const TN = negativeIndexes.length - selectedNegatives.length; // true negatives: correct untouched
+    const TN = negativeIndexes.length - selectedNegatives.length;
     const FP = selectedNegatives.length;
 
     const denominator = TN + FP;
     return denominator === 0 ? 0 : TN / denominator;
   }
 
-  // last text
+  /**
+   * Calculates the guessing score for the last text.
+   */
   calculateGuessingSkillScoreForLastText(lastTextResult: any): number {
-    //console.log("lastTextResult.lastText.type " + lastTextResult.lastText.type);
     const actualSource = lastTextResult.lastText.type === "ai" ? 0 : 1;
     const participantGuess = lastTextResult.humanSoundness / 10;
     const lastGuessScore = 1 - Math.abs(participantGuess - actualSource);
-    return lastGuessScore; // Range: 0 to 1
+    return lastGuessScore;
   }
 
-  // texts
+  /**
+   * Calculates the guessing score for a single text.
+   */
   calculateGuessingSkillScoreForText(result: any): number {
     const actualSource = result.text.type === "ai" ? 0 : 1;
-    const participantGuess = result.humanSoundness / 10; // 0-1 scale
-    return 1 - Math.abs(participantGuess - actualSource); // [0,1]
+    const participantGuess = result.humanSoundness / 10;
+    return 1 - Math.abs(participantGuess - actualSource);
   }
 
+  /**
+   * Calculates the average guessing score across multiple texts.
+   */
   calculateGuessingSkillScores(textResults: any[]): {
     guessScores: number[];
     guessFour: number;
@@ -325,22 +236,21 @@ export class ScoreService {
       this.calculateGuessingSkillScoreForText(r)
     );
     const guessFour =
-      guessScores.reduce((a, b) => a + b, 0) / guessScores.length; // average
+      guessScores.reduce((a, b) => a + b, 0) / guessScores.length;
     return { guessScores, guessFour };
   }
 
-  calculateGuessingSkillScoreForTexts(textResults: any[]): number {
-    let textScore = 0;
-    let totalScore = 0;
-
-    for (const result of textResults) {
-      const actualSource = result.text.type === "ai" ? 0 : 1;
-      const participantGuess = result.humanSoundness / 10;
-      const score = 1 - Math.abs(participantGuess - actualSource);
-      textScore = score;
-      // totalScore += score;
-    }
-
-    return textScore;
-  } 
+  /**
+   * Provides a sample text and solution for the interactive example.
+   */
+  getInteractiveExampleText() {
+    return {
+      text: 'The company reported that sales were above expectations, which was unexpected.',
+      errors: [
+        { startIndex: 37, endIndex: 42, text: 'above' },
+        { startIndex: 52, endIndex: 61, text: 'unexpected' }
+      ],
+      correctGuess: 'ai'
+    };
+  }
 }

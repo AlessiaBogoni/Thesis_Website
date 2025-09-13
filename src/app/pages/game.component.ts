@@ -28,6 +28,7 @@ declare var Swal: any;
 import "survey-angular-ui";
 import { surveyLocalization } from "survey-core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { EvaluationService } from "./text-higlighter/evaluation.service";
 
 /**
  * Componente di gioco per la gestione delle donazioni e del punteggio.
@@ -164,6 +165,7 @@ allInteracted(): boolean {
     private cstService: CstService,
     private router: Router,
     private scoreService: ScoreService,
+    private evaluationService: EvaluationService,
     private translationService: TranslationService,
     private sanitizer: DomSanitizer
   ) {}
@@ -543,12 +545,12 @@ allInteracted(): boolean {
     const firstResult = { ...this.textToShow };
     // console.log(result);
     // console.log("firsResult " + firstResult);
-    const scores = this.scoreService.computeScore(result, result.lastText.text);
+    const scores = this.evaluationService.computeScore(result, result.lastText.text);
     // console.log("Scores: ", scores);
 
     const { guessScores, guessFour} =
-      this.scoreService.calculateGuessingSkillScores(firstResult);
-    const lastScore = this.scoreService.calculateGuessingSkillScoreForLastText(
+      this.evaluationService.calculateGuessingSkillScores(firstResult);
+    const lastScore = this.evaluationService.calculateGuessingSkillScoreForLastText(
       this.lastTextToShow[this.currentText - 5]
     );
     const guessTotal = (guessFour * 2 + lastScore)/3

@@ -21,7 +21,7 @@ export const PreSurvey = {
             },
           ],
           title: "t_title_confirmation",
-          isRequired: true,
+          //  isREquired: true,
         },
       ],
     },
@@ -35,7 +35,7 @@ export const PreSurvey = {
           inputType: "number",
           min: 18,
           max: 100,
-          isRequired: true,
+          //  isREquired: true,
           validators: [
             {
               type: "numeric",
@@ -50,7 +50,7 @@ export const PreSurvey = {
           name: "gender",
           analytics: true,
           title: "t_title_gender",
-          isRequired: true,
+          //  isREquired: true,
           choices: [
             { value: "male", text: "t_male" },
             { value: "female", text: "t_female" },
@@ -62,7 +62,7 @@ export const PreSurvey = {
           name: "education",
           analytics: true,
           title: "t_title_education",
-          isRequired: true,
+          //  isREquired: true,
           choices: [
             { value: "no_degree", text: "t_no_degree" },
             { value: "high_school", text: "t_diploma" },
@@ -76,7 +76,7 @@ export const PreSurvey = {
           name: "language",
           analytics: true,
           title: "t_title_language",
-          isRequired: true,
+          //  isREquired: true,
           choices: [
             { value: "A1-A2", text: "t_A1-A2" },
             { value: "B1-B2", text: "t_B1-B2" },
@@ -86,7 +86,7 @@ export const PreSurvey = {
         },
         {
           analytics: true,
-          isRequired: true,
+          //  isREquired: true,
           type: "matrix",
           name: "generalPpreviousKnowledge",
           title: "t_previous_knowledge_title",
@@ -104,9 +104,9 @@ export const PreSurvey = {
             { value: "NFC_negative", text: "t_NFC_negative" },
           ],
         },
-                {
+        {
           analytics: true,
-          isRequired: true,
+          //  isREquired: true,
           type: "matrix",
           name: "specificPreviousKnowledge",
           title: "t_previous_knowledge_title",
@@ -122,7 +122,7 @@ export const PreSurvey = {
             { value: "pet_experience", text: "t_pet_experience" },
             { value: "reading_experience", text: "t_reading_experience" },
             { value: "nutrition_experience", text: "t_nutrition_experience" },
-            { value: "renting_experience", text: "t_renting_experience"},
+            { value: "renting_experience", text: "t_renting_experience" },
           ],
         },
       ],
@@ -135,26 +135,42 @@ export const PreSurvey = {
           name: "instructionsText",
           html: "t_instructions_html",
         },
+                {
+          type: "html",
+          name: "scoringDetailsLink",
+          html: "t_scoring_details_link",
+        },
+                        {
+          type: "html",
+          name: "checIntro",
+          html: "t_intro_attention_check",
+        },
         {
           type: "radiogroup",
-          isRequired: true,
+          //  isREquired: true,
           name: "attention_check_1",
           title: "t_attention_check_1",
-          choices: [{value: true, text:"t_true"},{ value: false, text:"t_false"}],
-          correctAnswer: true,
+          choices: [
+            { value: true, text: "t_true" },
+            { value: false, text: "t_false" },
+          ],
+          correctAnswer: false,
         },
         {
           type: "html",
           name: "ac1_feedback",
-          visibleIf: "{attention_check_1} = false",
+          visibleIf: "{attention_check_1} = true",
           html: "t_ac1_feedback",
         },
         {
           type: "radiogroup",
-          isRequired: true,
+          //  isREquired: true,
           name: "attention_check_2",
           title: "t_attention_check_2",
-          choices: [{value: true, text:"t_true"},{ value: false, text:"t_false"}],
+          choices: [
+            { value: true, text: "t_true" },
+            { value: false, text: "t_false" },
+          ],
           correctAnswer: false,
         },
         {
@@ -165,10 +181,13 @@ export const PreSurvey = {
         },
         {
           type: "radiogroup",
-          isRequired: true,
+          //  isREquired: true,
           name: "attention_check_3",
           title: "t_attention_check_3",
-          choices: [{value: true, text:"t_true"},{ value: false, text:"t_false"}],
+          choices: [
+            { value: true, text: "t_true" },
+            { value: false, text: "t_false" },
+          ],
           correctAnswer: true,
         },
         {
@@ -177,10 +196,15 @@ export const PreSurvey = {
           visibleIf: "{attention_check_3} = false",
           html: "t_ac3_feedback",
         },
-        {
+/*         {
           type: "html",
           name: "performance_text",
           html: "t_performance_text",
+        }, */
+                        {
+          type: "html",
+          name: "details_prize",
+          html: "t_details_prize",
         },
         {
           type: "text",
@@ -203,6 +227,7 @@ export const PreSurvey = {
           visibleIf: "{email} = ''",
           html: "t_email_optional_notice",
         },
+
       ],
     },
   ],

@@ -1,0 +1,169 @@
+<div class="p-4">
+  <div class="w-md-100 mx-auto w-lg-75 mt-4">
+    <div class="scoring-container">
+      <h2 style="color: #7dd1a9">Performance Evaluation Methodology</h2>
+      <p>
+        Your final score is derived from two primary metrics: the accuracy of
+        your
+        <strong>source attributions</strong> and
+        <strong>error identification</strong>.
+      </p>
+
+      <hr />
+
+      <h3>Source Attribution</h3>
+      <p>
+        For each text, with no given author, you will be asked to determine its
+        source (human or AI) using a <strong>10-point slider</strong>. Your
+        score for this task is a function of the proximity of your guess to the
+        correct source, with a score ranging from 0 to 1.
+      </p>
+      <p>
+        <i
+          >This text you see is for demonstration purposes only. It is designed
+          to show how the scoring system works and is not what you will see in
+          the actual task.</i
+        >
+      </p>
+
+      <!-- <div [innerHTML]="scoringHtml1"></div> -->
+      <!--  <div [innerHTML]="'scoringHtml2'| label"></div> -->
+
+      <div class="interactive-example">
+        <div class="border rounded p-3">
+          <h4>Interactive Example:</h4>
+          <p class="sample-text">
+            I am an example text. Use the slider to guess my source. I have been
+            written by an AI. Observe how your score changes based on your
+            input.
+          </p>
+        </div>
+        <div class="slider-container p-3">
+          <label>AI</label>
+          <input
+            type="range"
+            class="form-range custom-slider"
+            min="0"
+            max="10"
+            step="1"
+            [(ngModel)]="humanSoundnessExample"
+            (ngModelChange)="updateGuessingScore()"
+          />
+          <label>Human</label>
+        </div>
+
+        <p>
+          Your Guessing Score:
+          <strong>{{ guessingScore | number : "1.2-2" }}</strong>
+        </p>
+      </div>
+
+      <hr />
+
+      <h3>Error Identification (Text 5)</h3>
+      <div class="rounded">
+        <p>
+          <i
+            >This text and the highlight colors you see are for demonstration
+            purposes only. They are designed to show how the scoring system
+            works and are not what you will see in the actual task.</i
+          >
+        </p>
+
+        <div class="mb-8">
+          <p class="mb-2">
+            The colors show how a character's score is calculated based on its
+            proximity to a correct error. Green, bold, underlined charachters
+            are the ones part of an error. Yellow and red hihglighted
+            charachters are not part of the error but they are near it, having a
+            lower penalization when selected. Non highlighted charachters are
+            correct parts of the text that give the greater penalization when
+            selected.
+          </p>
+        </div>
+        <div class="border rounded p-3">
+          <h4>Example:</h4>
+          <div class="highlightable-example">
+            <p [innerHTML]="highlightingExampleHtml"></p>
+          </div>
+        </div>
+        <div class="mt-4"></div>
+
+        <div class="mb-8">
+          <p class="mb-2">
+            Your final score is a balance between these two metrics:
+          </p>
+          <ul class="list-disc list-inside space-y-2">
+            <li>
+              <span class="font-bold">Precision:</span> This is about accuracy.
+              If you highlight too much, you lose points in precision.
+            </li>
+            <li>
+              <span class="font-bold">Recall:</span> This is about completeness.
+              If you highlight too little (e.g., forgetting one or more errors),
+              you lose points in recall.
+            </li>
+          </ul>
+        </div>
+
+        <div class="space-y-8">
+          <h4 class="font-bold mb-2">Here are some examples of scores:</h4>
+          <!-- Scenario 1: The Perfect Score -->
+          <div>
+            <p class="mb-2">
+              <strong>Maximum Score Example </strong> &rarr; If you perfectly
+              select only the charachters in green ("spring season" and "blue")
+              you reach the maximum score.
+            </p>
+            <P>
+              <strong>Precision: 1.00, Recall: 1.00, Total score: 1.00</strong
+              >.</P
+            >
+          </div>
+
+          <!-- Scenario 2: Highlighting Too Little -->
+          <div>
+            <p class="mb-2">
+              <strong>Highlighting too little </strong> &rarr; If you select
+              only "blue" (missing "spring season"), you lose points in recall
+              because you missed one of the errors.
+            </p>
+            <P
+              ><strong>Precision: 1.00, Recall: 0.24, Total score: 0.44</strong
+              >.</P
+            >
+          </div>
+          <!-- Scenario 3: Highlighting Too Much -->
+          <div>
+            <p class="mb-2">
+              <strong>Highlighting too much </strong> &rarr; If you select
+              "spring season", "blue" and "sun rises in the east", you lose
+              points in precision, because you selected a part that is not an
+              error.
+            </p>
+            <P
+              ><strong>Precision: 0.40, Recall: 1.00, Total score: 0.58</strong
+              >.</P
+            >
+          </div>
+        </div>
+      </div>
+      <div>
+        Your final score (a value between 0 and 1) will be the average of your
+        Guessing score and your Error Identification score. In case you are
+        randomly selected for the prize winning, your prize will be calculated
+        as Final score * 30 euros.
+      </div>
+
+      <div class="d-flex justify-content-center mt-5">
+        <button
+          class="btn"
+          style="background-color: #7dd1a9"
+          (click)="goToMainInstructions()"
+        >
+          Return to Instructions
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

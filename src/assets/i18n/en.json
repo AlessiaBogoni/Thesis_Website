@@ -150,6 +150,12 @@
   "thankyou": "Thank you for participating in this study!",
   "exit": "Exit Experiment",
 "guessScore": "Author Score",
-"totalScore": "Total Score"
+"totalScore": "Total Score",
+
+
+"score_instruction":"<div>ciao</div>",
+
+"score_instruction_1":"<h2 style=\"color: #7dd1a9\">Performance Evaluation Methodology</h2>      <p>        Your final score is derived from two primary metrics: the accuracy of        your        <strong>source attributions</strong> and        <strong>error identification</strong>.      </p>     <hr />      <h3>Source Attribution</h3>      <p>        For each text, with no given author, you will be asked to determine its        source (human or AI) using a <strong>10-point slider</strong>. Your        score for this task is a function of the proximity of your guess to the        correct source, with a score ranging from 0 to 1.      </p>      <p>        <i            >This text you see is for demonstration            purposes only. It is designed to show how the scoring system            works and is not what you will see in the actual task.</i          >      </p>",
+"score_instruction_2":"      <div class=\"interactive-example\">        <div class=\"border rounded p-3\">          <h4>Interactive Example:</h4>          <p class=\"sample-text\">            I am an example text. Use the slider to guess my source. I have been            written by an AI. Observe how your score changes based on your            input.          </p>        </div>        <div class=\"slider-container p-3\">          <label>AI</label>          <input            type=\"range\"            class=\"form-range custom-slider\"            min=\"0\"            max=\"10\"            step=\"1\"            [(ngModel)]=\"humanSoundnessExample\"            (ngModelChange)=\"updateGuessingScore()\"          />          <label>Human</label>        </div>        <p>          Your Guessing Score:          <strong>{{ guessingScore | number : \"1.2-2\" }}</strong>        </p>      </div>"
 
 }

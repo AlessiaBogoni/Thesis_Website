@@ -24,6 +24,7 @@ import { CstTrackerDirective } from "./pages/cst/cst-tracker.directive";
 import { LeaderboardComponent } from "./components/leaderboard/leaderboard.component";
 import { LabelPipe } from "./components/label.pipe";
 import { TranslationService } from "./pages/translation.service";
+import { ScoringInstructionsComponent } from "./pages/scoring-instructions.component";
 
 @NgModule({
   declarations: [
@@ -39,7 +40,9 @@ import { TranslationService } from "./pages/translation.service";
     AnalyticsTabulatorPage,
     ToastComponent,
     CstTrackerDirective,
-    LeaderboardComponent
+    LeaderboardComponent,
+    ScoringInstructionsComponent
+
   ],
   imports: [
     BrowserModule,
