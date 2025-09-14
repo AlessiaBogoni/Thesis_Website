@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { TranslationService } from "./pages/translation.service";
 
 @Component({
   selector: "app-root",
@@ -7,4 +8,10 @@ import { Component } from "@angular/core";
 })
 export class AppComponent {
   title = "SurveyJS + Angular";
+
+  constructor(public translationService: TranslationService) {
+    const savedLang = localStorage.getItem("lang");
+
+    this.translationService.setLanguage(savedLang);
+  }
 }

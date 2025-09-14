@@ -45,6 +45,7 @@ import { EvaluationService } from "./text-higlighter/evaluation.service";
 export class GameComponent implements OnInit, OnDestroy {
   debriefHtml: SafeHtml | undefined;
   leaderboardHtml: SafeHtml | undefined;
+  scoringHtml1: SafeHtml | undefined;
   internalState = +localStorage.getItem("0state") || State.PRE;
   /**
    * Stato del gioco.
@@ -194,18 +195,19 @@ allInteracted(): boolean {
 
       if (lang) {
         localStorage.setItem("lang", lang);
-        await this.translationService.setLanguage(lang);
+        this.translationService.setLanguage(lang);
       } else {
         // Handle case where no language is selected (e.g., set a default)
         localStorage.setItem("lang", "en"); // Set a default language
-        await this.translationService.setLanguage("en");
+        this.translationService.setLanguage("en");
       }
     } else {
-      await this.translationService.setLanguage(savedLang);
+      this.translationService.setLanguage(savedLang);
     }
 
     this.loadDebriefContent();
     this.loadLeaderboardContent();
+    this.loadScoringContent1();
     this.lang = this.translationService.currentLang;
 
     const t = this.translationService.t.bind(this.translationService);
@@ -354,12 +356,7 @@ allInteracted(): boolean {
         ? 1
         : -1
     );
-    /*
-    if (this.secondGroup === "0") {
-      this.lastTextToShow[0] = this.lastTextToShow[0];
-    } else {
-      this.lastTextToShow[0] = this.lastTextToShow[1];
-    } */
+
 
     const url = this.router.url;
     const fragment = url.split("?")[1]; // Get everything after `?`
@@ -381,8 +378,7 @@ allInteracted(): boolean {
     this.preSurvey.setValue("second_group", secondGroup);
     this.preSurvey.setValue("lang", this.lang);
 
-    const language = this.translationService.currentLang;
-    // Ottiene il paese dell'utente.
+
     try {
       this.surveyService
         .getCountry()
@@ -419,8 +415,14 @@ allInteracted(): boolean {
       this.state = State.FINISHED;
     });
   }
+   loadScoringContent1() {
+    const htmlString = this.translationService.t("score_instruction");
+    this.scoringHtml1 = this.sanitizer.bypassSecurityTrustHtml(htmlString);
+    console.log("loaded ScoringContent1")
+  }
   loadDebriefContent() {
     const htmlString = this.translationService.t("debrief");
+    console.log(htmlString);
     this.debriefHtml = this.sanitizer.bypassSecurityTrustHtml(htmlString);
   }
   loadLeaderboardContent() {
@@ -508,9 +510,6 @@ allInteracted(): boolean {
       humanSoundness: false,
     };
     const result = { ...this.textToShow[this.currentText - 1] } as TextResult;
-    /* const firstScores = this.scoreService.calculateGuessingSkillScoreForTexts(
-      this.textToShow.slice(0, 4)
-    ); */
     delete result.text.text;
     delete result.text.author;
     delete result.text.title;
@@ -554,9 +553,6 @@ allInteracted(): boolean {
       this.lastTextToShow[this.currentText - 5]
     );
     const guessTotal = (guessFour * 2 + lastScore)/3
-
-    /* const { guessScores: guessScores, guessTotal: guessTotal } = 
-  this.scoreService.calculateGuessingSkillScores([...this.textToShow, ...this.lastTextToShow]); */
 
   result.score = scores;
     result.score.lastGuessScore = lastScore;
@@ -627,10 +623,6 @@ allInteracted(): boolean {
   }
 }
 
-/**
- * Classe che rappresenta gli stati del gioco.
- * @class
- */
 export class State {
   static POST = 7;
   static PRE = 1;
@@ -643,10 +635,6 @@ export class State {
   static LEADERBOARD = 9;
 }
 
-/**
- * Classe che rappresenta una donazione.
- * @class
- */
 class TextResult {
   text: Text;
   attention: number;
@@ -674,6 +662,4 @@ class LastTextResult {
   deltaTime: number;
   attention: number;
   lastGuessScore: number;
-
-  // highlights: { start: number; end: number }[] = [];
 }

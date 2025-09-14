@@ -1,7 +1,7 @@
 <div class="p-4">
   <div class="w-md-100 mx-auto w-lg-75 mt-4">
     <div class="scoring-container">
-      <h2 style="color: #7dd1a9">Performance Evaluation Methodology</h2>
+      <!-- <h2 style="color: #7dd1a9">Performance Evaluation Methodology</h2>
       <p>
         Your final score is derived from two primary metrics: the accuracy of
         your
@@ -24,18 +24,14 @@
           to show how the scoring system works and is not what you will see in
           the actual task.</i
         >
-      </p>
+      </p> -->
 
-      <!-- <div [innerHTML]="scoringHtml1"></div> -->
-      <!--  <div [innerHTML]="'scoringHtml2'| label"></div> -->
-
+      <div [innerHTML]="scoringHtml1"></div>
       <div class="interactive-example">
         <div class="border rounded p-3">
-          <h4>Interactive Example:</h4>
+          <h4>{{ "interactive_example" | label }}</h4>
           <p class="sample-text">
-            I am an example text. Use the slider to guess my source. I have been
-            written by an AI. Observe how your score changes based on your
-            input.
+            {{ "text_1" | label }}
           </p>
         </div>
         <div class="slider-container p-3">
@@ -49,20 +45,20 @@
             [(ngModel)]="humanSoundnessExample"
             (ngModelChange)="updateGuessingScore()"
           />
-          <label>Human</label>
+          <label>{{ "human" | label }}</label>
         </div>
 
         <p>
-          Your Guessing Score:
+          {{ "guessing_score" | label }}
           <strong>{{ guessingScore | number : "1.2-2" }}</strong>
         </p>
       </div>
 
       <hr />
 
-      <h3>Error Identification (Text 5)</h3>
+      <h3>{{ "error_identification" | label }}</h3>
       <div class="rounded">
-        <p>
+        <!-- <p>
           <i
             >This text and the highlight colors you see are for demonstration
             purposes only. They are designed to show how the scoring system
@@ -80,16 +76,17 @@
             correct parts of the text that give the greater penalization when
             selected.
           </p>
-        </div>
+        </div> -->
+        <div [innerHTML]="'instruction_2' | label"></div>
         <div class="border rounded p-3">
-          <h4>Example:</h4>
+          <h4>{{ "example" | label }}</h4>
           <div class="highlightable-example">
             <p [innerHTML]="highlightingExampleHtml"></p>
           </div>
         </div>
-        <div class="mt-4"></div>
+        <div class="mt-4" [innerHTML]="'highlight_instruction'| label"></div>
 
-        <div class="mb-8">
+        <!-- <div class="mb-8">
           <p class="mb-2">
             Your final score is a balance between these two metrics:
           </p>
@@ -108,7 +105,7 @@
 
         <div class="space-y-8">
           <h4 class="font-bold mb-2">Here are some examples of scores:</h4>
-          <!-- Scenario 1: The Perfect Score -->
+
           <div>
             <p class="mb-2">
               <strong>Maximum Score Example </strong> &rarr; If you perfectly
@@ -121,7 +118,6 @@
             >
           </div>
 
-          <!-- Scenario 2: Highlighting Too Little -->
           <div>
             <p class="mb-2">
               <strong>Highlighting too little </strong> &rarr; If you select
@@ -133,7 +129,7 @@
               >.</P
             >
           </div>
-          <!-- Scenario 3: Highlighting Too Much -->
+
           <div>
             <p class="mb-2">
               <strong>Highlighting too much </strong> &rarr; If you select
@@ -147,12 +143,13 @@
             >
           </div>
         </div>
-      </div>
-      <div>
-        Your final score (a value between 0 and 1) will be the average of your
-        Guessing score and your Error Identification score. In case you are
-        randomly selected for the prize winning, your prize will be calculated
-        as Final score * 30 euros.
+
+        <div>
+          Your final score (a value between 0 and 1) will be the average of your
+          Guessing score and your Error Identification score. In case you are
+          randomly selected for the prize winning, your prize will be calculated
+          as Final score * 30 euros.
+        </div> -->
       </div>
 
       <div class="d-flex justify-content-center mt-5">
@@ -161,7 +158,7 @@
           style="background-color: #7dd1a9"
           (click)="goToMainInstructions()"
         >
-          Return to Instructions
+          {{"return_to_Instructions"| label}}
         </button>
       </div>
     </div>

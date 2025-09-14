@@ -53,6 +53,7 @@ import { ScoringInstructionsComponent } from "./pages/scoring-instructions.compo
     AngularD3CloudModule,
     FormsModule,
   ],
+  exports:[LabelPipe],
   providers: [CstService, TranslationService],
   bootstrap: [AppComponent],
 })

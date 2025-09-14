@@ -1,35 +1,36 @@
-// scoring-instructions.component.ts
+
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { EvaluationService } from './text-higlighter/evaluation.service';
-import { TranslationService } from './translation.service';// NOTE: I've removed the unused imports to clean up the code.
-// Keep the ones you are actually using in your final project.
+import { TranslationService } from './translation.service';
+
 
 @Component({
   selector: 'app-scoring-instructions',
   templateUrl: './scoring-instructions.component.html',
   styleUrls: ['./scoring-instructions.component.css']
 })
-export class ScoringInstructionsComponent implements OnInit, AfterViewInit {
+export class ScoringInstructionsComponent implements OnInit {
  
-  // You no longer need this ViewChild since the section is not interactive.
-  // @ViewChild('highlightableText', { static: true }) highlightableText: ElementRef;
 
   humanSoundnessExample: number = 5;
   guessingScore: number = 0.5;
-  scoringHtml1: SafeHtml | undefined;
-  scoringHtml2: SafeHtml | undefined;
+  scoringHtml1: SafeHtml;
+  scoringHtml2: SafeHtml;
+    language: string;
+    lang;
 
   
   interactiveText: any;
   
   highlightingExampleHtml: SafeHtml;
 
-  readonly HIGHLIGHT_EXAMPLE_TEXT = `During the spring season, many trees lose their leaves. The autumn sun rises in the east, casting long shadows on the ground. A warm breeze carries the scent of pumpkin spice, while a distant bird sings its summer song in the crisp air. The changing leaves turn brilliant shades of blue, orange, and red .`;
+  //readonly HIGHLIGHT_EXAMPLE_TEXT = `During the spring season, many trees lose their leaves. The autumn sun rises in the east, casting long shadows on the ground. A warm breeze carries the scent of pumpkin spice, while a distant bird sings its summer song in the crisp air. The changing leaves turn brilliant shades of blue, orange, and red.`;
+  readonly HIGHLIGHT_EXAMPLE_TEXT = this.translationService.t("text_2");
   readonly HIGHLIGHT_EXAMPLE_ERRORS = [
     { startIndex: 12, endIndex: 22, text: "spring season" },
-    { startIndex: 283, endIndex: 284, text: "blue" }
+    { startIndex: 222, endIndex: 224, text: "blue" }
   ];
 
   constructor(
@@ -37,29 +38,27 @@ export class ScoringInstructionsComponent implements OnInit, AfterViewInit {
     private evaluationService: EvaluationService,
     private translationService: TranslationService,
     private sanitizer: DomSanitizer,
-    private renderer: Renderer2 // This is no longer needed either
-  ) { }
+    private renderer: Renderer2, // This is no longer needed either
+  ) {
+        this.interactiveText = this.evaluationService.getInteractiveExampleText();
+        
 
-  ngOnInit() {
-    this.interactiveText = this.evaluationService.getInteractiveExampleText();
-    this.updateGuessingScore();
-    
-  }
-
-  ngAfterViewInit() {
-    // You must remove the setupHighlighting() call here.
-    // this.setupHighlighting(); 
-    
-    // This is the correct way to handle the static highlighting example.
-    this.highlightingExampleHtml = this.sanitizer.bypassSecurityTrustHtml(
-      this.generateColoredText(this.HIGHLIGHT_EXAMPLE_TEXT, this.HIGHLIGHT_EXAMPLE_ERRORS)
+        this.highlightingExampleHtml = this.sanitizer.bypassSecurityTrustHtml(
+        this.generateColoredText(this.HIGHLIGHT_EXAMPLE_TEXT, this.HIGHLIGHT_EXAMPLE_ERRORS)
     );
+   }
+
+  async ngOnInit() {
+
+    this.updateGuessingScore();
+
+
     this.loadScoringContent1();
-    // this.loadScoringContent2();
+    this.loadScoringContent2();
+    this.lang = this.translationService.currentLang;
+
   }
-  
-  // The updateF1Score() and setupHighlighting() methods are no longer needed
-  // because the section is now a static example. I have removed them below.
+
 
   updateGuessingScore() {
     const actualSource = this.interactiveText.correctGuess === 'ai' ? 0 : 1;
@@ -67,8 +66,8 @@ export class ScoringInstructionsComponent implements OnInit, AfterViewInit {
     this.guessingScore = 1 - Math.abs(participantGuess - actualSource);
   }
 
-  loadScoringContent1() {
-    const htmlString = this.translationService.t("score_instruction");
+    loadScoringContent1() {
+    const htmlString = this.translationService.t("score_instruction_1");
     this.scoringHtml1 = this.sanitizer.bypassSecurityTrustHtml(htmlString);
   }
     loadScoringContent2() {
