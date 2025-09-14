@@ -64,7 +64,7 @@
 "ac2_feedback": "<div style='color: red; font-weight: bold;'>Incorrect. <strong>Only the 5th text</strong> requires highlighting errors.</div>",
 "attention_check_3": "When a label is present, it correctly represents the true author of the text, when it is not present, you will have to guess the author yourself",
 "ac3_feedback": "<div style='color: red; font-weight: bold;'>Incorrect. If a label is present, it indicates the true author; if it is absent, you will have to guess it.</div>",
-"performance_text": "<p style=\"color:#7dd1a9\"><strong> One person out of 10 will be randomly selected and can win up to {{money}} euros. The prize will depend on your performance, so it's in your best interest to do your best!</strong></p>",
+
 "name": "Name",
 "name_placeholder": "Enter your name (used to show the result on the final leaderboard)",
 "email": "Your contact email",
@@ -151,7 +151,7 @@
   "inquiries":"If you have any inquiries or questions, feel free to contact me at <a href=\"mailto:alessia.bogoni@stud-mail.uni-wuerzburg.de\">alessia.bogoni&#64;stud-mail.uni-wuerzburg.de</a>.",
   "thankyou": "Thank you for participating in this study!",
   "exit": "Exit Experiment",
-"guessScore": "Author Score",
+"guessScore": "Guessing Score",
 "totalScore": "Total Score",
 
 "score_instruction_1":"<h2 style=\"color: #7dd1a9\">Performance Evaluation Methodology</h2> <p> Your final score is derived from two primary metrics: the accuracy of your <strong>source attributions</strong> and <strong>error identification</strong>.</p><hr /><h3>Source Attribution</h3><p>For each text, with no given author, you will be asked to determine its source (human or AI) using a <strong>10-point slider</strong>. Your score for this task is a function of the proximity of your guess to the correct source, with a score ranging from 0 to 1.</p><p><i>This text you see and the score are for demonstration purposes only. They are designed to show how the scoring system works and they are not what you will see in the actual task.</i></p>",
@@ -163,5 +163,6 @@
 "example":"Example:",
 "text_2":"During the spring season, many trees lose their leaves. The autumn sun rises in the east, casting long shadows on the ground. A warm breeze carries the scent of pumpkin spice. The changing leaves turn brilliant shades of blue, orange, and red.",
 "highlight_instruction":"<div class=\"mb-8\"> <p class=\"mb-2\"> Your final score is a balance between these two metrics: </p> <ul class=\"list-disc list-inside space-y-2\"> <li> <span class=\"font-bold\">Precision:</span> This is about accuracy. If you highlight too much, you lose points in precision. </li> <li> <span class=\"font-bold\">Recall:</span> This is about completeness. If you highlight too little (e.g., forgetting one or more errors), you lose points in recall. </li> </ul> </div> <div class=\"space-y-8\"> <h4 class=\"font-bold mb-2\">Here are some examples of scores:</h4> <div> <p class=\"mb-2\"> <strong>Maximum Score Example </strong> &rarr; If you perfectly select only the charachters in green (\"spring season\" and \"blue\") you reach the maximum score. </p> <P> <strong>Precision: 1.00, Recall: 1.00, Total score: 1.00</strong >.</P > </div> <div> <p class=\"mb-2\"> <strong>Highlighting too little </strong> &rarr; If you select only \"blue\" (missing \"spring season\"), you lose points in recall because you missed one of the errors. </p> <P ><strong>Precision: 1.00, Recall: 0.24, Total score: 0.44</strong >.</P > </div> <div> <p class=\"mb-2\"> <strong>Highlighting too much </strong> &rarr; If you select \"spring season\", \"blue\" and \"sun rises in the east\", you lose points in precision, because you selected a part that is not an error. </p> <P ><strong>Precision: 0.40, Recall: 1.00, Total score: 0.58</strong >.</P > </div> </div> <div> Your final score (a value between 0 and 1) will be the average of your Guessing score and your Error Identification score. In case you are randomly selected for the prize winning, your prize will be calculated as Final score * 30 euros. </div>",
-"return_to_Instructions":"Return to Instructions"
+"return_to_Instructions":"Return to Instructions",
+"final_output":"<h6>Your guessing score was <b style=\"color:#7dd1a9\">{{guess}}</b ></h6><h6> Your highlighting score was <b style=\"color:#7dd1a9\">{{ userHighlightScore | number: '1.2-2' }}</b></h6><h6> Your final score is <b style=\"color: #7dd1a9;\">{{ userTotalScore | number: '1.2-2' }}</b></h6><h6>That means if you get chosen for the prize, you will get <b style=\"color: #7dd1a9;\">{{ userTotalScore * 30 | number: '1.2-2' }}</b> euros prize. <b>Well done!</b></h6>"
 }

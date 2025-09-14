@@ -1,3 +1,14 @@
+<div class=" container mt-4" *ngIf="userHighlightScore != null && userGuessScore != null && userTotalScore != null">
+  <h3>Your results:</h3>
+  <!-- <h6>
+    Your guessing score was <b style="color:#7dd1a9">{{ userGuessScore | number: '1.2-2' }}</b
+    ></h6><h6> Your highlighting score was <b style="color:#7dd1a9">{{ userHighlightScore | number: '1.2-2' }}</b
+    ></h6><h6> Your final score is <b style="color: #7dd1a9;">{{ userTotalScore | number: '1.2-2' }}</b
+    ></h6><h6> That means if you get chosen for the prize, you will get
+    <b style="color: #7dd1a9;">{{ userTotalScore * 30 | number: '1.2-2' }}</b> euros prize. <b>Well done!</b>
+    </h6> -->
+    <div [innerHTML]="this.finalOutcome"></div>
+</div>
 <div class="container mt-4">
   <h2>{{"leaderboard"|label}}</h2>
   <hr />
@@ -8,11 +19,6 @@
     <div class="col">{{'highligthScore'|label}}</div>
     <div class="col">{{'guessScore' |label }}</div>
     <div class="col">{{'totalScore'|label}}</div>
-<!--     <div class="col">Precision</div>
-    <div class="col">Recall</div>
-    <div class="col">F1 Score</div>
-    <div class="col">Specificity</div>
-    <div class="col">Fuzzy Score</div> -->
   </div>
 
   <div
@@ -26,11 +32,6 @@
     <div class="col">{{ row.guessScore | number: '1.2-2' }}</div>
     <div class="col">{{ row.totalScore | number: '1.2-2' }}</div>
 
-<!--     <div class="col">{{ row.precision != null ? (row.precision | number: '1.2-2') : '-' }}</div>
-    <div class="col">{{ row.recall != null ? (row.recall | number: '1.2-2') : '-' }}</div>
-    <div class="col">{{ row.f1 != null ? (row.f1 | number: '1.2-2') : '-' }}</div>
-    <div class="col">{{ row.specificity != null ? (row.specificity | number: '1.2-2') : '-' }}</div>
-    <div class="col">{{ row.fuzzyScore != null ? (row.fuzzyScore | number: '1.2-2') : '-' }}</div> -->
   </div>
 </div>
 <div class="mt-3">
@@ -39,10 +40,3 @@
 
 <button class="btn btn-primary mt-2" onclick="window.open('about:blank', '_self');">{{'exit'|label}}</button>
 </div>
-
-
-<!-- <survey
-  [model]="postSurvey"
-  (submitSurvey)="sendData($event, 'post'); state = status.LEADERBOARD"
-  // *ngIf="state === status.POST"
-></survey> -->
