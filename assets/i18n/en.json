@@ -4,7 +4,7 @@
 "consent_tracking_location":" · Approximate location (country or city only)<br>",
 "consent_tracking_language":"Language settings<br>",
 "consent_tracking_browser":"Browser and device type<br>",
-"consent_text":"<p>To take part in this study, we need your consent to use cookies and collect limited technical data.</p><p>This data is used only for research, and is only collected while you're on this page. It cannot identify you or track you elsewhere.</p>    <p><strong>What we collect:</strong><br>{{tracking}}</p><p><strong>If you do not agree, you will be redirected.</strong></p>",
+"consent_text":"<p>To take part in this study, we need your consent to use cookies and collect limited technical data.</p><p>This data is used only for research, and is only collected while you're on this page. It cannot identify you or track you elsewhere.</p> <p><strong>What we collect:</strong><br>{{tracking}}</p><p><strong>If you do not agree, you will be redirected.</strong></p>",
 "consent_accept":"I accept",
 "consent_deny":"I do not accept",
 "consent_are_you_sure":"Are you sure?",
@@ -54,21 +54,23 @@
   "NFC_negative": "I usually prefer quick summaries over reading full explanations",
 
 
-  
-  "instructions_html": "<h3 style=\"color:#7dd1a9\">Instructions</h3><p>You will read <strong>5</strong> question-and-answer exchanges. Each page contains a short question followed by an answer text.</p><p>For each text, an author will be indicated (human, AI (artificial intelligence), or 'unknown'). <strong style=\"color:#7dd1a9\">When the author is not 'unknown', the label correctly represents the true author of the answer text</strong>.</p><p><strong style=\"color:#7dd1a9\">For the first 4 answers:</strong></p><ul><li>Guess the <strong>source</strong> (author).</li><li>Evaluate the <strong>readability</strong>.</li><li>Evaluate the <strong>accuracy</strong>.</li></ul><p><strong style=\"color:#7dd1a9\">For the fifth answer:</strong></p><p>You will perform the same tasks as above and also <strong style=\"color:#7dd1a9\">highlight the parts</strong> where you think errors are present.</p><p>Your <strong style=\"color:#7dd1a9\">performance</strong> will be evaluated based on:</p><ul><li>How close your guesses about the source are to the true authors.</li><li>How many errors you correctly identify in the last text.</li></ul>",
-  "attention_check_1": "You will guess the source (author) of each text.",
-  "ac1_feedback": "<div style='color: red; font-weight: bold;'>Incorrect. You are required to <strong>guess the source (author)</strong> of each text.</div>",
-  "attention_check_2": "Only the first 4 texts require you to highlight errors.",
-  "ac2_feedback": "<div style='color: red; font-weight: bold;'>Incorrect. <strong>Only the 5th text</strong> requires error highlighting.</div>",
-  "attention_check_3": "When a label is provided, it correctly represents the true author of the text.",
-  "ac3_feedback": "<div style='color: red; font-weight: bold;'>Incorrect. If a label is given, it <strong>does correctly represent</strong> the true author.</div>",
-  "performance_text": "<p style=\"color:#7dd1a9\"><strong>The best performers will receive prizes!</strong></p>",
-  "name": "Name",
-  "name_placeholder": "Enter your name (used to show your result in the final leaderboard)",
-  "email": "Your Contact Email",
-  "email_placeholder": "Enter your email address (optional, only needed to participate in prize competition)",
-  "email_invalid": "Please enter a valid email address",
-  "email_optional_notice": "<p style=\"margin-top: 10px; color:rgb(226, 186, 66);\">You may choose to <strong>not provide your email</strong>, but in that case, you will <strong>not be eligible</strong> for the prize competition. Your email address will be kept confidential and used only to contact you if you win.</p>",
+"instructions_html": "<h3 style=\"color:#7dd1a9\">Instructions</h3><h5>What to expect:</h5><p>You will read <strong>5</strong> question-and-answer exchanges. Each page contains a brief question followed by a response text.</p><p>For each text, an author will be indicated: human, AI (artificial intelligence) or 'unknown'.<br> <strong style=\"color:#7dd1a9\">When the author is not unknown, the label correctly represents the text's true author</strong>.</p><div style=\"margin:0 \"><strong style=\"margin:0 \">For the first 4 texts:</strong><ul><li>When the author is unknown, guess if it's AI or human.</li><li>Evaluate the <strong>readability</strong>.</li><li>Evaluate the <strong>accuracy</strong>.</li></ul></div><p style=\"margin:0 \"><strong style=\"margin:0\">For the fifth text:</strong></p><p>You will perform the same tasks and also <strong style=\"color:#7dd1a9\">highlight errors</strong> in the text.<h5>Do your best!</h5></p><p style=\"color:#7dd1a9\"><strong> One person out of 10 will be randomly selected and can win up to 30 euros. The prize will depend on your performance, so it's in your best interest to do your best!</strong></p><p style=\"margin:0 \">Your <strong style=\"color:#7dd1a9\">performance</strong> will be evaluated based on:</p><ul><li>How close your guesses about the source are to the true authors.</li><li>How many errors you correctly identify in the last text.</li></ul>",
+"intro_attention_check": "<p style=\"margin-bottom:5px\">Attention checks:</p>",
+"scoring_details_link":"<p><a target='_blank' href='/#/scoring-details' style='color: #7dd1a9; text-decoration: underline;'><strong>Learn more about how your score is calculated</strong></a></p>",
+"details_prize":"<p style=\"margin-bottom:5px\">Your details:</p>",
+"attention_check_1": "There is no prize for completing the study",
+"ac1_feedback": "<div style='color: red; font-weight: bold;'>Incorrect. One person out of 10 will be randomly selected and will receive a prize proportional to their performance.</div>",
+"attention_check_2": "Only the first 4 texts require highlighting errors.",
+"ac2_feedback": "<div style='color: red; font-weight: bold;'>Incorrect. <strong>Only the 5th text</strong> requires highlighting errors.</div>",
+"attention_check_3": "When a label is present, it correctly represents the true author of the text, when it is not present, you will have to guess the author yourself",
+"ac3_feedback": "<div style='color: red; font-weight: bold;'>Incorrect. If a label is present, it indicates the true author; if it is absent, you will have to guess it.</div>",
+"performance_text": "<p style=\"color:#7dd1a9\"><strong> One person out of 10 will be randomly selected and can win up to {{money}} euros. The prize will depend on your performance, so it's in your best interest to do your best!</strong></p>",
+"name": "Name",
+"name_placeholder": "Enter your name (used to show the result on the final leaderboard)",
+"email": "Your contact email",
+"email_placeholder": "Enter your email address (optional, only required to participate in the prize draw)",
+"email_invalid": "Please enter a valid email address",
+"email_optional_notice": "<p style=\"margin-top: 10px; color:rgb(226, 186, 66);\">You can choose <strong>not to provide your email</strong>, but in that case you <strong>will not be eligible</strong> to participate in the prize draw. The email address will be kept confidential and used only to contact you if you win.</p>",
 "true": "True",
 "false": "False",
 
@@ -124,11 +126,11 @@
   "Very_high": "Very high",
   "Very_low": "Very low",
   
-    "debrief": "<div class=\\\"w-md-100 mx-auto w-lg-75 mt-4\\\"> <h2>Thank You for participating</h2> <p class=\\\"mt-4\\\">Please note that the texts you read during this study <strong>intentionally contained errors</strong>. You should not rely on them as accurate or trustworthy information.</p><p class=\\\"mt-3\\\">The goal of this study was to explore how people interact with text depending on how it is <strong>labeled and attributed</strong>, specifically, how authorship affects attention and perceptions of credibility.</p><p class=\\\"mt-3\\\">Please note that the results displayed in the leaderboard are not yet final, as other participants are still taking part in the study, which may affect your ranking. If you are among the winners, we will contact you as soon as the study is completed.</p><p class=\\\"mt-3\\\">If you have any questions, would like to report an issue, or want to share feedback about the experience, feel free to contact me at:<br/><a href=\\\"mailto:alessia.bogoni@stud-mail.uni-wuerzburg.de\\\">alessia.bogoni@stud-mail.uni-wuerzburg.de</a></p><p class=\\\"mt-4\\\">When you're ready, click the button below to view the leaderboard.</p></div>",
-    "go_to_leaderboard": "Go to Leaderboard",
-    "leaderboard": "Leaderboard",
-    "player": "Player",
-    "highligthScore": "Error highlight Score",
+  "debrief": "<div class=\\\"w-md-100 mx-auto w-lg-75 mt-4\\\"> <h2>Thank You for participating</h2> <p class=\\\"mt-4\\\">Please note that the texts you read during this study <strong>intentionally contained errors</strong>. You should not rely on them as accurate or trustworthy information.</p><p class=\\\"mt-3\\\">The goal of this study was to explore how people interact with text depending on how it is <strong>labeled and attributed</strong>, specifically, how authorship affects attention and perceptions of credibility.</p><p class=\\\"mt-3\\\">Please note that the results displayed in the leaderboard are not yet final, as other participants are still taking part in the study, which may affect your ranking. If you are among the winners, we will contact you as soon as the study is completed.</p><p class=\\\"mt-3\\\">If you have any questions, would like to report an issue, or want to share feedback about the experience, feel free to contact me at:<br/><a href=\\\"mailto:alessia.bogoni@stud-mail.uni-wuerzburg.de\\\">alessia.bogoni@stud-mail.uni-wuerzburg.de</a></p><p class=\\\"mt-4\\\">When you're ready, click the button below to view the leaderboard.</p></div>",
+  "go_to_leaderboard": "Go to Leaderboard",
+  "leaderboard": "Leaderboard",
+  "player": "Player",
+  "highligthScore": "Error highlight Score",
 
   "read_carefully":"Read the text below carefully and answer the questions.",
   "next_to_continue":"When you are done, please click \"Next\" to continue.",
@@ -152,10 +154,14 @@
 "guessScore": "Author Score",
 "totalScore": "Total Score",
 
-
-"score_instruction":"<div>ciao</div>",
-
-"score_instruction_1":"<h2 style=\"color: #7dd1a9\">Performance Evaluation Methodology</h2>      <p>        Your final score is derived from two primary metrics: the accuracy of        your        <strong>source attributions</strong> and        <strong>error identification</strong>.      </p>     <hr />      <h3>Source Attribution</h3>      <p>        For each text, with no given author, you will be asked to determine its        source (human or AI) using a <strong>10-point slider</strong>. Your        score for this task is a function of the proximity of your guess to the        correct source, with a score ranging from 0 to 1.      </p>      <p>        <i            >This text you see is for demonstration            purposes only. It is designed to show how the scoring system            works and is not what you will see in the actual task.</i          >      </p>",
-"score_instruction_2":"      <div class=\"interactive-example\">        <div class=\"border rounded p-3\">          <h4>Interactive Example:</h4>          <p class=\"sample-text\">            I am an example text. Use the slider to guess my source. I have been            written by an AI. Observe how your score changes based on your            input.          </p>        </div>        <div class=\"slider-container p-3\">          <label>AI</label>          <input            type=\"range\"            class=\"form-range custom-slider\"            min=\"0\"            max=\"10\"            step=\"1\"            [(ngModel)]=\"humanSoundnessExample\"            (ngModelChange)=\"updateGuessingScore()\"          />          <label>Human</label>        </div>        <p>          Your Guessing Score:          <strong>{{ guessingScore | number : \"1.2-2\" }}</strong>        </p>      </div>"
-
+"score_instruction_1":"<h2 style=\"color: #7dd1a9\">Performance Evaluation Methodology</h2> <p> Your final score is derived from two primary metrics: the accuracy of your <strong>source attributions</strong> and <strong>error identification</strong>.</p><hr /><h3>Source Attribution</h3><p>For each text, with no given author, you will be asked to determine its source (human or AI) using a <strong>10-point slider</strong>. Your score for this task is a function of the proximity of your guess to the correct source, with a score ranging from 0 to 1.</p><p><i>This text you see and the score are for demonstration purposes only. They are designed to show how the scoring system works and they are not what you will see in the actual task.</i></p>",
+"text_1":"I am an example text. Use the slider to guess my source. I have been written by an AI. Observe how your score changes based on your input.",
+"interactive_example":"Interactive Example:",
+"guessing_score":"Your Guessing Score:",
+"error_identification":"Error Identification (Text 5)",
+"instruction_2":"<p><i>This text and the highlight colors you see are for demonstration purposes only. They are designed to show how the scoring system works and are not what you will see in the actual task.</i></p><div class=\"mb-8\"><p class=\"mb-2\"> The colors show how a character's score is calculated based on its proximity to a correct error. Green, bold, underlined charachters are the ones part of an error. Yellow and red hihglighted charachters are not part of the error but they are near it, having a lower penalization when selected. Non highlighted charachters are correct parts of the text that give the greater penalization when selected. </p></div>",
+"example":"Example:",
+"text_2":"During the spring season, many trees lose their leaves. The autumn sun rises in the east, casting long shadows on the ground. A warm breeze carries the scent of pumpkin spice. The changing leaves turn brilliant shades of blue, orange, and red.",
+"highlight_instruction":"<div class=\"mb-8\"> <p class=\"mb-2\"> Your final score is a balance between these two metrics: </p> <ul class=\"list-disc list-inside space-y-2\"> <li> <span class=\"font-bold\">Precision:</span> This is about accuracy. If you highlight too much, you lose points in precision. </li> <li> <span class=\"font-bold\">Recall:</span> This is about completeness. If you highlight too little (e.g., forgetting one or more errors), you lose points in recall. </li> </ul> </div> <div class=\"space-y-8\"> <h4 class=\"font-bold mb-2\">Here are some examples of scores:</h4> <div> <p class=\"mb-2\"> <strong>Maximum Score Example </strong> &rarr; If you perfectly select only the charachters in green (\"spring season\" and \"blue\") you reach the maximum score. </p> <P> <strong>Precision: 1.00, Recall: 1.00, Total score: 1.00</strong >.</P > </div> <div> <p class=\"mb-2\"> <strong>Highlighting too little </strong> &rarr; If you select only \"blue\" (missing \"spring season\"), you lose points in recall because you missed one of the errors. </p> <P ><strong>Precision: 1.00, Recall: 0.24, Total score: 0.44</strong >.</P > </div> <div> <p class=\"mb-2\"> <strong>Highlighting too much </strong> &rarr; If you select \"spring season\", \"blue\" and \"sun rises in the east\", you lose points in precision, because you selected a part that is not an error. </p> <P ><strong>Precision: 0.40, Recall: 1.00, Total score: 0.58</strong >.</P > </div> </div> <div> Your final score (a value between 0 and 1) will be the average of your Guessing score and your Error Identification score. In case you are randomly selected for the prize winning, your prize will be calculated as Final score * 30 euros. </div>",
+"return_to_Instructions":"Return to Instructions"
 }
