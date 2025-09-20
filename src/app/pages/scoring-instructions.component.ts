@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { EvaluationService } from './text-higlighter/evaluation.service';
 import { TranslationService } from './translation.service';
+import { HttpClient } from "@angular/common/http";
+import { SurveyService } from "./survey.service";
 
 
 @Component({
@@ -15,11 +17,12 @@ export class ScoringInstructionsComponent implements OnInit {
  
 
   humanSoundnessExample: number = 5;
-  guessingScore: number = 0.5;
+  guessingScore: number;
   scoringHtml1: SafeHtml;
   scoringHtml2: SafeHtml;
     language: string;
     lang;
+     machineCode = localStorage.getItem("0machineCode");
 
   
   interactiveText: any;
@@ -38,6 +41,8 @@ export class ScoringInstructionsComponent implements OnInit {
     private evaluationService: EvaluationService,
     private translationService: TranslationService,
     private sanitizer: DomSanitizer,
+    public http: HttpClient,
+    private surveryService: SurveyService,
     private renderer: Renderer2, // This is no longer needed either
   ) {
         this.interactiveText = this.evaluationService.getInteractiveExampleText();
@@ -52,7 +57,7 @@ export class ScoringInstructionsComponent implements OnInit {
 
     this.updateGuessingScore();
 
-
+    this.saveAccess();
     this.loadScoringContent1();
     this.loadScoringContent2();
     this.lang = this.translationService.currentLang;
@@ -99,6 +104,10 @@ private generateColoredText(text: string, errors: { startIndex: number, endIndex
     coloredHtml += `<span style="${style}">${char}</span>`;
   }
   return coloredHtml;
+}
+
+saveAccess(){
+  this.http.put(SurveyService.getUrl(this.machineCode + "/pre" + "/instruction"), 1).subscribe(() => {});
 }
  
   goToMainInstructions() {

@@ -10,7 +10,9 @@
     (submitSurvey)="sendData($event, 'pre'); state = status.WAITING; start()"
     *ngIf="state === status.PRE"
   ></survey>
-  <div class="p-4">
+  <div class="p-4" *ngIf="![
+    status.PRE, status.POST
+  ].includes(state)">
     <ng-container
       *ngIf="
         [status.TEXT1, status.TEXT2, status.TEXT3, status.TEXT4].includes(state)

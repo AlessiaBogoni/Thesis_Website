@@ -28,11 +28,11 @@ export const PostSurvey = {
           analytics: true,
           isRequired: true,
           choices: [
-            "t_post_knowledge_check_qwerty_origin_choice_1",
-            "t_post_knowledge_check_qwerty_origin_choice_2",
-            "t_post_knowledge_check_qwerty_origin_choice_3",
-            "t_post_knowledge_check_qwerty_origin_choice_4",
-            "t_post_knowledge_check_qwerty_origin_choice_5",
+            {value: 1, text: "t_post_knowledge_check_qwerty_origin_choice_1"},
+            {value: 2, text: "t_post_knowledge_check_qwerty_origin_choice_2"},
+            {value: 3, text: "t_post_knowledge_check_qwerty_origin_choice_3"},
+            {value: 4, text: "t_post_knowledge_check_qwerty_origin_choice_4"},
+            {value: 5, text: "t_post_knowledge_check_qwerty_origin_choice_5"}
           ],
           correctAnswer: "t_post_knowledge_check_qwerty_origin_choice_1",
         },
@@ -44,10 +44,11 @@ export const PostSurvey = {
           title: "t_post_knowledge_check_notice_period_general_title",
           // choicesOrder: "random",
           choices: [
-            "t_post_knowledge_check_notice_period_general_choice_1",
-            "t_post_knowledge_check_notice_period_general_choice_2",
-            "t_post_knowledge_check_notice_period_general_choice_3",
-            "t_post_knowledge_check_notice_period_general_choice_4",
+            
+            {value:1, text:"t_post_knowledge_check_notice_period_general_choice_1"},
+            {value:2, text:"t_post_knowledge_check_notice_period_general_choice_2"},
+            {value:3, text:"t_post_knowledge_check_notice_period_general_choice_3"},
+            {value:4, text:"t_post_knowledge_check_notice_period_general_choice_4"}
           ],
           correctAnswer:
             "t_post_knowledge_check_notice_period_general_choice_4",
@@ -59,12 +60,12 @@ export const PostSurvey = {
           title: "t_food_dogs",
           name:"food_dog",
           choices: [
-            "t_meat",
-            "t_commercial_food",
-            "t_rice_grains",
-            "t_chocolate",
-            "t_onions",
-            "t_plastic",
+            {value:1, text:"t_meat"},
+            {value:2, text:"t_commercial_food"},
+            {value:3, text:"t_rice_grains"},
+            {value:4, text:"t_chocolate"},
+            {value:5, text:"t_onions"},
+            {value:6, text:"t_plastic"}
           ],
           correctAnswer: [
             "t_meat",
@@ -124,11 +125,11 @@ export const PostSurvey = {
           analytics: true,
           isRequired: true,
           choices: [
-            "t_post_survey_author_belief_choice_1",
-            "t_post_survey_author_belief_choice_2",
-            "t_post_survey_author_belief_choice_3",
-            "t_post_survey_author_belief_choice_4",
-            "t_post_survey_author_belief_choice_5",
+            {value:1 ,text: "t_post_survey_author_belief_choice_1"},
+            {value:2 ,text: "t_post_survey_author_belief_choice_2"},
+            {value:3 ,text: "t_post_survey_author_belief_choice_3"},
+            {value:4 ,text: "t_post_survey_author_belief_choice_4"},
+            {value:5 ,text: "t_post_survey_author_belief_choice_5"}
           ],
         },
         {

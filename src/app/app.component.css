@@ -118,3 +118,15 @@
 [class*="goog-te-gadget"] {
   display: none !important;
 }
+
+
+::ng-deep survey thead {
+  position: sticky;
+  z-index: 12;
+  top: 0;
+  background: var(--sjs-general-backcolor);
+}
+
+::ng-deep survey .sd-element:has(thead) {
+  overflow: unset !important;
+}

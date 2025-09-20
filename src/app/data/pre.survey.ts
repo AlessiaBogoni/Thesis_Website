@@ -1,3 +1,4 @@
+
 export const PreSurvey = {
   logoPosition: "right",
   completedHtml: "<h3>Thank you!</h3>",
@@ -16,12 +17,12 @@ export const PreSurvey = {
           name: "tos",
           choices: [
             {
-              value: "confirmed",
+              value: "true",
               text: "t_confirmation",
             },
           ],
           title: "t_title_confirmation",
-          //  isREquired: true,
+          isRequired: true,
         },
       ],
     },
@@ -35,7 +36,8 @@ export const PreSurvey = {
           inputType: "number",
           min: 18,
           max: 100,
-          //  isREquired: true,
+          analytics: true,
+          isRequired: true,
           validators: [
             {
               type: "numeric",
@@ -50,7 +52,7 @@ export const PreSurvey = {
           name: "gender",
           analytics: true,
           title: "t_title_gender",
-          //  isREquired: true,
+          isRequired: true,
           choices: [
             { value: "male", text: "t_male" },
             { value: "female", text: "t_female" },
@@ -62,7 +64,7 @@ export const PreSurvey = {
           name: "education",
           analytics: true,
           title: "t_title_education",
-          //  isREquired: true,
+          isRequired: true,
           choices: [
             { value: "no_degree", text: "t_no_degree" },
             { value: "high_school", text: "t_diploma" },
@@ -76,19 +78,19 @@ export const PreSurvey = {
           name: "language",
           analytics: true,
           title: "t_title_language",
-          //  isREquired: true,
+          isRequired: true,
           choices: [
-            { value: "A1-A2", text: "t_A1-A2" },
-            { value: "B1-B2", text: "t_B1-B2" },
-            { value: "C1-C2", text: "t_C1-C2" },
-            { value: "Native speaker", text: "t_native_speaker" },
+            { value: "A", text: "t_A1-A2" },
+            { value: "B", text: "t_B1-B2" },
+            { value: "C", text: "t_C1-C2" },
+            { value: "Native", text: "t_native_speaker" },
           ],
         },
         {
           analytics: true,
-          //  isREquired: true,
+          isRequired: true,
           type: "matrix",
-          name: "generalPpreviousKnowledge",
+          name: "gen_exp",
           title: "t_previous_knowledge_title",
           columns: [
             { value: 1, text: "t_definitely_not" },
@@ -98,17 +100,17 @@ export const PreSurvey = {
             { value: 5, text: "t_yes_a_lot" },
           ],
           rows: [
-            { value: "AI_experience", text: "t_AI_experience" },
-            { value: "forum_experience", text: "t_forum_experience" },
-            { value: "NFC_positive", text: "t_NFC_positive" },
-            { value: "NFC_negative", text: "t_NFC_negative" },
+            { value: "AI_exp", text: "t_AI_experience" },
+            { value: "forum_exp", text: "t_forum_experience" },
+            { value: "NFC_pos", text: "t_NFC_positive" },
+            { value: "NFC_neg", text: "t_NFC_negative" },
           ],
         },
         {
           analytics: true,
-          //  isREquired: true,
+          isRequired: true,
           type: "matrix",
-          name: "specificPreviousKnowledge",
+          name: "spec_exp",
           title: "t_previous_knowledge_title",
           columns: [
             { value: 1, text: "t_definitely_not" },
@@ -118,11 +120,11 @@ export const PreSurvey = {
             { value: 5, text: "t_yes_a_lot" },
           ],
           rows: [
-            { value: "computer_experience", text: "t_computer_experience" },
-            { value: "pet_experience", text: "t_pet_experience" },
-            { value: "reading_experience", text: "t_reading_experience" },
-            { value: "nutrition_experience", text: "t_nutrition_experience" },
-            { value: "renting_experience", text: "t_renting_experience" },
+            { value: "computer", text: "t_computer_experience" },
+            { value: "pet", text: "t_pet_experience" },
+            { value: "reading", text: "t_reading_experience" },
+            { value: "nutrition", text: "t_nutrition_experience" },
+            { value: "renting", text: "t_renting_experience" },
           ],
         },
       ],
@@ -135,19 +137,20 @@ export const PreSurvey = {
           name: "instructionsText",
           html: "t_instructions_html",
         },
-                {
+        {
+          analytics: true,
           type: "html",
           name: "scoringDetailsLink",
           html: "t_scoring_details_link",
         },
-                        {
+        {
           type: "html",
-          name: "checIntro",
+          name: "checkIntro",
           html: "t_intro_attention_check",
         },
         {
           type: "radiogroup",
-          //  isREquired: true,
+          isRequired: true,
           name: "attention_check_1",
           title: "t_attention_check_1",
           choices: [
@@ -164,7 +167,7 @@ export const PreSurvey = {
         },
         {
           type: "radiogroup",
-          //  isREquired: true,
+          isRequired: true,
           name: "attention_check_2",
           title: "t_attention_check_2",
           choices: [
@@ -181,7 +184,7 @@ export const PreSurvey = {
         },
         {
           type: "radiogroup",
-          //  isREquired: true,
+          isRequired: true,
           name: "attention_check_3",
           title: "t_attention_check_3",
           choices: [
@@ -196,12 +199,12 @@ export const PreSurvey = {
           visibleIf: "{attention_check_3} = false",
           html: "t_ac3_feedback",
         },
-/*         {
+        /*         {
           type: "html",
           name: "performance_text",
           html: "t_performance_text",
         }, */
-                        {
+        {
           type: "html",
           name: "details_prize",
           html: "t_details_prize",
@@ -227,7 +230,6 @@ export const PreSurvey = {
           visibleIf: "{email} = ''",
           html: "t_email_optional_notice",
         },
-
       ],
     },
   ],

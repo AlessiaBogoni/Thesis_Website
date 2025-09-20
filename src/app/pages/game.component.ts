@@ -207,7 +207,7 @@ allInteracted(): boolean {
 
     this.loadDebriefContent();
     this.loadLeaderboardContent();
-    this.loadScoringContent1();
+    //this.loadScoringContent1();
     this.lang = this.translationService.currentLang;
 
     const t = this.translationService.t.bind(this.translationService);
@@ -409,20 +409,21 @@ allInteracted(): boolean {
     this.postSurvey.cookieName = this.machineCode;
     this.postSurvey.onComplete.add(() => {
       this.sendData("post", this.postSurvey).subscribe(() => {});
-      this.http
-        .put(SurveyService.getUrl(this.machineCode + "/totalScore"), 0)
-        .subscribe(() => {});
+     // this.http
+      //  .put(SurveyService.getUrl(this.machineCode + "/totalScore"), 0)
+      //  .subscribe(() => {});
       this.state = State.FINISHED;
     });
   }
    loadScoringContent1() {
+    console.log("gamecomponent")
     const htmlString = this.translationService.t("score_instruction");
     this.scoringHtml1 = this.sanitizer.bypassSecurityTrustHtml(htmlString);
-    console.log("loaded ScoringContent1")
+    // console.log("loaded ScoringContent1")
   }
   loadDebriefContent() {
     const htmlString = this.translationService.t("debrief");
-    console.log(htmlString);
+    // console.log(htmlString);
     this.debriefHtml = this.sanitizer.bypassSecurityTrustHtml(htmlString);
   }
   loadLeaderboardContent() {
@@ -539,7 +540,8 @@ allInteracted(): boolean {
       });
   }
 
-  toPostSurvey() {
+
+/*   toPostSurvey() {
     const result = { ...this.lastTextToShow[this.currentText - 5] };
     const firstResult = { ...this.textToShow };
     // console.log(result);
@@ -552,6 +554,8 @@ allInteracted(): boolean {
     const lastScore = this.evaluationService.calculateGuessingSkillScoreForLastText(
       this.lastTextToShow[this.currentText - 5]
     );
+
+    
     const guessTotal = (guessFour * 2 + lastScore)/3
 
   result.score = scores;
@@ -570,6 +574,7 @@ allInteracted(): boolean {
     result.highlightSections.forEach((section) => {
       delete section.element;
       delete section.color;
+      delete section.text;
     });
     result.deltaTime = new Date().getTime() - this.pastTime;
     this.pastTime = new Date().getTime();
@@ -583,6 +588,66 @@ allInteracted(): boolean {
         this.state = State.POST;
       });
   }
+ */
+
+toPostSurvey() {
+  const result = { ...this.lastTextToShow[this.currentText - 5] };
+  const scores = this.evaluationService.computeScore(result, result.lastText.text);
+
+  // calcolo subito i punteggi booleani, prima dei delete
+  const scoresBool = this.scoreService.computeScore(
+    this.lastTextToShow[this.currentText - 5],
+    this.lastTextToShow[this.currentText - 5].lastText.text
+  );
+
+  // fetch humanSoundness per tutti i testi direttamente da Firebase
+  this.evaluationService
+    .calculateGuessingSkillScoresFromFirebase(this.machineCode)
+    .subscribe(({ guessScores, guessFour }) => {
+      const lastScore = this.evaluationService.calculateGuessingSkillScoreForLastText(
+        this.lastTextToShow[this.currentText - 5]
+      );
+
+      const guessTotal = (guessFour * 2 + lastScore) / 3;
+
+      result.score = scores;
+      result.score.lastGuessScore = lastScore;
+      result.score.totalGuessingScore = guessTotal;
+      result.score.scores = guessScores;
+      result.leaderboardScore = scores.f1;
+
+      delete result.lastText.text;
+      delete result.lastText.author;
+      delete result.lastText.title;
+      result.attention = this.cstScore;
+      result.highlightSections.forEach((section) => {
+        delete section.element;
+        delete section.color;
+        delete section.text;
+      });
+      result.deltaTime = new Date().getTime() - this.pastTime;
+      this.pastTime = new Date().getTime();
+
+      // prima PUT
+      this.http
+        .put(
+          SurveyService.getUrl(this.machineCode + "/results/" + this.currentText),
+          result
+        )
+        .subscribe(() => {
+          this.state = State.POST;
+
+          // seconda PUT: scoringBool
+          this.http
+            .put(
+              SurveyService.getUrl(this.machineCode + "/scoringBool/"),
+              scoresBool
+            )
+            .subscribe();
+        });
+    });
+}
+
 
   showLeaderboard() {
     this.state = State.LEADERBOARD;
@@ -662,4 +727,6 @@ class LastTextResult {
   deltaTime: number;
   attention: number;
   lastGuessScore: number;
+  scoreBool;
+
 }

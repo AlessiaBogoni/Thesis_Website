@@ -1,36 +1,41 @@
 // src/app/services/evaluation.service.ts
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs';
+import { SurveyService } from '../survey.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EvaluationService {
+  constructor(private http: HttpClient) {}
   
   // This object holds the correct highlighting solutions for your experiment.
   // It's a key part of your scoring logic.
   private groupSolutions = {
     en: {
       ai: [
-        { startIndex: 188, endIndex: 193, text: "above" },
-        { startIndex: 458, endIndex: 476, text: "less than two days" },
-        { startIndex: 523, endIndex: 535, text: "only one day" },
+        { startIndex: 185, endIndex: 190},
+        { startIndex: 451, endIndex: 469},
+        { startIndex: 516, endIndex: 528},
       ],
       human: [
-        { startIndex: 220, endIndex: 225, text: "above" },
-        { startIndex: 577, endIndex: 595, text: "less than two days" },
-        { startIndex: 626, endIndex: 638, text: "only one day" },
+        { startIndex: 213, endIndex: 218},
+        { startIndex: 570, endIndex: 588},
+        { startIndex: 619, endIndex: 631},
       ],
     },
     it: {
       ai: [
-        { startIndex: 220, endIndex: 225, text: "sopra" },
-        { startIndex: 542, endIndex: 560, text: "meno di due giorni" },
-        { startIndex: 614, endIndex: 628, text: "solo un giorno" },
+        { startIndex: 217, endIndex: 222},
+        { startIndex: 535, endIndex: 553},
+        { startIndex: 607, endIndex: 621},
       ],
       human: [
-        { startIndex: 231, endIndex: 236, text: "sopra" },
-        { startIndex: 608, endIndex: 626, text: "meno di due giorni" },
-        { startIndex: 667, endIndex: 681, text: "solo un giorno" },
+        { startIndex: 224, endIndex: 229},
+        { startIndex: 601, endIndex: 619},
+        { startIndex: 660, endIndex: 674},
       ],
     },
   };
@@ -104,20 +109,20 @@ export class EvaluationService {
    * Calculates the fuzzy value for a character's proximity to a correct error.
    */
   value(i: number, s: number, e: number): number {
-    if (i >= s && i <= e) return 1;
-    if (i === s - 1 || i === e + 1) return 1;
-    if (i === s - 2 || i === e + 2) return 0.9;
-    if (i === s - 3 || i === e + 3) return 0.9;
-    if (i === s - 4 || i === e + 4) return 0.8;
-    if (i === s - 5 || i === e + 5) return 0.8;
-    if (i === s - 6 || i === e + 6) return 0.7;
-    if (i === s - 7 || i === e + 7) return 0.7;
-    if (i === s - 8 || i === e + 8) return 0.6;
-    if (i === s - 9 || i === e + 9) return 0.5;
-    if (i === s - 10 || i === e + 10) return 0.4;
-    if (i === s - 11 || i === e + 11) return 0.3;
-    if (i === s - 12 || i === e + 12) return 0.2;
-    if (i === s - 13 || i === e + 13) return 0.1;
+    if (i >= s && i < e) return 1;
+    if (i === s - 1 || i === e) return 0.9;
+    if (i === s - 2 || i === e + 1) return 0.9;
+    if (i === s - 3 || i === e + 2) return 0.9;
+    if (i === s - 4 || i === e + 3) return 0.8;
+    if (i === s - 5 || i === e + 4) return 0.8;
+    if (i === s - 6 || i === e + 5) return 0.7;
+    if (i === s - 7 || i === e + 6) return 0.7;
+    if (i === s - 8 || i === e + 7) return 0.6;
+    if (i === s - 9 || i === e + 8) return 0.5;
+    if (i === s - 10 || i === e + 9) return 0.4;
+    if (i === s - 11 || i === e + 10) return 0.3;
+    if (i === s - 12 || i === e + 11) return 0.2;
+    if (i === s - 13 || i === e + 12) return 0.1;
     return 0;
   }
 
@@ -191,11 +196,11 @@ export class EvaluationService {
    */
   getSpecificity(userSelection: number[], heatmap: number[]): number {
     const negativeIndexes = heatmap
-      .map((value, index) => (value === 0 ? index : -1))
+      .map((value, index) => (value === 1 ? -1 : index))
       .filter((index) => index !== -1);
 
     const selectedNegatives = userSelection.filter(
-      (i) => i >= 0 && i < heatmap.length && heatmap[i] === 0
+      (i) => negativeIndexes.indexOf(i) >= 0
     );
 
     const TN = negativeIndexes.length - selectedNegatives.length;
@@ -204,6 +209,8 @@ export class EvaluationService {
     const denominator = TN + FP;
     return denominator === 0 ? 0 : TN / denominator;
   }
+
+
 
   /**
    * Calculates the guessing score for the last text.
@@ -224,6 +231,26 @@ export class EvaluationService {
     return 1 - Math.abs(participantGuess - actualSource);
   }
 
+   calculateGuessingSkillScoresFromFirebase(machineCode: string): Observable<{
+    guessScores: number[];
+    guessFour: number;
+  }> {
+    return this.http
+      .get<any[]>(SurveyService.getUrl(`${machineCode}/results`))
+      .pipe(
+        map((results) => {
+          // results = array of saved text results from Firebase
+          const guessScores = results.filter(Boolean).filter(e => e.text).map((r) =>
+            this.calculateGuessingSkillScoreForText(r)
+          );
+          const guessFour =
+            (guessScores.reduce((a, b) => a + b, 0) - 2) /
+            (guessScores.length - 2);
+          return { guessScores, guessFour };
+        })
+      );
+    }
+
   /**
    * Calculates the average guessing score across multiple texts.
    */
@@ -236,8 +263,10 @@ export class EvaluationService {
       this.calculateGuessingSkillScoreForText(r)
     );
     const guessFour =
-      guessScores.reduce((a, b) => a + b, 0) / guessScores.length;
+      (guessScores.reduce((a, b) => a + b, 0)-2) / (guessScores.length-2);
+          console.log("guessScore, guessfour:"+ guessScores, guessFour)
     return { guessScores, guessFour };
+
   }
 
   /**

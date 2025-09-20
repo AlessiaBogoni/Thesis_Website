@@ -52,6 +52,9 @@ export class TextHighlightComponent implements AfterViewInit {
   //startIndexes: [number];
   endIndexes: number[] = [];
   //endIndexes: [number];
+  get parsedTextContent() {
+    return this.textContent.replace(/<.*?>/g, '')
+  }
 
 
   constructor(
@@ -499,20 +502,20 @@ export class TextHighlightComponent implements AfterViewInit {
             // Ensure startIndex and endIndex are within bounds and make sense
             if (startIndex === -1 || endIndex === -1) {
               // Fallback for complex cases where absolute offset is hard to find
-              startIndex = this.textContent.indexOf(text);
+              startIndex = this.parsedTextContent.indexOf(text);
               endIndex = startIndex !== -1 ? startIndex + text.length : -1;
             } else {
               // Adjust for potential HTML structure changes if textContent is flat
               // This is a rough adjustment, a perfect match is hard without parsing HTML
-              const tempSelectionText = this.textContent.substring(
+              const tempSelectionText = this.parsedTextContent.substring(
                 startIndex,
                 endIndex
               );
               if (
                 tempSelectionText !== text &&
-                this.textContent.indexOf(text) !== -1
+                this.parsedTextContent.indexOf(text) !== -1
               ) {
-                startIndex = this.textContent.indexOf(text);
+                startIndex = this.parsedTextContent.indexOf(text);
                 endIndex = startIndex + text.length;
               }
             }
