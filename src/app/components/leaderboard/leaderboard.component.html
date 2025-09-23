@@ -1,4 +1,11 @@
-<div class=" container mt-4" *ngIf="userHighlightScore != null && userGuessScore != null && userTotalScore != null">
+<div
+  class="container mt-4"
+  *ngIf="
+    userHighlightScore != null &&
+    userGuessScore != null &&
+    userTotalScore != null
+  "
+>
   <h3>Your results:</h3>
   <!-- <h6>
     Your guessing score was <b style="color:#7dd1a9">{{ userGuessScore | number: '1.2-2' }}</b
@@ -7,36 +14,42 @@
     ></h6><h6> That means if you get chosen for the prize, you will get
     <b style="color: #7dd1a9;">{{ userTotalScore * 30 | number: '1.2-2' }}</b> euros prize. <b>Well done!</b>
     </h6> -->
-    <div [innerHTML]="this.finalOutcome"></div>
+  <div [innerHTML]="this.finalOutcome"></div>
 </div>
 <div class="container mt-4">
-  <h2>{{"leaderboard"|label}}</h2>
+  <h2>{{ "leaderboard" | label }}</h2>
   <hr />
 
-  <div class="row fw-bold mb-2">
-    <div class="col-1">#</div>
-    <div class="col">{{'player'|label}}</div>
-    <div class="col">{{'highligthScore'|label}}</div>
-    <div class="col">{{'guessScore' |label }}</div>
-    <div class="col">{{'totalScore'|label}}</div>
+  <div class="col-12 row border-bottom pb-3">
+    <div class=" col-2">#</div>
+    <div class=" col-12 col-lg-4">{{ "player" | label }}</div>
+    <div class=" col-12 col-lg-2 text-center">{{ "guessScore" | label }}</div>
+    <div class=" col-12 col-lg-2 text-center">{{ "highligthScore" | label }}</div>
+    <div class=" col-12 col-lg-2 text-center">{{ "totalScore" | label }}</div>
   </div>
 
   <div
-    class="row mb-1"
+    class="row pt-2 col-12 pb-2 mb-0"
     *ngFor="let row of leaderboard; let i = index"
     [ngClass]="{ 'fw-bold text-primary': row.me }"
   >
-    <div class="col-1">{{ i + 1 }}</div>
-    <div class="col">{{ row.me ? 'You' : row.name }}</div>
-    <div class="col">{{ row.highlightScore | number: '1.2-2' }}</div>
-    <div class="col">{{ row.guessScore | number: '1.2-2' }}</div>
-    <div class="col">{{ row.totalScore | number: '1.2-2' }}</div>
-
+    <div class=" col-2">{{ i + 1 }}</div>
+    <div class=" col-12 col-lg-4 ">{{ row.me ? "You" : row.name }}</div>
+    <div class=" col-12 col-lg-2 text-center">{{ row.guessScore | number : "1.2-2" }}</div>
+    <div class=" col-12 col-lg-2 text-center">{{ row.highlightScore | number : "1.2-2" }}</div>
+    <div class=" col-12 col-lg-2 text-center">{{ row.totalScore | number : "1.2-2" }}</div>
   </div>
-</div>
-<div class="mt-3">
- <h5>{{'thankyou'|label}}</h5>  
-  <p [innerHTML]="'inquiries'| label"></p>
+  <hr />
 
-<button class="btn btn-primary mt-2" onclick="window.open('about:blank', '_self');">{{'exit'|label}}</button>
+  <div class="mt-3">
+    <h5>{{ "thankyou" | label }}</h5>
+    <p [innerHTML]="'inquiries' | label"></p>
+
+    <button
+      class="btn btn-primary mt-2"
+      onclick="window.open('about:blank', '_self');"
+    >
+      {{ "exit" | label }}
+    </button>
+  </div>
 </div>

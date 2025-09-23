@@ -10,9 +10,7 @@
     (submitSurvey)="sendData($event, 'pre'); state = status.WAITING; start()"
     *ngIf="state === status.PRE"
   ></survey>
-  <div class="p-4" *ngIf="![
-    status.PRE, status.POST
-  ].includes(state)">
+  <div class="p-4" *ngIf="![status.PRE, status.POST].includes(state)">
     <ng-container
       *ngIf="
         [status.TEXT1, status.TEXT2, status.TEXT3, status.TEXT4].includes(state)
@@ -26,10 +24,10 @@
           <p>
             <br />
             <span
-              class="badge bg-warning text-center w-100 p-3 fs-6 lh-base text-dark text-break text-wrap"
+              class="badge bg-warning text-center w-100 p-2 fs-6 lh-base text-dark text-break text-wrap"
             >
               {{ "read_carefully" | label }}<br />
-              <hr />
+              <hr class="my-1" />
               {{ "next_to_continue" | label }}
             </span>
           </p>
@@ -101,38 +99,61 @@
               (mousedown)="markInteracted('humanSoundness')"
               (touchstart)="markInteracted('humanSoundness')"
             /> -->
+            <div
+              class="d-flex flex-column align-items-center"
+              [title]="
+                step.text.labeled
+                  ? ('t_known_author' | label) +
+                    ' (' +
+                    (step.text.type === 'ai'
+                      ? ('AI' | label)
+                      : ('human' | label)) +
+                    ')'
+                  : ''
+              "
+            >
+            <span *ngIf="step.text.labeled" class="slider-note"
+                >{{ "t_known_author" | label
+                }}{{
+                  step.text.type === "ai" ? ("AI" | label) : ("human" | label)
+                }}</span
+              >
+              <input
+                type="range"
+                class="form-range custom-slider"
+                min="0"
+                max="10"
+                step="1"
+                [ngModel]="
+                  step.text.labeled
+                    ? step.text.type === 'ai'
+                      ? 0
+                      : 10
+                    : step.humanSoundness
+                "
+                (ngModelChange)="
+                  step.text.labeled
+                    ? markInteracted('humanSoundness')
+                    : (step.humanSoundness = $event)
+                "
+                [disabled]="step.text.labeled"
+                [ngClass]="{
+                  unconfirmed: !interacted.humanSoundness,
+                  'locked-slider': step.text.labeled
+                }"
+                (change)="
+                  !step.text.labeled && markInteracted('humanSoundness')
+                "
+                (mousedown)="
+                  !step.text.labeled && markInteracted('humanSoundness')
+                "
+                (touchstart)="
+                  !step.text.labeled && markInteracted('humanSoundness')
+                "
+              />
 
-            <input
-              type="range"
-              class="form-range custom-slider"
-              min="0"
-              max="10"
-              step="1"
-              [ngModel]="
-                step.text.labeled
-                  ? step.text.type === 'ai'
-                    ? 0
-                    : 10
-                  : step.humanSoundness
-              "
-              (ngModelChange)="
-                step.text.labeled
-                  ? markInteracted('humanSoundness')
-                  : (step.humanSoundness = $event)
-              "
-              [disabled]="step.text.labeled"
-              [ngClass]="{
-                unconfirmed: !interacted.humanSoundness,
-                'locked-slider': step.text.labeled
-              }"
-              (change)="!step.text.labeled && markInteracted('humanSoundness')"
-              (mousedown)="
-                !step.text.labeled && markInteracted('humanSoundness')
-              "
-              (touchstart)="
-                !step.text.labeled && markInteracted('humanSoundness')
-              "
-            />
+              
+            </div>
 
             <div class="d-flex justify-content-between">
               <span class="w-33">{{ "AI" | label }}</span>
@@ -217,14 +238,14 @@
           <p>
             <br />
             <span
-              class="badge bg-warning text-center w-100 p-3 fs-6 lh-base text-dark text-break text-wrap"
+              class="badge bg-warning text-center w-100 p-2 fs-6 lh-base text-dark text-break text-wrap"
             >
               {{ "read_carefully" | label }}<br />
-              <hr />
+              <hr class="my-1" />
               <b>
                 <!-- <i class="fa fa-exclamation-triangle"></i> -->
                 {{ "additional_highlight" | label }}<br />
-                <hr />
+                <hr class="my-1" />
                 {{ "next_to_continue" | label }}
               </b>
             </span>
