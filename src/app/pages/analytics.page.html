@@ -1,12 +1,12 @@
 <div class="text-center">
   <h1>AI vs Human Authorship Perception Analytics</h1>
 
-  <iframe
+<!--   <iframe
     src="https://lookerstudio.google.com/embed/reporting/f7f72756-0d47-4f40-92d8-35d66825efac/page/kIV1C"
     frameborder="0"
     allowfullscreen
     sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-  ></iframe>
+  ></iframe> -->
 
   <div class="d-flex justify-content-center m-2">
     <div class="card">
@@ -80,24 +80,144 @@
     </p>
   </div>
   <h3 class="m-4">
-    {{results.valid_read ? 'The difference is statistically significant' : 'The
-    difference is not statistically significant'}}<br />
+    {{results.valid_read ? 'The difference is statistically significant' : 'The difference is not statistically significant'}}<br />
     Δ = {{results.human_read - results.ai_read | number: '1.2-2'}}%
   </h3>
 
   <hr />
 
-  <h2>Pre-survey Results</h2>
+<h2>Group Analysis (Texts 1–4)</h2>
+<table class="table table-dark">
+  <thead>
+    <tr>
+      <th>Group</th>
+      <th>Text</th>
+      <th>Type</th>
+      <th>Labeled</th>
+      <th>Humansoundness (μ ± σ)</th>
+      <th>Readability (μ ± σ)</th>
+      <th>Accuracy (μ ± σ)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let g of groupResults">
+      <tr *ngFor="let t of g.texts; let i = index" class="border-bottom">
+        <!-- Only the first row has the group cell with rowspan -->
+        <td rowspan="{{ g.texts.length }}">{{ g.group }}</td>
+        <td>{{ t.id }}</td>
+        <td>{{ t.type }}</td>
+        <td>{{ t.labeled }}</td>
+        <td>{{ t.humansoundness.mean | number:'1.2-2' }} ± {{ t.humansoundness.std | number:'1.2-2' }}</td>
+        <td>{{ t.readability.mean | number:'1.2-2' }} ± {{ t.readability.std | number:'1.2-2' }}</td>
+        <td>{{ t.accuracy.mean | number:'1.2-2' }} ± {{ t.accuracy.std | number:'1.2-2' }}</td>
+      </tr>
+    </ng-container>
+  </tbody>
+</table>
+
+
+
+
+<h2>AI vs Human (Text 5)</h2>
+<table class="table table-striped table-bordered text-white">
+  <thead>
+    <tr>
+      <th>Group</th>
+      <th>Humansoundness (μ ± σ)</th>
+      <th>Readability (μ ± σ)</th>
+      <th>Accuracy (μ ± σ)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let r of lastTextResults">
+      <td>{{r.group}}</td>
+      <td>{{r.humansoundness.mean | number:'1.2-2'}} ± {{r.humansoundness.std | number:'1.2-2'}}</td>
+      <td>{{r.readability.mean | number:'1.2-2'}} ± {{r.readability.std | number:'1.2-2'}}</td>
+      <td>{{r.accuracy.mean | number:'1.2-2'}} ± {{r.accuracy.std | number:'1.2-2'}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="analytics">
+
+  <!-- Participants -->
+  <h2>Participants</h2>
+  <ul>
+    <li>Total: {{ totalParticipants.tot }}</li>
+    <li>AI: {{ totalParticipants.ai }}</li>
+    <li>Human: {{ totalParticipants.human }}</li>
+    <li>Group A: {{ totalParticipants.groupA }}</li>
+    <li>Group B: {{ totalParticipants.groupB }}</li>
+    <li>Group C: {{ totalParticipants.groupC }}</li>
+    <li>Group D: {{ totalParticipants.groupD }}</li>
+  </ul>
+
+  <!-- Results by group -->
+  <h2>Results by group</h2>
+  <div *ngFor="let g of groupResults">
+    <h3>Group {{ g.group }}</h3>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Type</th>
+        <th>Labeled</th>
+        <th>Accuracy (mean ± std)</th>
+        <th>Readability (mean ± std)</th>
+        <th>Human Soundness (mean ± std)</th>
+      </tr>
+      <tr *ngFor="let t of g.texts">
+        <td>{{ t.id }}</td>
+        <td>{{ t.type }}</td>
+        <td>{{ t.labeled }}</td>
+        <td>{{ t.accuracy.mean | number:'1.1-2' }} ± {{ t.accuracy.std | number:'1.1-2' }}</td>
+        <td>{{ t.readability.mean | number:'1.1-2' }} ± {{ t.readability.std | number:'1.1-2' }}</td>
+        <td>{{ t.humansoundness.mean | number:'1.1-2' }} ± {{ t.humansoundness.std | number:'1.1-2' }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Last text (id 5) -->
+  <h2>Last Text (id 5)</h2>
+  <table>
+    <tr>
+      <th>Group</th>
+      <th>Accuracy</th>
+      <th>Readability</th>
+      <th>Human Soundness</th>
+    </tr>
+    <tr *ngFor="let t of lastTextResults">
+      <td>{{ t.group }}</td>
+      <td>{{ t.accuracy.mean | number:'1.1-2' }}</td>
+      <td>{{ t.readability.mean | number:'1.1-2' }}</td>
+      <td>{{ t.humansoundness.mean | number:'1.1-2' }}</td>
+    </tr>
+  </table>
+
+  <!-- Word cloud -->
+  <!-- <h2>Word Cloud</h2>
+  <div *ngFor="let w of wordCloud">
+    {{ w.text }} ({{ w.value }})
+  </div> -->
+
+  <!-- Histogram -->
+  <h2>Histogram</h2>
+  <div id="chart" style="height:400px"></div>
+
+</div>
+
+
+
+<!--   <h2>Pre-survey Results</h2>
   <survey-analytics
     class="d-block"
     [surveyJson]="json[0]"
     [results]="data"
     *ngIf="data"
-  ></survey-analytics>
+  ></survey-analytics> -->
 
   <h2>Word Cloud</h2>
 
-  <div class="d-flex justify-content-center m-2">
+<!--   <div class="d-flex justify-content-center m-2">
     <div class="card">
       <div class="card-body">
         <angular-d3-cloud
@@ -112,14 +232,26 @@
       </div>
       <div class="card-footer">Word Cloud of Analyzed Texts</div>
     </div>
-  </div>
+  </div> -->
 
-  <h2>Post-survey Results</h2>
+  <div *ngFor="let t of [1,2,3,4]">
+  <h3>Text {{ t }}: Humansoundness</h3>
+  <div id="chart-humansoundness-{{t}}" style="height:300px"></div>
+
+  <h3>Text {{ t }}: Readability</h3>
+  <div id="chart-readability-{{t}}" style="height:300px"></div>
+
+  <h3>Text {{ t }}: Accuracy</h3>
+  <div id="chart-accuracy-{{t}}" style="height:300px"></div>
+</div>
+
+
+  <!-- <h2>Post-survey Results</h2>
 
   <survey-analytics
     class="d-block"
     [surveyJson]="json[1]"
     [results]="data"
     *ngIf="data"
-  ></survey-analytics>
+  ></survey-analytics> -->
 </div>

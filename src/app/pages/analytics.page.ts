@@ -7,10 +7,9 @@ import { Component } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { SurveyService } from "./survey.service";
 import { AnalyticsService } from "./analytics.service";
-import { Text, textPerGroup, textPerSecondGroup } from "../data/texts";
+import { textPerGroup } from "../data/texts";
 import _ from "lodash";
 import * as jStat from "jstat";
-import { group } from "node:console";
 declare var echarts: any;
 
 @Component({
@@ -19,9 +18,6 @@ declare var echarts: any;
   styleUrls: ["./analytics.page.css"],
 })
 export class AnalyticsPage {
-  /**
-   * Risultati dell'analisi della percezione di autorialità.
-   **/
   results = {
     ai_read: 0,
     human_read: 0,
@@ -30,14 +26,7 @@ export class AnalyticsPage {
     valid_read: false,
   };
 
-  /**
-   * Word cloud dei testi analizzati.
-   * @type {Object}
-   */
   wordCloud = [];
-  /**
-   * Numero totale di partecipanti al sondaggio.
-   */
   totalParticipants = {
     ai: 0,
     human: 0,
@@ -45,81 +34,48 @@ export class AnalyticsPage {
     groupA: 0,
     groupB: 0,
     groupC: 0,
-    groupD: 0
+    groupD: 0,
   };
-  /**
-   * Dati filtrati in base al valore del filtro.
-   */
-  data;
 
-  /**
-   * Dati originali non filtrati.
-   */
+  data;
   originalData;
 
-  /**
-   * Colori utilizzati nei grafici.
-   */
   colors = ["#FF6633", "#FFB399", "#FF33FF", "#FFFF99", "#00B3E6", "#E6B333"];
 
-  /**
-   * Valore del filtro attuale.
-   */
   private filterValue;
-
-  /**
-   * Categoria selezionata per l'analisi.
-   */
   selectedCategory = "authorship";
-
-  /**
-   * Istogramma dei dati.
-   */
   histoChart;
 
-  /**
-   * Imposta il valore del filtro e aggiorna i dati filtrati.
-   * @param value Il nuovo valore del filtro.
-   */
+  groupResults: any[] = [];
+  lastTextResults: any[] = [];
+
   set filter(value) {
     this.filterValue = value;
     this.data = null;
     setTimeout(() => {
-      this.data = this.originalData
-        .filter((e) => e.group === value)
-        .map((e) => e.text);
+      // results is an object keyed by text id, so use flatMap over Object.values
+      this.data = (this.originalData || [])
+        .flatMap((e) => Object.values(e?.results || {}))
+        .filter((r: any) => r?.text?.type === value)
+        .map((r: any) => r?.text);
     }, 500);
   }
 
-  /**
-   * Restituisce il valore attuale del filtro.
-   * @returns Il valore del filtro.
-   */
   get filter() {
     return this.filterValue;
   }
 
-  /**
-   * Genera un istogramma dai dati forniti.
-   * @param data I dati da analizzare.
-   * @param size La dimensione dei bin dell'istogramma.
-   * @returns Un array di coppie [valore, frequenza].
-   */
   histogram(data, size) {
+    if (!Array.isArray(data) || data.length === 0) return [];
     let min = Infinity;
     let max = -Infinity;
 
     for (const item of data) {
-      if (item < min) {
-        min = item;
-      }
-      if (item > max) {
-        max = item;
-      }
+      if (item < min) min = item;
+      if (item > max) max = item;
     }
 
     const bins = Math.ceil((max - min + 1) / size);
-
     const histo = new Array(bins > 0 ? bins : 0).fill(0);
 
     for (const item of data) {
@@ -129,18 +85,14 @@ export class AnalyticsPage {
     return histo.map((item, index) => [min + (index + 1) * size, item]);
   }
 
-  σ(array) {
+  σ(array: number[]) {
+    if (!Array.isArray(array) || array.length === 0) return 0;
     const avg = _.sum(array) / array.length;
     return Math.sqrt(
       _.sum(_.map(array, (i) => Math.pow(i - avg, 2))) / array.length
     );
   }
 
-  /**
-   * Costruttore del componente AnalyticsPage.
-   * @param http Servizio HttpClient per le richieste HTTP.
-   * @param analyticsService Servizio per la generazione dei grafici di analisi.
-   */
   constructor(
     private http: HttpClient,
     private analyticsService: AnalyticsService
@@ -148,122 +100,178 @@ export class AnalyticsPage {
     this.http.get(SurveyService.getUrl("")).subscribe((data: any) => {
       this.originalData = Object.values(data || {}) || [];
       this.filter = "ai";
+
       this.totalParticipants = {
-        ai: this.originalData.filter((e) => e?.pre?.second_group === "ai").length,
-        human: this.originalData.filter((e) => e?.pre?.second_group === "human")
-          .length,
-        tot: this.originalData.length,
-        groupA: this.originalData.filter((e) => e?.pre?.experiment_group === "groupA" ).length,
-        groupB: this.originalData.filter((e) => e?.pre?.experiment_group === "groupB" ).length,
-        groupC: this.originalData.filter((e) => e?.pre?.experiment_group === "groupC" ).length,
-        groupD: this.originalData.filter((e) => e?.pre?.experiment_group === "groupD" ).length,
+        ai: (this.originalData || []).filter(
+          (e) => e?.pre?.second_group === "AI"
+        ).length,
+        human: (this.originalData || []).filter(
+          (e) => e?.pre?.second_group === "human"
+        ).length,
+        tot: (this.originalData || []).length,
+        groupA: (this.originalData || []).filter(
+          (e) => e?.pre?.experiment_group === "groupA"
+        ).length,
+        groupB: (this.originalData || []).filter(
+          (e) => e?.pre?.experiment_group === "groupB"
+        ).length,
+        groupC: (this.originalData || []).filter(
+          (e) => e?.pre?.experiment_group === "groupC"
+        ).length,
+        groupD: (this.originalData || []).filter(
+          (e) => e?.pre?.experiment_group === "groupD"
+        ).length,
       };
-      const aiGroup = this.originalData.filter((e) => e?.pre?.second_group === "ai");
-      const humanGroup = this.originalData.filter(
-        (e) => e?.pre?.second_group === "human"
-      );
 
-      const groupA = this.originalData.filter(
-        (e) => e?.pre?.experiment_group === "groupA"
-      );
-      const groupB = this.originalData.filter(
-        (e) => e?.pre?.experiment_group === "groupB"
-      );
-      const groupC = this.originalData.filter(
-        (e) => e?.pre?.experiment_group === "groupC"
-      );
-      const groupD = this.originalData.filter(
-        (e) => e?.pre?.experiment_group === "groupD"
-      );
+      // Group results (texts 1–4) - safe indexing
+      this.groupResults = ["A", "B", "C", "D"].map((group) => {
+        return {
+          group,
+          texts: [1, 2, 3, 4].map((id) => {
+            const subset = (this.originalData || [])
+              .filter((e) => e?.pre?.experiment_group === "group" + group)
+              .map((e) => (e && e.results && e.results[String(id)] ? e.results[String(id)] : undefined))
+              .filter((r) => r); // remove undefined
 
-      // ########## need to do one for each text ###########
+            const textInfo = (textPerGroup("en") || {})[group]?.find((t) => t.id === String(id)) || null;
 
-      /* const aiReadability = aiGroup.map((e) => e.readability || 0);
-      const aiAccuracy = aiGroup.map((e) => e.accuracy || 0);
-      const humanReadability = humanGroup.map((e) => e.readability || 0);
-      const humanAccuracy = humanGroup.map((e) => e.accuracy || 0);
+            return {
+              id,
+              type: textInfo?.type || "unknown",
+              labeled: !!textInfo?.labeled,
+              humansoundness: this.computeStats(subset, "humanSoundness"),
+              readability: this.computeStats(subset, "readability"),
+              accuracy: this.computeStats(subset, "accuracy"),
+            };
+          }),
+        };
+      });
 
-      this.results = {
-        ai_read: _.mean(aiReadability),
-        human_read: _.mean(humanReadability),
-        ai_std_read: this.σ(aiReadability),
-        human_std_read: this.σ(humanReadability),
-        valid_read: this.ttest(aiReadability, humanReadability),
-      }; */
+      // Last text (id 5) for AI and Human - safe indexing
+      this.lastTextResults = ["AI", "human"].map((g) => {
+        const subset = (this.originalData || [])
+          .filter((e) => e?.pre?.second_group === g)
+          .map((e) => (e && e.results && e.results["5"] ? e.results["5"] : undefined))
+          .filter((r) => r);
+
+        return {
+          group: g,
+          id: 5,
+          type: g.toLowerCase(),
+          labeled: false,
+          humansoundness: this.computeStats(subset, "humanSoundness"),
+          readability: this.computeStats(subset, "readability"),
+          accuracy: this.computeStats(subset, "accuracy"),
+        };
+      });
 
       this.createWordCloud();
-      const chartDom = document.getElementById("chart") as HTMLElement;
-      this.histoChart = echarts.init(chartDom);
-      this.histoChart.setOption({
-        textStyle: {
-          color: "white",
-        },
-        color: ["orange", "yellow"],
+
+      // histogram init (safe)
+      const chartDom = document.getElementById("chart") as HTMLElement | null;
+      if (chartDom) {
+        this.histoChart = echarts.init(chartDom);
+        this.histoChart.setOption({
+          textStyle: { color: "white" },
+          color: ["orange", "yellow"],
+        });
+      }
+
+      // Plot metric charts for texts 1-4
+      ['humanSoundness','readability','accuracy'].forEach(metric => {
+        [1,2,3,4].forEach(textId => this.plotMetricPerText(metric, String(textId)));
       });
     });
   }
 
-  createWordCloud() {
-    let message = "";
-    this.originalData.forEach((e) => {
-      message += (e.text?.text || "") + " ";
-    });
-    message = message.replace(/[^a-zA-Z ]/g, "");
-    const words = message.split(" ").filter((e) => e);
-    const wordCount = {};
-    words.forEach((word) => {
-      if (wordCount[word]) {
-        wordCount[word]++;
-      } else {
-        wordCount[word] = 1;
+  computeANOVA(metric: string) {
+    const results: any = {};
+
+    ['1','2','3','4'].forEach(id => {
+      const groupValues = ['A','B','C','D'].map(g => {
+        return (this.originalData || [])
+          .filter(e => e?.pre?.experiment_group === 'group' + g && e.results?.[id])
+          .map(e => e.results[id][metric])
+          .filter(v => v !== undefined && v !== null);
+      });
+
+      // safe check: need at least two groups with data to run ANOVA
+      const groupsWithData = groupValues.filter(arr => arr && arr.length > 0);
+      let f = NaN;
+      let p = NaN;
+      let significant = false;
+      if (groupsWithData.length >= 2) {
+        try {
+          f = jStat.anovaftest(...groupValues);
+          // compute p-value using F-distribution CDF if possible
+          // degrees: k-1, N-k
+          const k = groupValues.length;
+          const N = groupValues.flat().length;
+          const df1 = k - 1;
+          const df2 = N - k;
+          if (df2 > 0) {
+            const pValue = 1 - jStat.centralF.cdf(f, df1, df2);
+            p = pValue;
+            significant = pValue < 0.05;
+          }
+        } catch (err) {
+          // ANOVA failed, leave NaN
+        }
       }
+
+      results[id] = { groupValues, f, p, significant };
     });
-    this.wordCloud = Object.keys(wordCount).map((word) => {
-      return {
-        text: word,
-        value: wordCount[word] * 60,
-      };
-    });
+
+    return results;
   }
 
-  /**
-   * Genera un grafico EChart per la categoria specificata.
-   * @param type Il tipo di grafico da generare (predefinito: 'authorship').
-   */
+  createWordCloud() {
+    let message = "";
+    (this.originalData || []).forEach((e) => {
+      const res = e?.results || {};
+      Object.values(res).forEach((r: any) => {
+        if (!r) return;
+        // r.text may be an object {text: '...'} or a string
+        const txt = typeof r.text === "string" ? r.text : (r.text?.text || "");
+        if (txt) message += txt + " ";
+      });
+    });
+
+    message = message.replace(/[^a-zA-Z ]/g, "");
+    const words = message.split(" ").filter((w) => w);
+    const wordCount: { [key: string]: number } = {};
+    words.forEach((word) => {
+      wordCount[word] = (wordCount[word] || 0) + 1;
+    });
+
+    this.wordCloud = Object.keys(wordCount).map((word) => ({
+      text: word,
+      value: wordCount[word] * 60,
+    }));
+  }
+
   generateEChart(type = "authorship") {
     this.analyticsService.generateEChart.bind(this)(type);
   }
 
-  ttest(sample1, sample2, alpha = 0.05) {
-    if (sample1.length === 0 || sample2.length === 0) {
+  ttest(sample1: number[], sample2: number[], alpha = 0.05) {
+    if (!Array.isArray(sample1) || !Array.isArray(sample2) || sample1.length === 0 || sample2.length === 0) {
       throw new Error("Both samples must have at least one observation.");
     }
+    const mean = (arr: number[]) => arr.reduce((s, v) => s + v, 0) / arr.length;
+    const variance = (arr: number[], m: number) =>
+      arr.reduce((s, v) => s + Math.pow(v - m, 2), 0) / (arr.length - 1);
 
-    // Helper function to calculate mean
-    const mean = (arr) => arr.reduce((sum, val) => sum + val, 0) / arr.length;
-
-    // Helper function to calculate variance
-    const variance = (arr, meanValue) =>
-      arr.reduce((sum, val) => sum + Math.pow(val - meanValue, 2), 0) /
-      (arr.length - 1);
-
-    // Calculate means
     const mean1 = mean(sample1);
     const mean2 = mean(sample2);
-
-    // Calculate variances
     const variance1 = variance(sample1, mean1);
     const variance2 = variance(sample2, mean2);
 
-    // Calculate pooled standard error
     const standardError = Math.sqrt(
       variance1 / sample1.length + variance2 / sample2.length
     );
-
-    // Calculate t-statistic
     const tStatistic = (mean1 - mean2) / standardError;
 
-    // Calculate degrees of freedom (Welch-Satterthwaite approximation)
     const numerator = Math.pow(
       variance1 / sample1.length + variance2 / sample2.length,
       2
@@ -276,7 +284,62 @@ export class AnalyticsPage {
     const pValue =
       2 * (1 - jStat.studentt.cdf(Math.abs(tStatistic), degreesOfFreedom));
 
-    // Return true if p-value < alpha (statistically significant)
     return pValue < alpha;
   }
+
+  computeStats(data: any[], metric: "accuracy" | "humanSoundness" | "readability") {
+    const values = (data || [])
+      .map((r) => r?.[metric])
+      .filter((v) => typeof v === "number");
+    if (values.length === 0) {
+      return { mean: 0, std: 0, n: 0 };
+    }
+    return {
+      mean: _.mean(values),
+      std: values.length > 1 ? this.σ(values) : 0,
+      n: values.length
+    };
+  }
+
+plotMetricPerText(metric: string, textId: string) {
+  const chartDom = document.getElementById(`chart-${metric}-${textId}`);
+  if (!chartDom) return;
+
+  const chart = echarts.init(chartDom);
+  const groups = ['A','B','C','D'];
+
+  const data = groups.map(g => {
+    const values = this.originalData
+      .filter(e => e?.pre?.experiment_group === 'group' + g && e.results?.[textId])
+      .map(e => e.results[textId][metric])
+      .filter(v => typeof v === 'number');
+
+    if (values.length === 0) {
+      return { group: g, mean: 0, std: 0, n: 0 };
+    }
+
+    return {
+      group: g,
+      mean: _.mean(values),
+      std: values.length > 1 ? this.σ(values) : 0,
+      n: values.length
+    };
+  });
+
+  chart.setOption({
+    xAxis: { type: 'category', data: groups },
+    yAxis: { type: 'value' },
+    series: [{
+      type: 'bar',
+      data: data.map(d => d.mean)
+    }],
+    tooltip: {
+      formatter: (params) => {
+        const item = data[params.dataIndex];
+        return `Group: ${item.group}<br/>Mean: ${item.mean.toFixed(2)} ± ${item.std.toFixed(2)} (n=${item.n})`;
+      }
+    }
+  });
+}
+
 }
