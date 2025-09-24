@@ -17,25 +17,25 @@ export class EvaluationService {
     en: {
       ai: [
         { startIndex: 185, endIndex: 190},
-        { startIndex: 451, endIndex: 469},
-        { startIndex: 516, endIndex: 528},
+        { startIndex: 462, endIndex: 480},
+        { startIndex: 527, endIndex: 539},
       ],
       human: [
-        { startIndex: 213, endIndex: 218},
-        { startIndex: 570, endIndex: 588},
-        { startIndex: 619, endIndex: 631},
+        { startIndex: 205, endIndex: 210},
+        { startIndex: 553, endIndex: 571},
+        { startIndex: 602, endIndex: 614},
       ],
     },
     it: {
       ai: [
         { startIndex: 217, endIndex: 222},
-        { startIndex: 535, endIndex: 553},
-        { startIndex: 607, endIndex: 621},
+        { startIndex: 539, endIndex: 560},
+        { startIndex: 614, endIndex: 628},
       ],
       human: [
-        { startIndex: 224, endIndex: 229},
-        { startIndex: 601, endIndex: 619},
-        { startIndex: 660, endIndex: 674},
+        { startIndex: 222, endIndex: 227},
+        { startIndex: 597, endIndex: 615},
+        { startIndex: 656, endIndex: 670},
       ],
     },
   };

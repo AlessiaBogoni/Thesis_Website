@@ -32,8 +32,8 @@ export class ScoringInstructionsComponent implements OnInit {
   //readonly HIGHLIGHT_EXAMPLE_TEXT = `During the spring season, many trees lose their leaves. The autumn sun rises in the east, casting long shadows on the ground. A warm breeze carries the scent of pumpkin spice, while a distant bird sings its summer song in the crisp air. The changing leaves turn brilliant shades of blue, orange, and red.`;
   readonly HIGHLIGHT_EXAMPLE_TEXT = this.translationService.t("text_2");
   readonly HIGHLIGHT_EXAMPLE_ERRORS = [
-    { startIndex: 12, endIndex: 22, text: "spring season" },
-    { startIndex: 222, endIndex: 224, text: "blue" }
+    { startIndex: 11, endIndex: 24, text: "spring season" },
+    { startIndex: 221, endIndex: 225, text: "blue" }
   ];
 
   constructor(
