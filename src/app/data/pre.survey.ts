@@ -22,7 +22,7 @@ export const PreSurvey = {
             },
           ],
           title: "t_title_confirmation",
-          // isRequired: true,
+          isRequired: true,
         },
       ],
     },
@@ -37,7 +37,7 @@ export const PreSurvey = {
           min: 18,
           max: 100,
           analytics: true,
-          // isRequired: true,
+          isRequired: true,
           validators: [
             {
               type: "numeric",
@@ -52,7 +52,7 @@ export const PreSurvey = {
           name: "gender",
           analytics: true,
           title: "t_title_gender",
-          // isRequired: true,
+          isRequired: true,
           choices: [
             { value: "male", text: "t_male" },
             { value: "female", text: "t_female" },
@@ -64,7 +64,7 @@ export const PreSurvey = {
           name: "education",
           analytics: true,
           title: "t_title_education",
-          // isRequired: true,
+          isRequired: true,
           choices: [
             { value: "no_degree", text: "t_no_degree" },
             { value: "high_school", text: "t_diploma" },
@@ -78,7 +78,7 @@ export const PreSurvey = {
           name: "language",
           analytics: true,
           title: "t_title_language",
-          // isRequired: true,
+          isRequired: true,
           choices: [
             { value: "A", text: "t_A1-A2" },
             { value: "B", text: "t_B1-B2" },
@@ -88,7 +88,7 @@ export const PreSurvey = {
         },
         {
           analytics: true,
-          // isRequired: true,
+          isRequired: true,
           type: "matrix",
           name: "gen_exp",
           title: "t_previous_knowledge_title",
@@ -108,7 +108,7 @@ export const PreSurvey = {
         },
         {
           analytics: true,
-          // isRequired: true,
+          isRequired: true,
           type: "matrix",
           name: "spec_exp",
           title: "t_previous_knowledge_title",
@@ -150,7 +150,7 @@ export const PreSurvey = {
         },
         {
           type: "radiogroup",
-          // isRequired: true,
+          isRequired: true,
           name: "attention_check_1",
           title: "t_attention_check_1",
           choices: [
@@ -167,7 +167,7 @@ export const PreSurvey = {
         },
         {
           type: "radiogroup",
-          // isRequired: true,
+          isRequired: true,
           name: "attention_check_2",
           title: "t_attention_check_2",
           choices: [
@@ -184,7 +184,7 @@ export const PreSurvey = {
         },
         {
           type: "radiogroup",
-          // isRequired: true,
+          isRequired: true,
           name: "attention_check_3",
           title: "t_attention_check_3",
           choices: [
