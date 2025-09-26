@@ -1,3 +1,22 @@
+<div
+  *ngIf="!highlightSections.length && isMobile()"
+  class="m-2 text-center bg-black"
+>
+  <img src="assets/text.gif" class="m-2 w-100 object-fit" height="155" />
+  <p *ngIf="isMobile()" class="text-success p-2">
+    {{ "instructions_highlight_mobile" | label }}
+  </p>
+  <p *ngIf="!isMobile()" class="text-success p-2">
+    {{ "instructions_highlight_desktop" | label }}
+  </p>
+  <hr />
+</div>
+<h5
+  class="text-center text-break text-wrap mb-0 pb-0 p-3"
+  style="color: #9bfebe; font-weight: bold"
+>
+  {{ title }}
+</h5>
 <div class="container">
   <div class="row">
     <div class="col-md-7 position-relative">
@@ -15,7 +34,7 @@
             object-fit: cover;
           "
         />
-        <div class="p-2 largerLabel">{{'Unknown_author'|label}}</div>
+        <div class="p-2 largerLabel">{{ "Unknown_author" | label }}</div>
       </div>
       <div
         class="text-container"
@@ -23,9 +42,9 @@
         [innerHTML]="textContent"
       ></div>
     </div>
-        <div class="col-md-5">
+    <div class="col-md-5">
       <h3 class="highlight-list-heading text-white text-center">
-        {{'errors_found' | label}}
+        {{ "errors_found" | label }}
       </h3>
       <div class="highlight-list" id="highlightList">
         <div *ngFor="let section of highlightSections; let i = index">
@@ -39,16 +58,22 @@
           class="text-white pb-4 text-center opacity-75"
           *ngIf="!highlightSections.length"
         >
-          {{'instructions_highlight_1' | label}}
+          {{ "instructions_highlight_1" | label }}
         </i>
-        <div *ngIf="!highlightSections.length" class="m-2 text-center bg-black">
+        <div
+          *ngIf="!highlightSections.length && !isMobile()"
+          class="m-2 text-center bg-black"
+        >
           <img
             src="assets/text.gif"
             class="m-2 w-100 object-fit"
             height="155"
           />
-          <p class="text-success p-2">
-            {{'instructions_highlight_2' | label}}
+          <p *ngIf="isMobile()" class="text-success p-2">
+            {{ "instructions_highlight_mobile" | label }}
+          </p>
+          <p *ngIf="!isMobile()" class="text-success p-2">
+            {{ "instructions_highlight_desktop" | label }}
           </p>
         </div>
       </div>

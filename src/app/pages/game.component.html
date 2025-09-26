@@ -254,17 +254,15 @@
             </span>
           </p>
           <div class="border rounded">
-              <h5 class="text-center text-break text-wrap mb-0 pb-0 p-3"
-              style="color:#9bfebe; font-weight: bold;">
-              {{ step?.lastText?.title }}
-            </h5>
+ 
 
-            <div
+            <!--div
               class="badge text-uppercase p-2"
               *ngIf="step?.lastText"
               style="display: flex; align-items: center"
-            ></div>
+            ></div-->
             <app-text-highlight
+            [title]="step.lastText?.title"
               [textContent]="markdownToHtml(step.lastText.text)"
               (highlightSectionsChange)="step.highlightSections = $event"
             >

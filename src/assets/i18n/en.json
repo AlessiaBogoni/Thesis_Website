@@ -144,7 +144,8 @@
 "AI": "AI",
 "errors_found": "Errors found",
 "instructions_highlight_1": "Click or select words and phrases you think are wrong or need improvement.",
-"instructions_highlight_2": "To highlight text, just drag your finger or click and drag your mouse over the words or sentences you want to select. You can do double-click a word to select it.",
+"instructions_highlight_mobile": "To highlight text, tap and hold, then drag your finger over the words or sentences you want to select. You can tap and hold a word to select it.",
+"instructions_highlight_desktop": "To highlight text, click and drag your mouse over the words or sentences you want to select. You can double-click a word to select it.",
 "max_words_error": "You can't select more than {{count}} words.",
   "survey_next": "Next",
   "survey_complete": "Complete",
@@ -166,5 +167,6 @@
 "highlight_instruction":"<div class=\"mb-8\"> <p class=\"mb-2\"> Your final score is a balance between these two metrics: </p> <ul class=\"list-disc list-inside space-y-2\"> <li> <span class=\"font-bold\">Precision:</span> This is about accuracy. If you highlight too much, you lose points in precision. </li> <li> <span class=\"font-bold\">Recall:</span> This is about completeness. If you highlight too little (e.g., forgetting one or more errors), you lose points in recall. </li> </ul> </div> <div class=\"space-y-8\"> <h4 class=\"font-bold mb-2\">Here are some examples of scores:</h4> <div> <p class=\"mb-2\"> <strong>Maximum Score Example </strong> &rarr; If you perfectly select only the charachters in green (\"spring season\" and \"blue\") you reach the maximum score. </p> <P> <strong>Precision: 1.00, Recall: 1.00, Total score: 1.00</strong >.</P > </div> <div> <p class=\"mb-2\"> <strong>Highlighting too little </strong> &rarr; If you select only \"blue\" (missing \"spring season\"), you lose points in recall because you missed one of the errors. </p> <P ><strong>Precision: 1.00, Recall: 0.24, Total score: 0.44</strong >.</P > </div> <div> <p class=\"mb-2\"> <strong>Highlighting too much </strong> &rarr; If you select \"spring season\", \"blue\" and \"sun rises in the east\", you lose points in precision, because you selected a part that is not an error. </p> <P ><strong>Precision: 0.40, Recall: 1.00, Total score: 0.58</strong >.</P > </div> </div> <div> Your final score (a value between 0 and 1) will be the average of your Guessing score and your Error Identification score. In case you are randomly selected for the prize winning, your prize will be calculated as Final score * €30. </div>",
 "return_to_Instructions":"Return to Instructions",
 "final_output":"<h6>Your guessing score was <b style=\"color:#7dd1a9\">{{guess}}</b ></h6><h6> Your highlighting score was <b style=\"color:#7dd1a9\">{{ userHighlightScore | number: '1.2-2' }}</b></h6><h6> Your final score is <b style=\"color: #7dd1a9;\">{{ userTotalScore | number: '1.2-2' }}</b></h6><h6>That means if you get chosen for the prize, you will get <b style=\"color: #7dd1a9;\">{{ userTotalScore * 30 | number: '1.2-2' }}</b> euros prize. <b>Well done!</b></h6>",
-"your_results":"Your results:"
+"your_results":"Your results:",
+"selection_added":"Selection added!"
 }

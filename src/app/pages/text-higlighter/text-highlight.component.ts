@@ -6,6 +6,463 @@ import {
   Output,
 } from "@angular/core";
 import { ElementRef, Renderer2, AfterViewInit } from "@angular/core";
+import { ToastService } from "../toast/toast.service";
+import { TranslationService } from "../translation.service";
+
+interface HighlightSectionOutput {
+  text: string;
+  color: string;
+  startIndex: number;
+  endIndex: number;
+}
+
+@Component({
+  selector: "app-text-highlight",
+  templateUrl: "./text-highlight.component.html",
+  styleUrls: ["./text-highlight.component.scss"],
+
+})
+export class TextHighlightComponent implements AfterViewInit {
+  currentSelection: string | null = null;
+  selection: Selection | null = null;
+  active = true;
+  highlightColor = "yellow";
+  @Input() title = "";
+  highlightSections: {
+    text: string;
+    color: string;
+    element: HTMLElement;
+    startIndex: number;
+    endIndex: number;
+  }[] = [];
+  @Input() textContent = "";
+  @Output() highlightSectionsChange = new EventEmitter<any[]>();
+  @Output() selectionApplied = new EventEmitter<HighlightSectionOutput>();
+  private maxWordsToSelect = 10;
+  tutorial = true;
+  startIndexes: number[] = [];
+  endIndexes: number[] = [];
+  private longPressTimeout: any = null;
+  private initialTouchX: number | null = null;
+  private initialTouchY: number | null = null;
+  private readonly selectionDelay = 750;
+  private selectionTimeout: any = null;
+  private longPressIndicator: HTMLElement | null = null;
+  private readonly longPressTime = 500;
+  get parsedTextContent() {
+    return this.textContent.replace(/<.*?>/g, "");
+  }
+  constructor(
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private cdr: ChangeDetectorRef,
+    private toastService: ToastService,
+    private translationService: TranslationService
+  ) {}
+  isMobile(): boolean {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
+  }
+  ngAfterViewInit(): void {
+    const textContainer =
+      this.el.nativeElement.querySelector(".text-container");
+    if (textContainer) {
+      if (this.isMobile()) {
+        this.renderer.listen(document, "selectionchange", () =>
+          this.textSelect()
+        );
+        this.renderer.listen(
+          textContainer,
+          "touchstart",
+          this.handleTouchStart.bind(this)
+        );
+        this.renderer.listen(
+          textContainer,
+          "touchend",
+          this.handleTouchEnd.bind(this)
+        );
+        this.renderer.listen(
+          textContainer,
+          "touchmove",
+          this.handleTouchMove.bind(this)
+        );
+        this.renderer.listen(
+          textContainer,
+          "touchcancel",
+          this.handleTouchEnd.bind(this)
+        );
+      } else {
+        // Use mouseup for desktop to ensure selection is complete
+        this.renderer.listen(textContainer, "mouseup", () =>
+          this.textSelect()
+        );
+      }
+    }
+  }
+  private handleTouchStart(event: TouchEvent): void {
+    this.initialTouchX = event.touches[0].clientX;
+    this.initialTouchY = event.touches[0].clientY;
+    this.longPressTimeout = setTimeout(() => {
+      this.showLongPressIndicator(this.initialTouchX, this.initialTouchY);
+    }, this.longPressTime);
+  }
+  private handleTouchMove(event: TouchEvent): void {
+    if (this.longPressTimeout) {
+      const deltaX = Math.abs(event.touches[0].clientX - (this.initialTouchX || 0));
+      const deltaY = Math.abs(event.touches[0].clientY - (this.initialTouchY || 0));
+      if (deltaX > 10 || deltaY > 10) {
+        clearTimeout(this.longPressTimeout);
+        this.longPressTimeout = null;
+        this.hideLongPressIndicator();
+      }
+    }
+  }
+  private handleTouchEnd(): void {
+    if (this.longPressTimeout) {
+      clearTimeout(this.longPressTimeout);
+      this.longPressTimeout = null;
+    }
+    setTimeout(() => this.hideLongPressIndicator(), 500);
+  }
+  private showLongPressIndicator(x: number, y: number): void {
+    if (!this.longPressIndicator) {
+      this.longPressIndicator = this.renderer.createElement('div');
+      this.renderer.addClass(this.longPressIndicator, 'long-press-indicator');
+      document.body.appendChild(this.longPressIndicator);
+    }
+    this.renderer.setStyle(this.longPressIndicator, 'left', `${x}px`);
+    this.renderer.setStyle(this.longPressIndicator, 'top', `${y}px`);
+    this.renderer.setStyle(this.longPressIndicator, 'opacity', '1');
+    this.renderer.addClass(this.longPressIndicator, 'active');
+  }
+  private hideLongPressIndicator(): void {
+    if (this.longPressIndicator) {
+      this.renderer.setStyle(this.longPressIndicator, 'opacity', '0');
+      this.renderer.removeClass(this.longPressIndicator, 'active');
+    }
+  }
+  private startNativeWordSelection(node: Node, offset: number): void {
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    const range = document.createRange();
+    if (node.nodeType === Node.TEXT_NODE) {
+      range.setStart(node, offset);
+      range.collapse(true);
+      if (typeof (range as any).expand === "function") {
+        (range as any).expand("word");
+      }
+    } else {
+      range.selectNodeContents(node);
+    }
+    selection?.addRange(range);
+  }
+  private getNodeAndOffsetAtPoint(
+    x: number,
+    y: number
+  ): { node: Node | null; offset: number } {
+    const targetElement = document.elementFromPoint(x, y);
+    if (!targetElement || !this.el.nativeElement.contains(targetElement)) {
+      return { node: null, offset: 0 };
+    }
+    if (document.caretRangeFromPoint) {
+      const range = document.caretRangeFromPoint(x, y);
+      if (range) {
+        return { node: range.startContainer, offset: range.startOffset };
+      }
+    } else if ((document as any).msCaretRangeFromPoint) {
+      const range = (document as any).msCaretRangeFromPoint(x, y);
+      if (range) {
+        return { node: range.startContainer, offset: range.startOffset };
+      }
+    }
+    let textNode: Node | null = null;
+    let offset = 0;
+    if (targetElement.nodeType === Node.TEXT_NODE) {
+      textNode = targetElement;
+    } else {
+      const walker = document.createTreeWalker(
+        targetElement,
+        NodeFilter.SHOW_TEXT,
+        null
+      );
+      textNode = walker.firstChild();
+    }
+    if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+      try {
+        const tempRange = document.createRange();
+        tempRange.selectNodeContents(textNode);
+        let bestOffset = 0;
+        let minDistance = Infinity;
+        if (textNode.textContent) {
+          for (let i = 0; i < textNode.textContent.length; i++) {
+            tempRange.setStart(textNode, i);
+            tempRange.setEnd(textNode, i + 1);
+            const charRect = tempRange.getBoundingClientRect();
+            const charX = charRect.left + charRect.width / 2;
+            const charY = charRect.top + charRect.height / 2;
+            const distance = Math.sqrt(
+              Math.pow(x - charX, 2) + Math.pow(y - charY, 2)
+            );
+            if (distance < minDistance) {
+              minDistance = distance;
+              bestOffset = i;
+            }
+          }
+        }
+        offset = bestOffset;
+      } catch (e) {
+        console.warn("Error calculating precise offset (fallback):", e);
+        offset = 0;
+      }
+    } else {
+      textNode = targetElement;
+      offset = 0;
+    }
+    return { node: textNode, offset: offset };
+  }
+  private clearNativeSelection(): void {
+    const selection = window.getSelection();
+    if (selection) {
+      selection.removeAllRanges();
+    }
+  }
+  textSelect(): void {
+    this.selection = document.getSelection();
+    const range = this.selection?.rangeCount
+      ? this.selection.getRangeAt(0)
+      : null;
+    const text = this.selection?.toString();
+    if (this.selectionTimeout) {
+      clearTimeout(this.selectionTimeout);
+    }
+    if (range && text && text.length > 0) {
+      const startElement =
+        range.startContainer.nodeType === 3
+          ? range.startContainer.parentNode
+          : range.startContainer;
+      const startComponent = (startElement as HTMLElement)?.closest(
+        ".text-container"
+      );
+      this.currentSelection = startComponent ? text : null;
+      if (this.currentSelection && !this.selection.isCollapsed) {
+        if (this.isMobile()) {
+          this.selectionTimeout = setTimeout(() => {
+            this.handleAutomaticHighlight();
+          }, this.selectionDelay);
+        } else {
+          // No delay for desktop
+          this.handleAutomaticHighlight();
+        }
+      }
+    } else {
+      this.currentSelection = null;
+    }
+  }
+  applyHighlighting(markElement: HTMLElement): void {
+    this.renderer.addClass(markElement, "animated");
+    setTimeout(() => {
+      this.renderer.addClass(markElement, "animate");
+    }, 250);
+  }
+  removeHighlight(index: number): void {
+    const markElement = this.highlightSections[index].element;
+    if (markElement) {
+      this.renderer.removeClass(markElement, "in");
+      this.renderer.removeClass(markElement, "animate");
+      this.renderer.removeClass(markElement, "animated");
+      const parent = markElement.parentNode as HTMLElement;
+      while (markElement.firstChild) {
+        parent.insertBefore(markElement.firstChild, markElement);
+      }
+      parent.removeChild(markElement);
+    }
+    this.highlightSections.splice(index, 1);
+    this.highlightSectionsChange.emit(
+      this.highlightSections.map((e) => e.text)
+    );
+    this.cdr.detectChanges();
+  }
+  changeColor(color: string): void {
+    const navBar = this.el.nativeElement.querySelector("#navBar");
+    if (navBar) {
+      this.renderer.removeClass(navBar, "animate");
+      setTimeout(() => {
+        this.renderer.removeClass(navBar, this.highlightColor);
+        this.renderer.addClass(navBar, color);
+        this.highlightColor = color;
+        setTimeout(() => {
+          this.renderer.addClass(navBar, "animate");
+        }, 250);
+      }, 250);
+    }
+  }
+  addHighlightFromSelection(
+    selectionText: string,
+    selectionRange: Range,
+    color: string,
+    startIndex: number,
+    endIndex: number
+  ): void {
+    const markElement = this.renderer.createElement("mark");
+    this.renderer.addClass(markElement, color);
+    try {
+      selectionRange.surroundContents(markElement);
+    } catch (e) {
+      console.warn(
+        "Could not surround contents, possibly due to partial tag selection or empty range:",
+        e
+      );
+      return;
+    }
+    const newHighlight = {
+      text: selectionText,
+      color: color,
+      element: markElement,
+      startIndex: startIndex,
+      endIndex: endIndex,
+    };
+    this.highlightSections.push(newHighlight);
+    this.highlightSectionsChange.emit(this.highlightSections);
+    this.startIndexes.push(startIndex);
+    this.endIndexes.push(endIndex);
+    this.selectionApplied.emit({
+      text: selectionText,
+      color: color,
+      startIndex: startIndex,
+      endIndex: endIndex,
+    });
+    this.highlightSectionsChange.emit(this.highlightSections);
+    this.cdr.detectChanges();
+    this.applyHighlighting(markElement);
+  }
+  handleAutomaticHighlight(): void {
+    const selection = document.getSelection();
+    const text = selection?.toString().trim();
+    if (text && text.length > 0) {
+      const wordCount = text
+        .split(/\s+/)
+        .filter((word) => word.length > 0).length;
+      if (wordCount > this.maxWordsToSelect) {
+        this.toastService.show(
+          this.translationService.t("max_words_error", {
+            count: this.maxWordsToSelect,
+          }),
+          3000
+        );
+        selection?.removeAllRanges();
+        return;
+      }
+      const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+      if (range) {
+        const startElement =
+          range.startContainer.nodeType === 3
+            ? range.startContainer.parentNode
+            : range.startContainer;
+        const startComponent = (startElement as HTMLElement)?.closest(
+          ".text-container"
+        );
+        if (startComponent && !selection.isCollapsed) {
+          const textContainerElement =
+            this.el.nativeElement.querySelector(".text-container");
+          if (textContainerElement) {
+            let startIndex = this.getAbsoluteOffset(
+              textContainerElement,
+              range.startContainer,
+              range.startOffset
+            );
+            let endIndex = this.getAbsoluteOffset(
+              textContainerElement,
+              range.endContainer,
+              range.endOffset
+            );
+            if (startIndex === -1 || endIndex === -1) {
+              startIndex = this.parsedTextContent.indexOf(text);
+              endIndex = startIndex !== -1 ? startIndex + text.length : -1;
+            } else {
+              const tempSelectionText = this.parsedTextContent.substring(
+                startIndex,
+                endIndex
+              );
+              if (
+                tempSelectionText !== text &&
+                this.parsedTextContent.indexOf(text) !== -1
+              ) {
+                startIndex = this.parsedTextContent.indexOf(text);
+                endIndex = startIndex + text.length;
+              }
+            }
+            if (startIndex !== -1 && endIndex !== -1) {
+              this.addHighlightFromSelection(
+                text,
+                range,
+                this.highlightColor,
+                startIndex,
+                endIndex
+              );
+              this.toastService.show("Selection added!", 2000);
+              selection.removeAllRanges();
+            } else {
+              console.warn(
+                "Could not determine accurate start/end indices for selection."
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+  private getNodePath(node: Node, root: HTMLElement): number[] {
+    const path: number[] = [];
+    let current: Node | null = node;
+    while (current && current !== root) {
+      const parent = current.parentNode;
+      if (!parent) {
+        break;
+      }
+      const index = 0;
+      for (let i = 0; i < parent.childNodes.length; i++) {
+        if (parent.childNodes[i] === current) {
+          path.unshift(i);
+          break;
+        }
+      }
+      current = parent;
+    }
+    return path;
+  }
+  private getAbsoluteOffset(
+    root: HTMLElement,
+    node: Node,
+    offset: number
+  ): number {
+    let absoluteOffset = 0;
+    const range = document.createRange();
+    range.selectNodeContents(root);
+    range.setEnd(node, offset);
+    absoluteOffset = range.toString().length;
+    const normalizedSelectedText = range.toString().replace(/\s+/g, " ").trim();
+    const normalizedFullText =
+      root.textContent?.replace(/\s+/g, " ").trim() || "";
+    return absoluteOffset;
+  }
+}
+
+
+
+
+
+
+
+
+/* import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from "@angular/core";
+import { ElementRef, Renderer2, AfterViewInit } from "@angular/core";
 import { ToastService } from "../toast/toast.service"; // Import the ToastService
 import { TranslationService } from "../translation.service" // Import the TranslationService
 import { start } from "node:repl";
@@ -591,3 +1048,4 @@ export class TextHighlightComponent implements AfterViewInit {
     return absoluteOffset;
   }
 }
+ */
