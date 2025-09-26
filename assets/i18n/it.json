@@ -140,7 +140,8 @@
   "AI": "AI",
   "errors_found": "Errori trovati",
   "instructions_highlight_1": "Clicca o seleziona parole e frasi che credi siano errate o necessitino di miglioramenti.",
-  "instructions_highlight_2": "Per evidenziare, trascina il dito o clicca e trascina il mouse su una parola o frase, oppure fai doppio clic su una parola per selezionarla.",
+  "instructions_highlight_mobile": "Per evidenziare, tieni premuto e trascina il dito su una parola o frase. Tieni premuto su una parola per selezionarla.",
+  "instructions_highlight_desktop": "Per evidenziare, clicca e trascina il mouse su una parola o frase. Fai doppio clic su una parola per selezionarla.",
   "max_words_error": "Non puoi selezionare più di {{count}} parole.",
   "survey_next": "Avanti",
   "survey_complete": "Completa",
@@ -162,6 +163,7 @@
 "highlight_instruction":"<div class=\"mb-8\"> <p class=\"mb-2\"> Il tuo punteggio finale è un equilibrio tra queste due metriche: </p> <ul class=\"list-disc list-inside space-y-2\"> <li> <span class=\"font-bold\">Precision:</span> Riguarda l'accuratezza. Se evidenzi troppo, perdi punti in precision. </li> <li> <span class=\"font-bold\">Recall:</span> Riguarda la completezza. Se evidenzi troppo poco (ad esempio, dimenticando uno o più errori), perdi punti in recall. </li> </ul> </div> <div class=\"space-y-8\"> <h4 class=\"font-bold mb-2\">Ecco alcuni esempi di punteggi:</h4> <div> <p class=\"mb-2\"> <strong>Esempio di punteggio massimo </strong> &rarr; Se selezioni perfettamente solo i caratteri in verde (\" di primavera\" e \"blu\") raggiungi il punteggio massimo. </p> <P> <strong>Precision: 1.00, Recall: 1.00, Punteggio totale: 1.00</strong >.</P > </div> <div> <p class=\"mb-2\"> <strong>Evidenziare troppo poco </strong> &rarr; Se selezioni solo \"blu\" (mancando \" di primavera\"), perdi punti in recall perché hai saltato uno degli errori. </p> <P ><strong>Precision: 1.00, Recall: 0.24, Punteggio totale: 0.44</strong >.</P > </div> <div> <p class=\"mb-2\"> <strong>Evidenziare troppo </strong> &rarr; Se selezioni \" di primavera\", \"blu\" e \"sole autunnale sorge a est\", perdi punti in precision, perché hai selezionato una parte che non è un errore. </p> <P ><strong>Precision: 0.40, Recall: 1.00, Punteggio totale: 0.58</strong >.</P > </div> </div> <div> Il tuo punteggio finale (un valore tra 0 e 1) sarà la media tra il punteggio di Attribuzione della fonte e il punteggio di Identificazione errori. Nel caso in cui tu venga selezionato a caso per la vincita del premio, il tuo premio sarà calcolato come Punteggio finale * €30. </div>",
 "return_to_Instructions":"Torna alle istruzioni",
 "final_output":"<h6>Il tuo punteggio di identificazione dell'autore è: <b style=\"color:#7dd1a9\">{{guess}}</b ></h6><h6> Il tuo punteggio di selezione degli errori è: <b style=\"color:#7dd1a9\">{{ userHighlightScore | number: '1.2-2' }}</b></h6><h6> Il tuo punteggio finale è: <b style=\"color: #7dd1a9;\">{{ userTotalScore | number: '1.2-2' }}</b></h6><h6>Questo significa che se verrai selezionato, riceverai un premio di <b style=\"color: #7dd1a9;\">€{{ userTotalScore * 30 | number: '1.2-2' }}</b>. <b>Ben fatto!</b></h6>",
-"your_results":"I tuoi risultati:"
+"your_results":"I tuoi risultati:",
+"selection_added":"Selezione aggiunta!"
 
 }
