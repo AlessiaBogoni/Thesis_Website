@@ -6,6 +6,9 @@ import { TranslationService } from "../../pages/translation.service";
 import { totalmem } from "node:os";
 import { highlight } from "ace-builds/src-noconflict/ext-static_highlight";
 import { SafeHtml, DomSanitizer } from "@angular/platform-browser";
+import { PreSurvey } from "app/data/pre.survey";
+import { Model, SurveyModel } from "survey-core";
+
 
 
 @Component({
@@ -15,12 +18,14 @@ import { SafeHtml, DomSanitizer } from "@angular/platform-browser";
 export class LeaderboardComponent implements OnInit {
   machineCode: string = "";
   leaderboard: any[] = [];
+   preSurvey: Model;
 
   userHighlightScore: number | null = null;
   userGuessScore: number | null = null;
   userTotalScore: number | null = null;
   finalOutput: SafeHtml;
   finalOutcome: SafeHtml;
+  end_time;
 
   constructor(
     private http: HttpClient,
@@ -40,15 +45,29 @@ export class LeaderboardComponent implements OnInit {
   ngOnInit(): void {
     this.getLeaderboard();
     this.machineCode = localStorage.getItem("0machineCode") || "";
+
+
   }
 
   getLeaderboard() {
     this.http.get(SurveyService.getUrl("")).subscribe((data: any) => {
       this.leaderboard = [];
+      const end_time = new Date().toISOString();
+      const dataToSave = {
+      end_time: end_time // Crea un oggetto con una chiave e il tuo valore
+};
+      console.log(end_time)
+      this.http
+        .patch(
+          SurveyService.getUrl(this.machineCode + "/pre/"),
+          dataToSave
+        )
+        .subscribe(() => {})
 
       for (const key in data) {
         const entry = data[key];
         const allResults = entry.results;
+
 
         // Pick the latest result by max key (text number)
         const latestKey = Object.keys(allResults || {})
@@ -105,8 +124,8 @@ export class LeaderboardComponent implements OnInit {
         this.formatNumber(this.userTotalScore)
       )
       .replace(
-        "{{ userTotalScore * 30 | number: '1.2-2' }}",
-        this.formatNumber((this.userTotalScore ?? 0) * 30)
+        "{{ userTotalScore * 25 | number: '1.2-2' }}",
+        this.formatNumber((this.userTotalScore ?? 0) * 25)
       );
       this.finalOutcome = this.sanitizer.bypassSecurityTrustHtml(finalOutput)
     });
