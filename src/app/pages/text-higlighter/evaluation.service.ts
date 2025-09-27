@@ -264,7 +264,7 @@ export class EvaluationService {
     );
     const guessFour =
       (guessScores.reduce((a, b) => a + b, 0)-2) / (guessScores.length-2);
-          console.log("guessScore, guessfour:"+ guessScores, guessFour)
+          // console.log("guessScore, guessfour:"+ guessScores, guessFour)
     return { guessScores, guessFour };
 
   }

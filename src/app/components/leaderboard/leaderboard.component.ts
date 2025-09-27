@@ -56,7 +56,7 @@ export class LeaderboardComponent implements OnInit {
       const dataToSave = {
       end_time: end_time // Crea un oggetto con una chiave e il tuo valore
 };
-      console.log(end_time)
+     // console.log(end_time)
       this.http
         .patch(
           SurveyService.getUrl(this.machineCode + "/pre/"),

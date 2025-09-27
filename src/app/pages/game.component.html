@@ -146,10 +146,12 @@
                   !step.text.labeled && markInteracted('humanSoundness')
                 "
                 (mousedown)="
-                  !step.text.labeled && markInteracted('humanSoundness')
+                  !step.text.labeled && markInteracted('humanSoundness');
+                  countSliderInteraction(step, 'humanSoundness')
                 "
                 (touchstart)="
-                  !step.text.labeled && markInteracted('humanSoundness')
+                  !step.text.labeled && markInteracted('humanSoundness');
+                  countSliderInteraction(step, 'humanSoundness')
                 "
               />
 
@@ -178,8 +180,10 @@
               [(ngModel)]="step.accuracy"
               [ngClass]="{ unconfirmed: !interacted.accuracy }"
               (change)="markInteracted('accuracy')"
-              (mousedown)="markInteracted('accuracy')"
-              (touchstart)="markInteracted('accuracy')"
+              (mousedown)="markInteracted('accuracy');
+              countSliderInteraction(step, 'accuracy')"
+              (touchstart)="markInteracted('accuracy');
+              countSliderInteraction(step, 'accuracy')"
             />
             <div class="d-flex justify-content-between">
               <span class="w-33">{{ "Very_low" | label }}</span>
@@ -203,8 +207,10 @@
               [(ngModel)]="step.readability"
               [ngClass]="{ unconfirmed: !interacted.readability }"
               (change)="markInteracted('readability')"
-              (mousedown)="markInteracted('readability')"
-              (touchstart)="markInteracted('readability')"
+              (mousedown)="markInteracted('readability');
+              countSliderInteraction(step, 'readability')"
+              (touchstart)="markInteracted('readability');
+              countSliderInteraction(step, 'readability')"
             />
             <div class="d-flex justify-content-between">
               <span class="w-33">{{ "Very_low" | label }}</span>
@@ -282,8 +288,10 @@
               [(ngModel)]="step.humanSoundness"
               [ngClass]="{ unconfirmed: !interacted.humanSoundness }"
               (change)="markInteracted('humanSoundness')"
-              (mousedown)="markInteracted('humanSoundness')"
-              (touchstart)="markInteracted('humanSoundness')"
+              (mousedown)="markInteracted('humanSoundness');
+              countSliderInteraction(step, 'humanSoundness')"
+              (touchstart)="markInteracted('humanSoundness');
+              countSliderInteraction(step, 'humanSoundness')"
             />
             <div class="d-flex justify-content-between">
               <span class="w-33">{{ "AI" | label }}</span>
@@ -306,8 +314,10 @@
               [(ngModel)]="step.accuracy"
               [ngClass]="{ unconfirmed: !interacted.accuracy }"
               (change)="markInteracted('accuracy')"
-              (mousedown)="markInteracted('accuracy')"
-              (touchstart)="markInteracted('accuracy')"
+              (mousedown)="markInteracted('accuracy');
+              countSliderInteraction(step, 'accuracy')"
+              (touchstart)="markInteracted('accuracy');
+              countSliderInteraction(step, 'accuracy')"
             />
             <div class="d-flex justify-content-between">
               <span class="w-33">{{ "Very_low" | label }}</span>
@@ -331,8 +341,10 @@
               [(ngModel)]="step.readability"
               [ngClass]="{ unconfirmed: !interacted.readability }"
               (change)="markInteracted('readability')"
-              (mousedown)="markInteracted('readability')"
-              (touchstart)="markInteracted('readability')"
+              (mousedown)="markInteracted('readability');
+              countSliderInteraction(step, 'readability')"
+              (touchstart)="markInteracted('readability');
+              countSliderInteraction(step, 'readability')"
             />
             <div class="d-flex justify-content-between">
               <span class="w-33">{{ "Very_low" | label }}</span>

@@ -35,82 +35,117 @@ export class CstTrackerDirective implements OnInit, OnDestroy, AfterViewInit {
     private cstService: CstService
   ) {}
 
-  ngOnInit(): void {
+ // src/app/cst/cst-tracker.directive.ts
+
+ngOnInit(): void {
+    
+    // Rimuovi la variabile inutilizzata
+    // const element = this.el.nativeElement; 
+    
+    // Aggiunto log di debug
+    // console.log(`[CST INIT] Directive initialized for ID: ${this.containerId}.`); 
+
     if (!this.containerId) {
-      console.error(
-        'CSTTrackerDirective: containerId input is required.'
-      );
-      return;
+        console.error(
+            'CSTTrackerDirective: containerId input is required.'
+        );
+        return;
     }
 
+    // 1. Inizializza il container nel servizio
     this.cstService.initContainer(this.containerId, this.el.nativeElement);
 
-    // Observe container visibility for dwell time
+
+    // 2. Setup dell'Intersection Observer per il DWELL TIME (corretto)
     const containerObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          this.cstService.updateContainerVisibility(
-            this.containerId,
-            entry.isIntersecting && entry.intersectionRatio > 0
-          );
-        });
-      },
-      { threshold: 0 } // Observe when any part enters/leaves the viewport
+        (entries) => {
+            entries.forEach((entry) => {
+                this.cstService.updateContainerVisibility(
+                    this.containerId,
+                    entry.isIntersecting && entry.intersectionRatio > 0
+                );
+            });
+        },
+        { threshold: 0 } 
     );
     containerObserver.observe(this.el.nativeElement);
-    this.destroy$.pipe(take(1)).subscribe(() => containerObserver.disconnect()); // Disconnect on destroy
+    this.destroy$.pipe(take(1)).subscribe(() => containerObserver.disconnect());
 
-    // Setup scroll event listener
-    fromEvent(this.el.nativeElement, 'scroll')
-      .pipe(debounceTime(this.scrollDebounceTime), takeUntil(this.destroy$))
-      .subscribe(() => {
-        const element = this.el.nativeElement;
-        this.cstService.addScrollEvent(
-          this.containerId,
-          element.scrollTop,
-          element.clientHeight,
-          element.scrollHeight
-        );
-      });
 
-    // Setup typing activity listener (keyup)
+    // 3. Setup del listener per la TYPING ACTIVITY (corretto)
     fromEvent(this.el.nativeElement, 'keyup')
-      .pipe(
-        filter((event: Event) => {
-          const keyboardEvent = event as KeyboardEvent;
-          // Consider only relevant keys for typing activity (e.g., alphanumeric, space, backspace)
-          return (
-            keyboardEvent.key.length === 1 ||
-            keyboardEvent.key === 'Backspace' ||
-            keyboardEvent.key === 'Delete' ||
-            keyboardEvent.key === ' '
-          );
-        }),
-        throttleTime(100), // Prevent too many rapid events
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        this.cstService.addTypingActivity(this.containerId);
-      });
+        .pipe(
+            filter((event: Event) => {
+                const keyboardEvent = event as KeyboardEvent;
+                // Consider only relevant keys for typing activity (e.g., alphanumeric, space, backspace)
+                return (
+                    keyboardEvent.key.length === 1 ||
+                    keyboardEvent.key === 'Backspace' ||
+                    keyboardEvent.key === 'Delete' ||
+                    keyboardEvent.key === ' '
+                );
+            }),
+            throttleTime(100), 
+            takeUntil(this.destroy$)
+        )
+        .subscribe(() => {
+            this.cstService.addTypingActivity(this.containerId);
+        });
 
-    // Setup text selection listener
+    // 4. Setup del listener per la TEXT SELECTION (corretto)
     fromEvent(this.el.nativeElement, 'mouseup')
-      .pipe(debounceTime(100), takeUntil(this.destroy$))
-      .subscribe(() => {
-        const selection = window.getSelection();
-        if (
-          selection &&
-          selection.rangeCount > 0 &&
-          this.el.nativeElement.contains(selection.anchorNode)
-        ) {
-          this.cstService.recordTextSelection(this.containerId, selection);
-        }
-      });
-  }
+        .pipe(debounceTime(100), takeUntil(this.destroy$))
+        .subscribe(() => {
+            const selection = window.getSelection();
+            if (
+                selection &&
+                selection.rangeCount > 0 &&
+                this.el.nativeElement.contains(selection.anchorNode)
+            ) {
+                this.cstService.recordTextSelection(this.containerId, selection);
+            }
+        });
+        
+    // ❌ RIMOSSA: La logica di scroll e l'applicazione degli ID dei sub-elementi 
+    //            vanno in ngAfterViewInit per assicurare che il DOM sia pronto.
+}
 
   ngAfterViewInit(): void {
-    // After the view is initialized, apply data-cst-sub-id to sub-elements
-    // and set up mouseenter listeners.
+    // Identifica l'elemento scorrevole reale
+    const SCROLL_CONTAINER_SELECTOR = '.app-content'; 
+    
+    const scrollElement = document.querySelector(SCROLL_CONTAINER_SELECTOR) as HTMLElement | null; 
+    
+    if (!scrollElement) {
+        console.error(`[CST SCROLL ERROR] Elemento scroll '${SCROLL_CONTAINER_SELECTOR}' non trovato. Lo scroll non verrà tracciato.`);
+        // Esegue comunque l'applicazione degli ID per gli altri tracciamenti
+        this.applySubElementIdsAndListeners(); 
+        return; 
+    }
+    
+    // Funzione helper per ottenere scrollTop (semplificata per HTMLElement)
+    const getScrollTop = (target: HTMLElement): number => {
+        return target.scrollTop || 0;
+    };
+    
+    // 1. ASCOLTO DELLO SCROLL SULL'ELEMENTO REALE (.app-content)
+    fromEvent(scrollElement, 'scroll')
+        .pipe(debounceTime(this.scrollDebounceTime), takeUntil(this.destroy$))
+        .subscribe(() => {
+            
+            const scrollY = getScrollTop(scrollElement);
+            
+            // console.log(`[CST SCROLL FINAL] Target: ${SCROLL_CONTAINER_SELECTOR}, ScrollY: ${scrollY}`);
+
+            this.cstService.addScrollEvent(
+                this.containerId,
+                scrollY, 
+                scrollElement.clientHeight, 
+                scrollElement.scrollHeight  
+            );
+        });
+        
+    // 2. Applicazione degli ID e listener (già corretta, ma spostata qui)
     this.applySubElementIdsAndListeners();
   }
 

@@ -67,6 +67,7 @@ export interface CstContainerData {
   scrollEvents: { scrollTop: number; timestamp: number }[];
   maxScrollDepth: number; // Normalized 0-1
   scrollDirectionChanges: number;
+  scrollCount: number;
   typingActivityCount: number;
   hasCopied: boolean; // Overall container copy
   hasSelected: boolean; // Overall container selection

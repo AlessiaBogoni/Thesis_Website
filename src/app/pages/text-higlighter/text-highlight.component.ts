@@ -400,7 +400,8 @@ export class TextHighlightComponent implements AfterViewInit {
                 startIndex,
                 endIndex
               );
-              this.toastService.show("Selection added!", 2000);
+              this.toastService.show(
+          this.translationService.t("selection_added"), 2000);
               selection.removeAllRanges();
             } else {
               console.warn(

@@ -104,6 +104,18 @@ export class GameComponent implements OnInit, OnDestroy {
     this.interacted[key] = true;
   }
 
+  countSliderInteraction(
+    step: TextResult | LastTextResult,
+    sliderName: 'humanSoundness' | 'accuracy' | 'readability'
+  ): void {
+    const counterKey = `${sliderName}_interactions` as keyof (TextResult | LastTextResult);
+    
+    // Controlla che la proprietà esista e sia un numero, poi incrementa
+    if (typeof step[counterKey] === 'number') {
+      (step[counterKey] as number)++;
+    }
+  }
+
 /*   allInteracted(): boolean {
     return Object.values(this.interacted).every((val) => val === true);
   } */
@@ -320,6 +332,9 @@ allInteracted(): boolean {
       textResult.accuracy = 5;
       textResult.readability = 5;
       textResult.attention = 55;
+      textResult.humanSoundness_interactions = 0;
+      textResult.accuracy_interactions = 0;
+      textResult.readability_interactions = 0;
 
       return textResult;
     });
@@ -340,6 +355,10 @@ allInteracted(): boolean {
         lastTextResult.readability = 5;
         lastTextResult.highlightSections = [];
         lastTextResult.attention = 0;
+        lastTextResult.humanSoundness_interactions = 0;
+      lastTextResult.accuracy_interactions = 0;
+      lastTextResult.readability_interactions = 0;
+        
         return lastTextResult;
       });
 
@@ -416,7 +435,7 @@ allInteracted(): boolean {
     });
   }
    loadScoringContent1() {
-    console.log("gamecomponent")
+    // console.log("gamecomponent")
     const htmlString = this.translationService.t("score_instruction");
     this.scoringHtml1 = this.sanitizer.bypassSecurityTrustHtml(htmlString);
     // console.log("loaded ScoringContent1")
@@ -499,43 +518,74 @@ allInteracted(): boolean {
     }
   }
 
-  nextText() {
+
+
+nextText() {
+    // 1. Reset dello scroll e focus sulla finestra (CORRETTO)
     setTimeout(function () {
       window.focus();
-      document.body.scrollTop = 0;
+      // Nota: document.body.scrollTop è 0 perché lo scroll è su .app-content
+      // Questo reset è comunque una buona pratica.
+      document.body.scrollTop = 0; 
     }, 200);
+
+    // L'ID del container appena completato (es. se currentText è 2, il testo appena finito era 1)
+    const completedTextIndex = this.currentText - 1; 
+    const completedContainerId = "text-" + completedTextIndex; // Es. 'text-1'
+
+    // 2. RECUPERO DATI CST: Usa l'ID del container appena letto
+    const cstData = this.cstService._allContainerDetailedData.getValue().get(completedContainerId);
+    
+    // 3. Reset dello stato dell'interazione
     this.isButtonDisabled = true;
     this.interacted = {
       accuracy: false,
       readability: false,
       humanSoundness: false,
     };
-    const result = { ...this.textToShow[this.currentText - 1] } as TextResult;
+    
+    // 4. PREPARAZIONE DEL PAYLOAD HTTP
+    const result = { ...this.textToShow[completedTextIndex] } as TextResult;
+
+    // Aggiungi le metriche CST di SCROLL
+    if (cstData) {
+        // Assegna i conteggi di scroll accumulati
+        result.scrollCount = cstData.scrollCount; 
+        result.scrollInversions = cstData.scrollDirectionChanges;
+    } else {
+        // Fallback
+        result.scrollCount = 0;
+        result.scrollInversions = 0;
+    }
+
+    // Altre interazioni (corrette)
+    result.accuracy_interactions = this.textToShow[completedTextIndex].accuracy_interactions;
+    result.readability_interactions = this.textToShow[completedTextIndex].readability_interactions;
+    result.humanSoundness_interactions = this.textToShow[completedTextIndex].humanSoundness_interactions;
+    
+    // Pulizia e calcolo del tempo
     delete result.text.text;
     delete result.text.author;
     delete result.text.title;
     result.attention = this.cstScore;
-    // result.guessScore = firstScores;
-
-    // result.text.attention = this.cstScore;
-    // console.log(result.attention);
-    // console.log(result.text.attention);
     result.deltaTime = new Date().getTime() - this.pastTime;
-    // result.deltaTime = (new Date()).getTime() - this.pastTime;
     this.pastTime = new Date().getTime();
+
+    // 5. INVIA DATI HTTP
     this.http
       .put(
+        // L'endpoint PUT deve usare l'indice corretto, che è this.currentText
         SurveyService.getUrl(this.machineCode + "/results/" + this.currentText),
         result
       )
       .subscribe(() => {
-        // console.log("Text result sent:", this.textToShow[this.currentText - 1]);
+        // 6. Solo DOPO che la PUT è completata con successo, naviga
         if (this.currentText < this.textToShow.length) {
           this.currentText++;
           this.state = State["TEXT" + this.currentText];
         } else {
-          this.state = State.TEXT5;
-          // console.log(this.state);
+          // Ultimo stato per l'ultimo testo
+          this.state = State.TEXT5; 
         }
       });
   }
@@ -591,14 +641,28 @@ allInteracted(): boolean {
  */
 
 toPostSurvey() {
-  const result = { ...this.lastTextToShow[this.currentText - 5] };
+
+  const currentContainerId = "text-5"; 
+  const cstData = this.cstService._allContainerDetailedData.getValue().get(currentContainerId);
+
+    const result = { ...this.lastTextToShow[this.currentText - 5] };
   const scores = this.evaluationService.computeScore(result, result.lastText.text);
+
 
   // calcolo subito i punteggi booleani, prima dei delete
   const scoresBool = this.scoreService.computeScore(
     this.lastTextToShow[this.currentText - 5],
     this.lastTextToShow[this.currentText - 5].lastText.text
   );
+
+  if (cstData) {
+        // Queste proprietà devono esistere nell'interfaccia/classe LastTextResult
+        (result as any).scrollCount = cstData.scrollCount; 
+        (result as any).scrollInversions = cstData.scrollDirectionChanges;
+    } else {
+        (result as any).scrollCount = 0;
+        (result as any).scrollInversions = 0;
+    }
 
   // fetch humanSoundness per tutti i testi direttamente da Firebase
   this.evaluationService
@@ -708,6 +772,11 @@ class TextResult {
   readability: number;
   deltaTime: number;
   guessScore: number;
+  humanSoundness_interactions: number;
+  accuracy_interactions: number;
+  readability_interactions: number;
+    scrollCount: number;
+  scrollInversions: number;
 }
 
 class LastTextResult {
@@ -728,5 +797,10 @@ class LastTextResult {
   attention: number;
   lastGuessScore: number;
   scoreBool;
+  humanSoundness_interactions: number;
+  accuracy_interactions: number;
+  readability_interactions: number;
+    scrollCount: number;
+  scrollInversions: number;
 
 }

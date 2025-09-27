@@ -53,7 +53,7 @@ export class CstService implements OnDestroy {
   public readonly overallCstScore$: Observable<number> = this._overallCstScore.asObservable();
 
   // NEW: Observable to expose all detailed container data (including sub-elements) for heatmaps
-  private _allContainerDetailedData = new BehaviorSubject<Map<string, CstContainerData>>(new Map());
+  public _allContainerDetailedData = new BehaviorSubject<Map<string, CstContainerData>>(new Map());
   public readonly allContainerDetailedData$: Observable<Map<string, CstContainerData>> = this._allContainerDetailedData.asObservable();
 
   // NEW: Observable to expose calculated scores for each container
@@ -164,8 +164,9 @@ export class CstService implements OnDestroy {
       scrollEvents: [],
       maxScrollDepth: 0,
       scrollDirectionChanges: 0,
-      typingActivityCount: 0,
-      hasCopied: false,
+      scrollCount: 0, 
+      typingActivityCount: 0,
+      hasCopied: false,
       hasSelected: false,
       attentionCheckScore: 0, // Default
       anomalyDetected: false, // Default
@@ -178,28 +179,35 @@ export class CstService implements OnDestroy {
       resizeObserver: null,
     };
     this.cstContainers.set(containerId, tracker);
+    setTimeout(() => {
+        this.scanAndObserveSubElements(containerId, element); 
+    }, 0);
 
-    // Scan and observe sub-elements within this container
-    this.scanAndObserveSubElements(containerId, element);
     this.observeContainerResize(containerId, element); // Observe main container resize
 
     this.emitDetailedData(); // Emit initial data
   }
 
-  destroyContainer(containerId: string): void {
+destroyContainer(containerId: string): void {
     const tracker = this.cstContainers.get(containerId);
     if (tracker) {
-      // Disconnect all sub-element observers
-      tracker.subElementObservers.forEach(obs => obs.disconnect());
-      // Disconnect main container resize observer
-      if (tracker.resizeObserver) {
-        tracker.resizeObserver.disconnect();
-      }
-      this.cstContainers.delete(containerId);
-      this.emitDetailedData(); // Emit updated data after removal
-      this.calculateAndEmitScores(); // Recalculate overall CST
+        
+        // 1. Disconnette tutti gli osservatori dei sotto-elementi
+        tracker.subElementObservers.forEach(obs => obs.disconnect());
+        
+        // 2. Disconnette l'observer del ridimensionamento del container
+        if (tracker.resizeObserver) {
+            tracker.resizeObserver.disconnect();
+        }
+
+        // 💡 AZIONE CORRETTA: I dati RIMANGONO nella mappa.
+        // NON chiamare this.cstContainers.delete(containerId);
+        
+        // 3. Emette e ricalcola (Opzionale, ma va bene lasciarlo)
+        this.emitDetailedData(); 
+        this.calculateAndEmitScores(); 
     }
-  }
+}
 
   // Called by IntersectionObserver for the main container
   updateContainerVisibility(containerId: string, isIntersecting: boolean): void {
@@ -222,38 +230,57 @@ export class CstService implements OnDestroy {
     }
   }
 
-  // Called by scroll event listener on the container
-  addScrollEvent(containerId: string, scrollTop: number, elementHeight: number, scrollHeight: number): void {
-    const tracker = this.cstContainers.get(containerId);
-    if (tracker) {
-      // Update max scroll depth within the container
-      const scrollableHeight = scrollHeight - elementHeight;
-      if (scrollableHeight > 0) {
-        tracker.data.maxScrollDepth = Math.max(tracker.data.maxScrollDepth, scrollTop / scrollableHeight);
-      } else {
-        tracker.data.maxScrollDepth = 1; // Content fits without scrolling
-      }
 
-      // Detect scroll reversals (simplified logic)
-      if (tracker.data.scrollEvents.length > 0) {
-        const lastScrollTop = tracker.data.scrollEvents[tracker.data.scrollEvents.length - 1].scrollTop;
+  // Called by scroll event listener on the container
+  addScrollEvent(containerId: string, scrollTop: number, elementHeight: number, scrollHeight: number): void {
+      // console.log(`[CST SCROLL] Container: ${containerId}, ScrollTop: ${scrollTop}, Dati Precedenti: ${this.cstContainers.get(containerId)?.data.scrollCount}`);
 
-        // More robust scroll direction change detection
-        const lastDirection = tracker.data.scrollEvents.length > 1
-            ? Math.sign(lastScrollTop - tracker.data.scrollEvents[tracker.data.scrollEvents.length - 2].scrollTop)
-            : 0;
-        const currentDirection = Math.sign(scrollTop - lastScrollTop);
+    const tracker = this.cstContainers.get(containerId);
+    if (tracker) {
+      const now = performance.now();
+      
+      // 1. Aggiorna max scroll depth
+      const scrollableHeight = scrollHeight - elementHeight;
+      if (scrollableHeight > 0) {
+        tracker.data.maxScrollDepth = Math.max(tracker.data.maxScrollDepth, scrollTop / scrollableHeight);
+      } else {
+        tracker.data.maxScrollDepth = 1; // Content fits without scrolling
+      }
 
-        if (currentDirection !== 0 && lastDirection !== 0 && currentDirection !== lastDirection) {
-            tracker.data.scrollDirectionChanges++;
+      // 2. Rileva i cambi di direzione e aggiorna il conteggio totale
+      if (tracker.data.scrollEvents.length > 0) {
+        const lastScrollTop = tracker.data.scrollEvents[tracker.data.scrollEvents.length - 1].scrollTop;
+        
+        const scrollDelta = scrollTop - lastScrollTop;
+        const currentDirection = Math.sign(scrollDelta); // 1, -1, or 0
+        
+        // Cerca l'ultima direzione valida (non zero)
+        let lastValidDirection = 0;
+        for (let i = tracker.data.scrollEvents.length - 1; i >= 1; i--) {
+            const delta = tracker.data.scrollEvents[i].scrollTop - tracker.data.scrollEvents[i - 1].scrollTop;
+            lastValidDirection = Math.sign(delta);
+            if (lastValidDirection !== 0) {
+                break;
+            }
         }
-      }
-      tracker.data.scrollEvents.push({ scrollTop, timestamp: performance.now() });
-
-      this.emitDetailedData();
-      this.calculateAndEmitScores();
-    }
-  }
+        
+        // Un cambio di direzione (inversione) avviene se:
+        // a) C'è stato un movimento ora (currentDirection != 0)
+        // b) C'era un movimento valido prima (lastValidDirection != 0)
+        // c) La direzione è cambiata
+        if (currentDirection !== 0 && lastValidDirection !== 0 && currentDirection !== lastValidDirection) {
+            tracker.data.scrollDirectionChanges++;
+        }
+      }
+      
+      // 3. Registra l'evento e incrementa il conteggio totale
+      tracker.data.scrollEvents.push({ scrollTop, timestamp: now });
+      tracker.data.scrollCount++; // 💡 Incrementa il conteggio totale degli eventi
+      
+      this.emitDetailedData();
+      this.calculateAndEmitScores();
+    }
+  }
 
   // Called by keyup event listener on the container
   addTypingActivity(containerId: string): void {
