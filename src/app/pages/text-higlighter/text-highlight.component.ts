@@ -278,9 +278,7 @@ export class TextHighlightComponent implements AfterViewInit {
       parent.removeChild(markElement);
     }
     this.highlightSections.splice(index, 1);
-    this.highlightSectionsChange.emit(
-      this.highlightSections.map((e) => e.text)
-    );
+    this.highlightSectionsChange.emit(this.highlightSections);
     this.cdr.detectChanges();
   }
   changeColor(color: string): void {
