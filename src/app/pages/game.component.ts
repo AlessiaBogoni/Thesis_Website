@@ -29,6 +29,7 @@ import "survey-angular-ui";
 import { surveyLocalization } from "survey-core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { EvaluationService } from "./text-higlighter/evaluation.service";
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Componente di gioco per la gestione delle donazioni e del punteggio.
@@ -177,6 +178,7 @@ allInteracted(): boolean {
     private surveyService: SurveyService,
     private cstService: CstService,
     private router: Router,
+    private route: ActivatedRoute,
     private scoreService: ScoreService,
     private evaluationService: EvaluationService,
     private translationService: TranslationService,
@@ -188,6 +190,13 @@ allInteracted(): boolean {
    * @returns {void}
    */
   async ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (params['referral'] === 'DisSup') {
+        document.body.innerHTML = ''; // pagina vuota
+        this.router.navigateByUrl('/blocked'); // opzionale
+      }
+    });
+
     const savedLang = localStorage.getItem("lang");
 
     if (!savedLang) {
