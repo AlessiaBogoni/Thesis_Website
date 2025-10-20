@@ -19,7 +19,7 @@ static getUrl(obj: string) {
    * @returns {string} Codice macchina generato.
    */
 static generateMachineCode(): string {
-  const groups = ["B", "B", "B", "B"];
+  const groups = ["A", "B", "C", "D"];
   const randomIndex = Math.floor(Math.random() * groups.length);
   const assignedGroup = groups[randomIndex];
 
